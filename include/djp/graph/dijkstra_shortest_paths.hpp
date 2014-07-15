@@ -46,4 +46,4 @@ std::vector<std::size_t> dijkstra_shortest_paths(const Graph& g,
 
 }  // namespace djp
 
-#endif
+#endif // Header guard

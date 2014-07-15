@@ -13,6 +13,7 @@ set(TEST_SOURCES
 "src/main"
 "src/graph/adjacency_list_test"
 "src/graph/dijkstra_shortest_paths_test"
+"src/math/common_factor_test"
 )
 
 add_executable(djp-test ${TEST_SOURCES})
