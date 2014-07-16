@@ -11,6 +11,7 @@ find_package(Boost 1.53.0 REQUIRED COMPONENTS unit_test_framework)
 
 set(TEST_SOURCES
 "src/main"
+"src/container/segment_tree_test"
 "src/graph/adjacency_list_test"
 "src/graph/dijkstra_shortest_paths_test"
 "src/math/common_factor_test"
