@@ -16,7 +16,8 @@ BOOST_AUTO_TEST_CASE(split) {
   const auto tokens = djp::split(str, sep);
   const std::array<std::string, 5> expected =
     {{"hello","world","friend","of","mine"}};
-  BOOST_CHECK_EQUAL(tokens.size(), expected.size());
+
+  BOOST_REQUIRE_EQUAL(tokens.size(), expected.size());
   BOOST_CHECK(std::equal(expected.begin(),expected.end(),
                          tokens.begin()));
 }
