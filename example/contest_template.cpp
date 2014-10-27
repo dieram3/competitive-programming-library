@@ -1,4 +1,5 @@
 // Utilities library
+#include <cstdlib>
 #include <bitset>
 #include <functional>
 #include <utility>
@@ -15,6 +16,7 @@
 #include <vector>
 #include <deque>
 #include <list>
+#include <forward_list>
 #include <set>
 #include <map>
 #include <unordered_set>
@@ -35,6 +37,8 @@
 #include <sstream>
 #include <iomanip>
 #include <cstdio>
+// Localization library
+#include <locale>
 // Regular expressions library
 #include <regex>
 
