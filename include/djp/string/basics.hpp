@@ -2,6 +2,7 @@
 #define DJP_STRING_BASICS_HPP
 
 #include <string>
+#include <algorithm>
 #include <vector>
 #include <djp/string/string_view.hpp>
 
