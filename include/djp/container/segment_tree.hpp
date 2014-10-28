@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2014
+//          Copyright Diego Ramírez October 2014
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -7,7 +7,8 @@
 #define DJP_CONTAINER_SEGMENT_TREE_HPP
 
 #include <vector>
-#include <iterator>
+#include <utility>
+#include <cassert>
 
 namespace djp {
 
@@ -16,160 +17,100 @@ class segment_tree {
  public:
   using value_type = T;
   using size_type = std::size_t;
-  using operator_type = BinaryOp;
 
  private:
-  using tree_type = std::vector<value_type>;
-  using node_idx = typename tree_type::size_type;  // node index
+  using range_t = std::pair<size_type, size_type>;
+
+  struct node {
+    node(size_type b, size_type e, size_type p)
+        : begin{b}, end{e}, middle{b + (e - b) / 2}, pos{p} {}
+
+    bool is_leaf() const { return begin + 1 == end; }
+
+    node left() const { return {begin, middle, 2 * pos + 1}; }
+
+    node right() const { return {middle, end, 2 * pos + 2}; }
+
+    size_type begin;
+    size_type end;
+    size_type middle;
+    size_type pos;
+  };
 
  public:
+  /// Constructs the segment tree with the elements in the range [first, last)
+  /// using the associative operator op.
+  /// Complexity: (last - first) applications of op.
   template <class ForwardIt>
-  segment_tree(ForwardIt first, ForwardIt last,
-               operator_type Oper = operator_type())
-      : RangeSize(std::distance(first, last)), Op(Oper) {
-    if (size()) {
-      Tree.resize(tree_size(size()));
-      initialize(root(), first, last);
-    }
+  segment_tree(ForwardIt first, ForwardIt last, BinaryOp op = BinaryOp())
+      : size_(std::distance(first, last)),
+        op_(op),
+        tree_(optimal_tree_size(size_)) {
+    auto take_element = [&first](T &value) { value = *first++; };
+    for_each(0, size(), take_element);
   }
 
-  value_type accumulate(size_type Beg, size_type End) const {
-    return accumulate(Beg, End, root(), 0, size());
+  /// Computes the sum of the elements in the range [first, last)
+  /// Complexity: log(N) applications of op, where N == size()
+  T accumulate(size_type first, size_type last) const {
+    return accumulate(root(), range_t(first, last));
   }
 
-  size_type size() const { return RangeSize; }
-
-  template <class UnaryFunc>
-  void for_each(size_type Beg, size_type End, UnaryFunc f) {
-    for_each(Beg, End, root(), 0, size(), f);
+  /// Applies the given function f to each element in the range [first, last)
+  /// Complexity: max(log(N), 2*k) aplications of op and k applications of f
+  /// where N == size() and k == last - first
+  template <class UnaryFunction>
+  void for_each(size_type first, size_type last, UnaryFunction f) {
+    for_each(root(), range_t(first, last), f);
   }
+
+  /// Returns the number of elements.
+  /// Complexity: Constant
+  size_type size() const { return size_; }
 
  private:
-  template <class ForwardIt>
-  void initialize(node_idx idx, ForwardIt first, ForwardIt last);
+  node root() const { return {0, size(), 0}; }
 
-  value_type accumulate(size_type TargetBeg, size_type TargetEnd,
-                        node_idx CurIdx, size_type CurBeg,
-                        size_type CurEnd) const;
+  T &elem(const node &nd) { return tree_[nd.pos]; }
 
-  template <class UnaryFunc>
-  void for_each(size_type TargetBeg, size_type TargetEnd, node_idx CurIdx,
-                size_type CurBeg, size_type CurEnd, UnaryFunc& f);
+  const T &elem(const node &nd) const { return tree_[nd.pos]; }
 
-  // Requires: Size != 0 ,  has complexity O(log(Size))
-  static size_type tree_size(size_type Size) {
-    node_idx idx = root();
-    size_type Beg = 0, End = Size;
-
-    while (Beg + 1 != End) {
-      Beg = middle_bound(Beg, End);
-      idx = right_child(idx);
-    }
-    return idx + 1;
-    // idx will be the last index.
-    // the returned value (idx+1) has the form (2^n -1),
-    // e.g (1,3,7,15,31,63,127...) if root() == 0
+  static size_type optimal_tree_size(size_type sz) {
+    if (!sz) return 0;
+    size_type res = 2;
+    while (sz != 1) sz = sz / 2 + sz % 2, res *= 2;
+    return res - 1;
   }
 
-  static node_idx root() {
-    return 0;
-  }  // We don't need worry up if this is 0 or 1.
+  T accumulate(const node &nd, const range_t &target) const {
+    if (nd.begin >= target.first && nd.end <= target.second) return elem(nd);
+    assert(!nd.is_leaf());
 
-  static node_idx left_child(node_idx idx) { return 2 * idx + 1; }
+    if (target.second <= nd.middle) return accumulate(nd.left(), target);
+    if (target.first >= nd.middle) return accumulate(nd.right(), target);
 
-  static node_idx right_child(node_idx idx) { return 2 * idx + 2; }
+    const auto lsum = accumulate(nd.left(), target);
+    const auto rsum = accumulate(nd.right(), target);
+    return op_(lsum, rsum);
+  }
 
-  static size_type middle_size(size_type sz) { return sz / 2; }
+  template <class UnaryFunc>
+  void for_each(const node &nd, const range_t &target, UnaryFunc &f) {
+    if (nd.begin >= target.second || nd.end <= target.first) return;
+    if (nd.is_leaf()) return f(elem(nd));
 
-  static size_type middle_bound(size_type Beg, size_type End) {
-    return Beg + middle_size(End - Beg);
+    const auto lchild = nd.left();
+    const auto rchild = nd.right();
+    for_each(lchild, target, f);
+    for_each(rchild, target, f);
+    elem(nd) = op_(elem(lchild), elem(rchild));
   }
 
  private:  // Private data members
-  size_type RangeSize;
-  operator_type Op;
-  tree_type Tree;
+  size_type size_;
+  BinaryOp op_;
+  std::vector<T> tree_;
 };
-
-template <class T, class BinaryOp>
-template <class ForwardIt>
-void segment_tree<T, BinaryOp>::initialize(node_idx idx, ForwardIt first,
-                                           ForwardIt last) {
-  size_type SegmentSize = std::distance(first, last);
-
-  if (SegmentSize == 1) {
-    Tree[idx] = *first;
-    return;
-  }
-
-  ForwardIt middle = std::next(first, middle_size(SegmentSize));
-  node_idx lchild = left_child(idx);
-  node_idx rchild = right_child(idx);
-
-  initialize(lchild, first, middle);
-  initialize(rchild, middle, last);
-  Tree[idx] = Op(Tree[lchild], Tree[rchild]);
-}
-
-template <class T, class BinaryOp>
-typename segment_tree<T, BinaryOp>::value_type
-segment_tree<T, BinaryOp>::accumulate(size_type TargetBeg, size_type TargetEnd,
-                                      node_idx CurIdx, size_type CurBeg,
-                                      size_type CurEnd) const {
-  if (TargetBeg == CurBeg and TargetEnd == CurEnd) {
-    return Tree[CurIdx];
-  }
-  // else it can't be a leaf.
-
-  size_type CurMiddle = middle_bound(CurBeg, CurEnd);
-
-  if (TargetEnd <= CurMiddle) {
-    // Search left child
-    return accumulate(TargetBeg, TargetEnd, left_child(CurIdx), CurBeg,
-                      CurMiddle);
-  }
-  if (TargetBeg >= CurMiddle) {
-    // Search right child
-    return accumulate(TargetBeg, TargetEnd, right_child(CurIdx), CurMiddle,
-                      CurEnd);
-  }
-
-  // else search both of them
-
-  value_type ResL =
-      accumulate(TargetBeg, CurMiddle, left_child(CurIdx), CurBeg, CurMiddle);
-
-  value_type ResR =
-      accumulate(CurMiddle, TargetEnd, right_child(CurIdx), CurMiddle, CurEnd);
-
-  return Op(ResL, ResR);
-}
-
-template <class T, class BinaryOp>
-template <class UnaryFunc>
-void segment_tree<T, BinaryOp>::for_each(size_type TargetBeg,
-                                         size_type TargetEnd, node_idx CurIdx,
-                                         size_type CurBeg, size_type CurEnd,
-                                         UnaryFunc& f) {
-  if (CurBeg + 1 == CurEnd)
-    f(Tree[CurIdx]);
-  else {
-    size_type CurMiddle = middle_bound(CurBeg, CurEnd);
-    node_idx lchild = left_child(CurIdx);
-    node_idx rchild = right_child(CurIdx);
-
-    if (TargetEnd <= CurMiddle) {
-      for_each(TargetBeg, TargetEnd, lchild, CurBeg, CurMiddle, f);
-    } else if (TargetBeg >= CurMiddle) {
-      for_each(TargetBeg, TargetEnd, rchild, CurMiddle, CurEnd, f);
-    } else {
-      for_each(TargetBeg, CurMiddle, lchild, CurBeg, CurMiddle, f);
-      for_each(CurMiddle, TargetEnd, rchild, CurMiddle, CurEnd, f);
-    }
-
-    Tree[CurIdx] = Op(Tree[lchild], Tree[rchild]);
-  }
-}
 
 }  // namespace djp
 
