@@ -7,7 +7,6 @@
 #define DJP_CONTAINER_SEGMENT_TREE_HPP
 
 #include <vector>
-#include <iterator>
 #include <utility>
 #include <cassert>
 
@@ -50,15 +49,15 @@ class segment_tree {
     for_each(0, size(), take_element);
   }
 
-  // Computes the sum of the elements in the range [first, last)
-  // Complexity: log(N) applications of op, where N == size()
+  /// Computes the sum of the elements in the range [first, last)
+  /// Complexity: log(N) applications of op, where N == size()
   T accumulate(pos_type first, pos_type last) const {
     return accumulate(root(), first, last);
   }
 
-  // Applies the given function f to each element in the range [first, last)
-  // Complexity: max(log(N), 2*k) aplications of op and k applications of f
-  // where N == size() and k == last - first
+  /// Applies the given function f to each element in the range [first, last)
+  /// Complexity: max(log(N), 2*k) aplications of op and k applications of f
+  /// where N == size() and k == last - first
   template <class UnaryFunction>
   void for_each(pos_type first, pos_type last, UnaryFunction f) {
     for_each(root(), range_t(first, last), f);

@@ -19,7 +19,8 @@ BOOST_AUTO_TEST_CASE(segment_tree) {
   BOOST_CHECK_EQUAL(stree.accumulate(6, 10), 34);
   BOOST_CHECK_EQUAL(stree.accumulate(0, 10), 55);
 
-  stree.for_each(0, 5, [](int& elem) { elem *= 2; });
+  auto multiply_by_2 = [](int& elem) { elem *= 2; };
+  stree.for_each(0, 5, multiply_by_2);
 
   BOOST_CHECK_EQUAL(stree.accumulate(0, 1), 2);
   BOOST_CHECK_EQUAL(stree.accumulate(1, 3), 10);
