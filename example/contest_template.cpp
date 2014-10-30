@@ -61,5 +61,13 @@ T input_value(std::istream& input = std::cin) {
 // Program code
 
 int main() {
+    // Avoids iostream and stdio synchronization
     std::ios_base::sync_with_stdio(false);
+
+    // Avoids flushing std::cout before reading from std::cin
+    std::cin.tie(nullptr);
+
+    // std::cout << std::endl;  is equal to
+    // std::cout << '\n' << std::flush;
+    // Avoid flushing unnecessarily
 }
