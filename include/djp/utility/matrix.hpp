@@ -19,19 +19,24 @@ class matrix {
   T* operator[](size_type i) noexcept { return &data_[i * cols_]; }
   const T* operator[](size_type i) const noexcept { return &data_[i * cols_]; }
 
+  friend std::istream& operator>>(std::istream& is, matrix& mat) {
+    for (auto& elem : mat.data_) is >> elem;
+    return is;
+  }
+
+  friend std::ostream& operator<<(std::ostream& os, const matrix& mat) {
+    for (size_type i = 0; i != mat.rows_; ++i) {
+      for (size_type j = 0; j != mat.cols_; ++j) os << mat[i][j] << ' ';
+      os << '\n';
+    }
+    return os;
+  }
+
  private:
   size_type rows_;
   size_type cols_;
   std::vector<T> data_;
 };
-
-template <class T>
-void print_matrix(const matrix<T>& mat, std::ostream& output) {
-  for (size_t i = 0; i != mat.rows(); ++i) {
-    for (size_t j = 0; j != mat.cols(); ++j) output << mat[i][j] << ' ';
-    output << '\n';
-  }
-}
 
 }  // namespace djp
 

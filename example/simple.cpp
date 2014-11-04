@@ -10,6 +10,5 @@ int main() {
   for (size_t i = 0; i != mat.rows(); ++i)
     for (size_t j = 0; j != mat.cols(); ++j) mat[i][j] = i * mat.cols() + j;
 
-
-  djp::print_matrix(mat, std::cout);
+  std::cout << mat << '\n';
 }
