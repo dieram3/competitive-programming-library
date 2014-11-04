@@ -24,7 +24,7 @@ std::size_t levenshtein_distance(RandomIt1 first1, RandomIt1 last1,
 
   const size_t rows = 1 + std::distance(first1, last1);
   const size_t cols = 1 + std::distance(first2, last2);
-  matrix<size_t> dp((last1 - first1) + 1, (last2 - first2) + 1);
+  matrix<size_t> dp(rows, cols);
 
   dp[0][0] = 0;
   for (size_t i = 1; i != rows; ++i) dp[i][0] = dp[i - 1][0] + w_del;
