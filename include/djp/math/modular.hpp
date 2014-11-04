@@ -30,10 +30,13 @@ class modular {
   friend modular operator/(modular a, modular b) { return a * inverse(b); }
 
   friend modular pow(modular base, T exp) {
-    if (exp == 0) return 1;
-    if (exp == 1) return base;
-    if (exp % 2 == 1) return base * pow(base, exp - 1);
-    return pow(base * base, exp / 2);
+    modular result = 1;
+    while (exp) {
+      if (exp & 1) result *= base;
+      base *= base;
+      exp >>= 1;
+    }
+    return result;
   }
   friend modular inverse(modular b) {
     const auto inv_b = pow(b, Mod - 2);
