@@ -1,48 +1,46 @@
 #ifndef DJP_STRING_EDIT_DISTANCE_HPP
 #define DJP_STRING_EDIT_DISTANCE_HPP
 
-#include <vector>
+#include <djp/utility/matrix.hpp>
 #include <algorithm>
+#include <iterator>
 
-/// \todo document: levenshtein_distance
 /// \todo analyze: damerau_levenshtein_distance
 /// \todo design: longest_common_subsequence
 /// \todo design: hamming_distance
 
 namespace djp {
 
-template <class String1, class String2>
-std::size_t levenshtein_distance(const String1& str1, const String2& str2) {
+// Computes the edit distance between the ranges [first1, last1) and
+// [first2, last2). The set of operations taken into account are
+// deletion, insertion and substitution. Each operation costs 1 by default.
+// Complexity: m*n comparisons of equality
+// where m == last1 - first1, n == last2 - first2
+template <class RandomIt1, class RandomIt2>
+std::size_t levenshtein_distance(RandomIt1 first1, RandomIt1 last1,
+                                 RandomIt2 first2, RandomIt2 last2) {
   using std::size_t;
-  constexpr size_t w_del = 1;  // deletion cost
-  constexpr size_t w_ins = 1;  // insertion cost
-  constexpr size_t w_sub = 1;  // substitution cost
+  constexpr size_t w_del{1}, w_ins{1}, w_sub{1};
 
-  const size_t rows = str1.size() + 1;
-  const size_t cols = str2.size() + 1;
-  std::vector<size_t> distance(rows * cols);
-  auto d = [&](size_t i, size_t j) -> size_t & {
-    return distance[i * cols + j];
-  };
+  const size_t rows = 1 + std::distance(first1, last1);
+  const size_t cols = 1 + std::distance(first2, last2);
+  matrix<size_t> dp((last1 - first1) + 1, (last2 - first2) + 1);
 
-  d(0, 0) = 0;
-  for (size_t i = 1; i != rows; ++i) d(i, 0) = d(i - 1, 0) + w_del;
-  for (size_t j = 1; j != cols; ++j) d(0, j) = d(0, j - 1) + w_ins;
+  dp[0][0] = 0;
+  for (size_t i = 1; i != rows; ++i) dp[i][0] = dp[i - 1][0] + w_del;
+  for (size_t j = 1; j != cols; ++j) dp[0][j] = dp[0][j - 1] + w_ins;
 
-  for (size_t i = 1; i != rows; ++i) {
+  for (size_t i = 1; i != rows; ++i)
     for (size_t j = 1; j != cols; ++j) {
-      if (str1[i - 1] == str2[j - 1])
-        d(i, j) = d(i - 1, j - 1);
-      else {
-        auto del_dist = d(i - 1, j) + w_del;
-        auto ins_dist = d(i, j - 1) + w_ins;
-        auto sub_dist = d(i - 1, j - 1) + w_sub;
-        d(i, j) = std::min({del_dist, ins_dist, sub_dist});
-      }
+      if (first1[i - 1] == first2[j - 1])
+        dp[i][j] = dp[i - 1][j - 1];
+      else
+        dp[i][j] = std::min({dp[i - 1][j] + w_del,        // deletion
+                             dp[i][j - 1] + w_ins,        // insertion
+                             dp[i - 1][j - 1] + w_sub});  // substitution
     }
-  }
 
-  return distance.back();
+  return dp[rows - 1][cols - 1];
 }
 
 }  // namespace djp
