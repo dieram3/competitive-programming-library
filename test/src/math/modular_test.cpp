@@ -7,7 +7,9 @@
 #include <boost/test/unit_test.hpp>
 
 BOOST_AUTO_TEST_SUITE(math)
-BOOST_AUTO_TEST_CASE(modular) {
+BOOST_AUTO_TEST_SUITE(modular)
+
+BOOST_AUTO_TEST_CASE(modular_test) {
   using modular_t = djp::modular<unsigned, 7>;
 
   const modular_t a = 4;
@@ -29,4 +31,5 @@ BOOST_AUTO_TEST_CASE(modular) {
   BOOST_CHECK_EQUAL(static_cast<int>(b), 5);
 }
 
+BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE_END()
