@@ -9,8 +9,18 @@
 
 namespace djp {
 
-// Floating point wrapper based on epsilon comparison
 template <class T>
+bool almost_equal(T x, T y, unsigned ulp) {
+  static_assert(std::is_floating_point<T>::value, "T must be floating point");
+  using std::abs;
+  constexpr T eps = std::numeric_limits<T>::epsilon();
+  constexpr T min = std::numeric_limits<T>::min();
+
+  return abs(x - y) < eps * abs(x + y) * ulp || abs(x - y) < min;
+}
+
+// Floating point wrapper based on epsilon comparison
+template <class T, unsigned ULP = 2>
 class efloat {
  public:
   static_assert(std::is_floating_point<T>::value, "T must be floating point");
@@ -19,7 +29,7 @@ class efloat {
   efloat(T value) : value_{value} {}
 
   friend bool operator==(efloat x, efloat y) {
-    return std::abs(x.value_ - y.value_) < std::numeric_limits<T>::epsilon();
+    return almost_equal(x.value_, y.value_, ULP);
   }
   friend bool operator<(efloat x, efloat y) {
     return x != y && x.value_ < y.value_;

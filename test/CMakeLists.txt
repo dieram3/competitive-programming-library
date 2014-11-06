@@ -11,7 +11,8 @@ find_package(Boost 1.53.0 REQUIRED COMPONENTS unit_test_framework)
 
 set(TEST_SOURCES
 "src/main"
-"src/container/segment_tree_test"
+"src/data_structure/fenwick_tree_test"
+"src/data_structure/segment_tree_test"
 "src/math/common_factor_test"
 "src/math/efloat_test"
 "src/math/modular_test"

@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DJP_CONTAINER_SEGMENT_TREE_HPP
-#define DJP_CONTAINER_SEGMENT_TREE_HPP
+#ifndef DJP_DATA_STRUCTURE_SEGMENT_TREE_HPP
+#define DJP_DATA_STRUCTURE_SEGMENT_TREE_HPP
 
 #include <vector>
 #include <utility>

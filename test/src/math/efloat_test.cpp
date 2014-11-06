@@ -5,8 +5,9 @@
 BOOST_AUTO_TEST_SUITE(math)
 BOOST_AUTO_TEST_SUITE(efloat)
 
+
 BOOST_AUTO_TEST_CASE(comparison) {
-  using float_t = djp::efloat<float>;
+  using float_t = djp::efloat<float,0>;
   float_t x = 3;
   BOOST_CHECK(x == 3.000000032);
   BOOST_CHECK(x != 3.00012312);
