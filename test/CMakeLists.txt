@@ -13,6 +13,7 @@ set(TEST_SOURCES
 "src/main"
 "src/data_structure/fenwick_tree_test"
 "src/data_structure/segment_tree_test"
+"src/dynamic_programming/longest_increasing_subsequence"
 "src/math/common_factor_test"
 "src/math/efloat_test"
 "src/math/modular_test"
