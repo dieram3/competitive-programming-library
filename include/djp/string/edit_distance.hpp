@@ -24,23 +24,23 @@ std::size_t levenshtein_distance(RandomIt1 first1, RandomIt1 last1,
 
   const size_t rows = 1 + std::distance(first1, last1);
   const size_t cols = 1 + std::distance(first2, last2);
-  matrix<size_t> dp(rows, cols);
+  matrix<size_t> dp({rows, cols});
 
-  dp[0][0] = 0;
-  for (size_t i = 1; i != rows; ++i) dp[i][0] = dp[i - 1][0] + w_del;
-  for (size_t j = 1; j != cols; ++j) dp[0][j] = dp[0][j - 1] + w_ins;
+  dp[{0, 0}] = 0;
+  for (size_t i = 1; i != rows; ++i) dp[{i, 0}] = dp[{i - 1, 0}] + w_del;
+  for (size_t j = 1; j != cols; ++j) dp[{0, j}] = dp[{0, j - 1}] + w_ins;
 
   for (size_t i = 1; i != rows; ++i)
     for (size_t j = 1; j != cols; ++j) {
       if (first1[i - 1] == first2[j - 1])
-        dp[i][j] = dp[i - 1][j - 1];
+        dp[{i, j}] = dp[{i - 1, j - 1}];
       else
-        dp[i][j] = std::min({dp[i - 1][j] + w_del,        // deletion
-                             dp[i][j - 1] + w_ins,        // insertion
-                             dp[i - 1][j - 1] + w_sub});  // substitution
+        dp[{i, j}] = std::min({dp[{i - 1, j}] + w_del,        // deletion
+                               dp[{i, j - 1}] + w_ins,        // insertion
+                               dp[{i - 1, j - 1}] + w_sub});  // substitution
     }
 
-  return dp[rows - 1][cols - 1];
+  return dp[{rows - 1, cols - 1}];
 }
 
 }  // namespace djp

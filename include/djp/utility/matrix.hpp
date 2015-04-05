@@ -9,34 +9,31 @@ namespace djp {
 template <class T>
 class matrix {
  public:
-  using size_type = std::size_t;
+  using index_type = std::pair<size_t, size_t>;
+  using reference = typename std::vector<T>::reference;
+  using const_reference = typename std::vector<T>::const_reference;
 
-  matrix(size_type r, size_type c) : rows_{r}, cols_{c}, data_(r * c) {}
+  matrix(index_type bounds) : bounds_(bounds), data_(rows() * cols()) {}
 
-  size_type rows() const noexcept { return rows_; }
-  size_type cols() const noexcept { return cols_; }
-
-  T* operator[](size_type i) noexcept { return &data_[i * cols_]; }
-  const T* operator[](size_type i) const noexcept { return &data_[i * cols_]; }
-
-  friend std::istream& operator>>(std::istream& is, matrix& mat) {
-    for (auto& elem : mat.data_) is >> elem;
-    return is;
-  }
-
-  friend std::ostream& operator<<(std::ostream& os, const matrix& mat) {
-    for (size_type i = 0; i != mat.rows_; ++i) {
-      for (size_type j = 0; j != mat.cols_; ++j) os << mat[i][j] << ' ';
-      os << '\n';
-    }
-    return os;
-  }
+  size_t pos(index_type idx) const { return idx.first * cols() + idx.second; }
+  size_t rows() const { return bounds_.first; }
+  size_t cols() const { return bounds_.second; }
+  reference operator[](index_type idx) { return data_[pos(idx)]; }
+  const_reference operator[](index_type idx) const { return data_[pos(idx)]; }
 
  private:
-  size_type rows_;
-  size_type cols_;
+  index_type bounds_;
   std::vector<T> data_;
 };
+
+template <class T>
+std::ostream& operator<<(std::ostream& output, const matrix<T>& mat) {
+  for (size_t i = 0; i != mat.rows(); ++i) {
+    for (size_t j = 0; j != mat.cols(); ++j) output << mat[{i, j}] << ' ';
+    output << '\n';
+  }
+  return output;
+}
 
 }  // namespace djp
 
