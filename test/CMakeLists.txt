@@ -21,6 +21,7 @@ set(TEST_SOURCES
 "src/graph/dijkstra_shortest_paths_test"
 "src/string/basics_test"
 "src/string/edit_distance_test"
+"src/string/suffix_array_test"
 "src/utility/iterator_range_test"
 "src/utility/matrix_test"
 )

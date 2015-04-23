@@ -1,6 +1,5 @@
 #include <djp/utility/matrix.hpp>
 #include <iostream>
-#include <djp/string/suffix_tree.hpp>
 
 using djp::matrix;
 
