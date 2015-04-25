@@ -175,3 +175,10 @@ tramp
 *.exe
 *.out
 *.app
+
+# Bin folder
+bin/
+
+# Biicode folder
+bii/
+

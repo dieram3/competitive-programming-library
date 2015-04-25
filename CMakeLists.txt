@@ -1,7 +1,2 @@
-cmake_minimum_required(VERSION 2.8)
-project("Contest-utilities" CXX)
-
-include_directories("include")
-add_subdirectory(example)
-
-add_subdirectory(test)
+ADD_BII_TARGETS()
+TARGET_COMPILE_OPTIONS(${BII_BLOCK_TARGET} INTERFACE "-std=c++11")
