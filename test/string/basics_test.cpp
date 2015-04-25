@@ -4,11 +4,3 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <djp/string/edit_distance.hpp>
-#include <boost/test/unit_test.hpp>
-
-BOOST_AUTO_TEST_SUITE(string)
-BOOST_AUTO_TEST_SUITE(edit_distance)
-
-
-BOOST_AUTO_TEST_SUITE_END()
-BOOST_AUTO_TEST_SUITE_END()

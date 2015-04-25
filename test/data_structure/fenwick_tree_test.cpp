@@ -4,4 +4,3 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <djp/data_structure/fenwick_tree.hpp>
-#include <boost/test/unit_test.hpp>

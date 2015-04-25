@@ -4,34 +4,28 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <djp/string/edit_distance.hpp>
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 #include <string>
 #include <algorithm>
 
-BOOST_AUTO_TEST_SUITE(string)
-BOOST_AUTO_TEST_SUITE(edit_distance)
-
-BOOST_AUTO_TEST_CASE(levenshtein_distance) {
+TEST(levenshtein_distance, HandlesSmallInput) {
   auto lev_dist = [](const std::string& str1, const std::string& str2) {
     return djp::levenshtein_distance(str1.begin(), str1.end(), str2.begin(),
                                      str2.end());
   };
 
-  BOOST_CHECK_EQUAL(lev_dist("kitten", "sitting"), 3u);
-  BOOST_CHECK_EQUAL(lev_dist("in...suv...dell", "ins...sub...del"), 3u);
-  BOOST_CHECK_EQUAL(lev_dist("hello world", "hallo word"), 2u);
-  BOOST_CHECK_EQUAL(lev_dist("equal", "equal"), 0u);
-  BOOST_CHECK_EQUAL(lev_dist("non swap no", "oon swap nn"), 2u);
-  BOOST_CHECK_EQUAL(lev_dist("max_cost...", "12345678"), 11u);
+  EXPECT_EQ(3, lev_dist("kitten", "sitting"));
+  EXPECT_EQ(3, lev_dist("in...suv...dell", "ins...sub...del"));
+  EXPECT_EQ(2, lev_dist("hello world", "hallo word"));
+  EXPECT_EQ(0, lev_dist("equal", "equal"));
+  EXPECT_EQ(2, lev_dist("non swap no", "oon swap nn"));
+  EXPECT_EQ(11, lev_dist("max_cost...", "12345678"));
 
   std::string str1 = "kitten";
   std::string str2 = "sitting";
   std::reverse(str2.begin(), str2.end());
   // This must compile
-  auto ld = djp::levenshtein_distance(str1.begin(), str1.end(), str2.rbegin(),
-                                      str2.rend());
-  BOOST_CHECK_EQUAL(ld, 3u);
+  auto distance = djp::levenshtein_distance(str1.begin(), str1.end(),
+                                            str2.rbegin(), str2.rend());
+  EXPECT_EQ(3, distance);
 }
-
-BOOST_AUTO_TEST_SUITE_END()
-BOOST_AUTO_TEST_SUITE_END()

@@ -4,29 +4,32 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <djp/math/common_factor.hpp>
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
 using djp::gcd;
 using djp::lcm;
 
-BOOST_AUTO_TEST_SUITE(math)
-
-BOOST_AUTO_TEST_CASE(common_factor) {
-
-  BOOST_CHECK_EQUAL(gcd(0, 5), 5);
-  BOOST_CHECK_EQUAL(gcd(10, 0), 10);
-  BOOST_CHECK_EQUAL(gcd(10, 5), 5);
-  BOOST_CHECK_EQUAL(gcd(10, 13), 1);
-  BOOST_CHECK_EQUAL(gcd(11, 22), 11);
-  BOOST_CHECK_EQUAL(gcd(15, 15), 15);
-
-  BOOST_CHECK_EQUAL(lcm(0, 5), 0);
-  BOOST_CHECK_EQUAL(lcm(5, 0), 0);
-  BOOST_CHECK_EQUAL(lcm(0, 0), 0);
-  BOOST_CHECK_EQUAL(lcm(2, 5), 10);
-  BOOST_CHECK_EQUAL(lcm(3, 6), 6);
-  BOOST_CHECK_EQUAL(lcm(7, 3), 21);
-  BOOST_CHECK_EQUAL(lcm(24, 24), 24);
+TEST(gcd_test, HandlesPositiveInput) {
+  EXPECT_EQ(5, gcd(10, 5));
+  EXPECT_EQ(1, gcd(10, 13));
+  EXPECT_EQ(11, gcd(11, 22));
+  EXPECT_EQ(15, gcd(15, 15));
 }
 
-BOOST_AUTO_TEST_SUITE_END()
+TEST(gcd_test, HandlesZeroInput) {
+  EXPECT_EQ(5, gcd(0, 5));
+  EXPECT_EQ(10, gcd(10, 0));
+}
+
+TEST(lcm_test, HandlesPositiveInput) {
+  EXPECT_EQ(10, lcm(2, 5));
+  EXPECT_EQ(6, lcm(3, 6));
+  EXPECT_EQ(21, lcm(7, 3));
+  EXPECT_EQ(24, lcm(24, 24));
+}
+
+TEST(lcm_test, HandlesZeroInput) {
+  EXPECT_EQ(0, lcm(0, 5));
+  EXPECT_EQ(0, lcm(5, 0));
+  EXPECT_EQ(0, lcm(0, 0));
+}

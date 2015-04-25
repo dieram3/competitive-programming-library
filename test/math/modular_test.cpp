@@ -4,32 +4,26 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <djp/math/modular.hpp>
-#include <boost/test/unit_test.hpp>
+#include <gtest/gtest.h>
 
-BOOST_AUTO_TEST_SUITE(math)
-BOOST_AUTO_TEST_SUITE(modular)
-
-BOOST_AUTO_TEST_CASE(modular_test) {
+TEST(modular_test, HandlesArithmeticOps) {
   using modular_t = djp::modular<unsigned, 7>;
 
   const modular_t a = 4;
   const modular_t b = 12;
 
-  BOOST_CHECK(congruent(a, 4));
-  BOOST_CHECK(congruent(b, 5));
-  BOOST_CHECK(congruent(a + b, 2));
-  BOOST_CHECK(congruent(a - b, 6));
-  BOOST_CHECK(congruent(b - a, 1));
-  BOOST_CHECK(congruent(a * b, 6));
-  BOOST_CHECK(congruent(pow(a, 7 - 2), 2));
-  BOOST_CHECK(congruent(pow(b, 7 - 2), 3));
-  BOOST_CHECK(congruent(inverse(a), 2));
-  BOOST_CHECK(congruent(inverse(b), 3));
-  BOOST_CHECK(congruent(a / b, 5));
-  BOOST_CHECK(congruent(b / a, 3));
-  BOOST_CHECK_EQUAL(static_cast<int>(a), 4);
-  BOOST_CHECK_EQUAL(static_cast<int>(b), 5);
+  EXPECT_TRUE(congruent(a, 4));
+  EXPECT_TRUE(congruent(b, 5));
+  EXPECT_TRUE(congruent(a + b, 2));
+  EXPECT_TRUE(congruent(a - b, 6));
+  EXPECT_TRUE(congruent(b - a, 1));
+  EXPECT_TRUE(congruent(a * b, 6));
+  EXPECT_TRUE(congruent(pow(a, 7 - 2), 2));
+  EXPECT_TRUE(congruent(pow(b, 7 - 2), 3));
+  EXPECT_TRUE(congruent(inverse(a), 2));
+  EXPECT_TRUE(congruent(inverse(b), 3));
+  EXPECT_TRUE(congruent(a / b, 5));
+  EXPECT_TRUE(congruent(b / a, 3));
+  EXPECT_EQ(4, static_cast<int>(a));
+  EXPECT_EQ(5, static_cast<int>(b));
 }
-
-BOOST_AUTO_TEST_SUITE_END()
-BOOST_AUTO_TEST_SUITE_END()

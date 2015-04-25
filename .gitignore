@@ -176,9 +176,7 @@ tramp
 *.out
 *.app
 
-# Bin folder
+# Folders
 bin/
-
-# Biicode folder
+lib/
 bii/
-
