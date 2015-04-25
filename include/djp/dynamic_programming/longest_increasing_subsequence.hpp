@@ -12,7 +12,8 @@
 
 namespace djp {
 
-// Calculates size of the Longest Monotonically Increasing Subsequence.
+/// \brief Calculates size of the Longest Monotonically Increasing Subsequence.
+/// Complexity: O(N*log(N)) comparisons, where N == std::distance(first, last)
 template <class InputIt>
 size_t calc_lis_size(InputIt first, InputIt last) {
   using T = typename std::iterator_traits<InputIt>::value_type;
