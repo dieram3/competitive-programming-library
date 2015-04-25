@@ -9,26 +9,26 @@
 using djp::gcd;
 using djp::lcm;
 
-TEST(gcd_test, HandlesPositiveInput) {
+TEST(gcd, HandlesPositiveInput) {
   EXPECT_EQ(5, gcd(10, 5));
   EXPECT_EQ(1, gcd(10, 13));
   EXPECT_EQ(11, gcd(11, 22));
   EXPECT_EQ(15, gcd(15, 15));
 }
 
-TEST(gcd_test, HandlesZeroInput) {
+TEST(gcd, HandlesZeroInput) {
   EXPECT_EQ(5, gcd(0, 5));
   EXPECT_EQ(10, gcd(10, 0));
 }
 
-TEST(lcm_test, HandlesPositiveInput) {
+TEST(lcm, HandlesPositiveInput) {
   EXPECT_EQ(10, lcm(2, 5));
   EXPECT_EQ(6, lcm(3, 6));
   EXPECT_EQ(21, lcm(7, 3));
   EXPECT_EQ(24, lcm(24, 24));
 }
 
-TEST(lcm_test, HandlesZeroInput) {
+TEST(lcm, HandlesZeroInput) {
   EXPECT_EQ(0, lcm(0, 5));
   EXPECT_EQ(0, lcm(5, 0));
   EXPECT_EQ(0, lcm(0, 0));

@@ -8,21 +8,24 @@
 #include <array>
 #include <functional>
 
-class segment_tree_test : public ::testing::Test {
+namespace {
+
+class segment_tree : public ::testing::Test {
  protected:
-  segment_tree_test() : stree(arr.begin(), arr.end()) {}
+  segment_tree() : stree(arr.begin(), arr.end()) {}
 
   std::array<int, 10> arr = {{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}};
   djp::segment_tree<int, std::plus<int>> stree;
 };
+}
 
-TEST_F(segment_tree_test, HandlesSum) {
+TEST_F(segment_tree, HandlesSum) {
   EXPECT_EQ(10, stree.accumulate(0, 4));
   EXPECT_EQ(34, stree.accumulate(6, 10));
   EXPECT_EQ(55, stree.accumulate(0, 10));
 }
 
-TEST_F(segment_tree_test, HandlesForeach) {
+TEST_F(segment_tree, HandlesForeach) {
   auto multiply_by_2 = [](int& elem) { elem *= 2; };
   stree.for_each(0, 5, multiply_by_2);
   EXPECT_EQ(2, stree.accumulate(0, 1));

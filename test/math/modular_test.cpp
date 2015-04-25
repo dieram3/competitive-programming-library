@@ -6,7 +6,7 @@
 #include <djp/math/modular.hpp>
 #include <gtest/gtest.h>
 
-TEST(modular_test, HandlesArithmeticOps) {
+TEST(modular, HandlesArithmeticOps) {
   using modular_t = djp::modular<unsigned, 7>;
 
   const modular_t a = 4;

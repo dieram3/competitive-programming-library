@@ -8,7 +8,7 @@
 #include <djp/graph/adjacency_list.hpp>
 #include <vector>
 
-TEST(dijkstra_shortest_paths_test, WorksWithAdjacencyList) {
+TEST(dijkstra_shortest_paths, WorksWithAdjacencyList) {
   djp::adjacency_list graph(6);
 
   graph.add_bidir_edge(0, 1, 7);

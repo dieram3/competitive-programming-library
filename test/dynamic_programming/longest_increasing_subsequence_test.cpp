@@ -11,12 +11,12 @@
 
 using djp::calc_lis_size;
 
-TEST(lis_test, HandlesSmallRanges) {
+TEST(calc_lis_size, HandlesSmallRanges) {
   const int seq[] = {0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
   EXPECT_EQ(6, djp::calc_lis_size(std::begin(seq), std::end(seq)));
 }
 
-TEST(lis_test, HandlesLongRanges) {
+TEST(calc_lis_size, HandlesLongRanges) {
   std::vector<int> vec(4096);
   std::iota(vec.begin(), vec.end(), 0);
   EXPECT_EQ(vec.size(), djp::calc_lis_size(vec.begin(), vec.end()));
