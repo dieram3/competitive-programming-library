@@ -8,35 +8,37 @@
 
 #include <string>
 #include <vector>
-#include <algorithm>
+#include <numeric>
 #include <cstddef>
+#include <djp/sorting/counting_sort.hpp>
 
 namespace djp {
 
 /// \brief Computes the suffix array.
-/// Complexity: O(n*log^2(n)) time, O(n) space
+/// Complexity: O(n*log(n)) time, O(n) space
 std::vector<size_t> make_suffix_array(const std::string& str) {
   if (str.empty()) return {};
 
-  const char* const S = str.c_str();
   const size_t N = str.size();
-  std::vector<size_t> sa(N), rank(N), tmp(N);
+  std::vector<size_t> sa(N), rank(2 * N), tmp(N, 1);
 
-  for (size_t i = 0; i != N; ++i) sa[i] = i, rank[i] = S[i];
+  for (size_t i = 0; i != N; ++i) sa[i] = i, rank[i] = str[i];
+  size_t num_keys = 256;
 
-  for (size_t gap = 1;; gap *= 2) {
-    auto suf_cmp = [&rank, gap, N](size_t i, size_t j) {
-      if (rank[i] != rank[j]) return rank[i] < rank[j];
-      i += gap;
-      j += gap;
-      return (i < N && j < N) ? rank[i] < rank[j] : i > j;
+  for (size_t gap = 1; tmp.back() != N; gap *= 2, num_keys = tmp.back() + 1) {
+    auto ms_rank = [&rank](size_t suffix) { return rank[suffix]; };
+    auto ls_rank = [gap, &rank](size_t suffix) { return rank[suffix + gap]; };
+    counting_sort(sa.begin(), sa.end(), num_keys, ls_rank);
+    counting_sort(sa.begin(), sa.end(), num_keys, ms_rank);
+
+    auto suff_ne = [=](size_t suff_a, size_t suff_b) {
+      return ms_rank(suff_a) != ms_rank(suff_b) ||
+             ls_rank(suff_a) != ls_rank(suff_b);
     };
 
-    std::sort(sa.begin(), sa.end(), suf_cmp);
-    for (size_t i = 0; i < N - 1; ++i)
-      tmp[i + 1] = tmp[i] + suf_cmp(sa[i], sa[i + 1]);
+    for (size_t i = 1; i != N; ++i) tmp[i] = suff_ne(sa[i], sa[i - 1]);
+    std::partial_sum(tmp.begin(), tmp.end(), tmp.begin());
     for (size_t i = 0; i < N; ++i) rank[sa[i]] = tmp[i];
-    if (tmp[N - 1] == N - 1) break;
   }
   return sa;
 }
@@ -46,15 +48,14 @@ std::vector<size_t> make_suffix_array(const std::string& str) {
 /// \note lcp[i] := longest common prefix between sa[i] and sa[i+1]
 std::vector<size_t> make_lcp_array(const std::string& str,
                                    const std::vector<size_t>& sa) {
-  const char* const S = str.c_str();
   const size_t N = sa.size();
   std::vector<size_t> rank(N), lcp(N - 1);
 
   for (size_t i = 0; i != N; ++i) rank[sa[i]] = i;
 
-  for (size_t i = 0, k = 0; i != N; ++i) {
+  for (size_t i = 0, k = 0; i < N; ++i) {
     if (rank[i] == N - 1) continue;
-    for (size_t j = sa[rank[i] + 1]; S[i + k] == S[j + k];) ++k;
+    for (size_t j = sa[rank[i] + 1]; str[i + k] == str[j + k];) ++k;
     lcp[rank[i]] = k;
     if (k) --k;
   }
