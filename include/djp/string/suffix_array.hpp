@@ -8,6 +8,7 @@
 
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <numeric>
 #include <cstddef>
 #include <djp/sorting/counting_sort.hpp>
@@ -17,28 +18,29 @@ namespace djp {
 /// \brief Computes the suffix array.
 /// Complexity: O(n*log(n)) time, O(n) space
 std::vector<size_t> make_suffix_array(const std::string& str) {
+  using suffix = size_t;
   if (str.empty()) return {};
 
   const size_t N = str.size();
-  std::vector<size_t> sa(N), rank(2 * N), tmp(N, 1);
+  std::vector<suffix> sa(N);
+  std::vector<size_t> rank(2 * N), tmp(N);
 
-  for (size_t i = 0; i != N; ++i) sa[i] = i, rank[i] = str[i];
-  size_t num_keys = 256;
+  std::iota(begin(sa), end(sa), suffix{0});
+  std::copy(begin(str), end(str), begin(rank));
+  size_t n_keys = 256;
 
-  for (size_t gap = 1; tmp.back() != N; gap *= 2, num_keys = tmp.back() + 1) {
-    auto ms_rank = [&rank](size_t suffix) { return rank[suffix]; };
-    auto ls_rank = [gap, &rank](size_t suffix) { return rank[suffix + gap]; };
-    counting_sort(sa.begin(), sa.end(), num_keys, ls_rank);
-    counting_sort(sa.begin(), sa.end(), num_keys, ms_rank);
+  for (size_t gap = 1; tmp.back() != N; gap *= 2, n_keys = tmp.back() + 1) {
+    const size_t* msr = rank.data();  // most significant rank
+    const size_t* lsr = msr + gap;    // least significant rank
+    counting_sort(begin(sa), end(sa), n_keys, [=](suffix s) { return lsr[s]; });
+    counting_sort(begin(sa), end(sa), n_keys, [=](suffix s) { return msr[s]; });
 
-    auto suff_ne = [=](size_t suff_a, size_t suff_b) {
-      return ms_rank(suff_a) != ms_rank(suff_b) ||
-             ls_rank(suff_a) != ls_rank(suff_b);
+    auto sne = [msr, lsr](suffix s1, suffix s2) {
+      return msr[s1] != msr[s2] || lsr[s1] != lsr[s2];  // suffix not equal
     };
-
-    for (size_t i = 1; i != N; ++i) tmp[i] = suff_ne(sa[i], sa[i - 1]);
-    std::partial_sum(tmp.begin(), tmp.end(), tmp.begin());
-    for (size_t i = 0; i < N; ++i) rank[sa[i]] = tmp[i];
+    tmp[0] = 1;
+    for (suffix i = 1; i < N; ++i) tmp[i] = tmp[i - 1] + sne(sa[i], sa[i - 1]);
+    for (suffix i = 0; i < N; ++i) rank[sa[i]] = tmp[i];
   }
   return sa;
 }
