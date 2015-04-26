@@ -19,27 +19,13 @@ namespace djp {
 /// being 'x' any object copied from the range [first, last)
 template <class RandomIt, class Key>
 void counting_sort(RandomIt first, RandomIt last, size_t num_keys, Key key) {
-  using value_type = typename std::iterator_traits<RandomIt>::value_type;
-
+  using T = typename std::iterator_traits<RandomIt>::value_type;
   std::vector<size_t> cnt(num_keys);
-  std::vector<value_type> elems(std::make_move_iterator(first),
-                                std::make_move_iterator(last));
-
-  // Count frequencies. Now cnt[k] == the frequency of elements with key 'k'.
-  for (const auto& x : elems) ++cnt[key(x)];
-
-  // Transform cnt. Now cnt[k] contains the index where the first (or next)
-  // element with key 'k' shall be placed.
-  size_t acc_freq = 0;
-  for (size_t k = 0; k != num_keys; ++k) {
-    size_t freq = cnt[k];
-    cnt[k] = acc_freq;
-    acc_freq += freq;
-  }
-  assert(acc_freq == elems.size());
-
-  // Sort the range preserving order of inputs with equal keys
-  for (const auto& x : elems) first[cnt[key(x)]++] = std::move(x);
+  std::vector<T> elems(first, last);  // Make move iterator if necessary.
+  for (const T& x : elems) ++cnt[key(x)];
+  for (size_t k = 0, acc_freq = 0, freq; k != num_keys; ++k)
+    freq = cnt[k], cnt[k] = acc_freq, acc_freq += freq;
+  for (const T& x : elems) first[cnt[key(x)]++] = std::move(x);
 }
 
 }  // namespace djp
