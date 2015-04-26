@@ -10,15 +10,16 @@
 #include <cassert>
 #include <type_traits>
 
+namespace djp {
 // \brief Converts the range [first, last) in a convex set.
 // Complexity: O(n) where n = last - first.
 // Returns: An iterator to the end of the convex set.
 template <class BidirectionalIt, class ClockRotation>
 BidirectionalIt make_convex_set(BidirectionalIt first, BidirectionalIt last,
-                                ClockRotation &&ccw) {
+                                ClockRotation &&cw) {
   auto end = first;
   for (auto i = first; i != last; ++i) {
-    while (end - first >= 2 && ccw(end[-2], end[-1], *i)) --end;
+    while (end - first >= 2 && cw(end[-2], end[-1], *i)) --end;
     *end++ = std::move(*i);
   }
   return --end;
@@ -30,15 +31,15 @@ BidirectionalIt make_convex_set(BidirectionalIt first, BidirectionalIt last,
 // Complexity: O(N) where N = last - first.
 template <class ForwardIt, class ClockRotation>
 std::vector<typename std::iterator_traits<ForwardIt>::value_type> convex_hull(
-    ForwardIt first, ForwardIt last, ClockRotation &&ccw) {
+    ForwardIt first, ForwardIt last, ClockRotation &&cw) {
   std::size_t n = std::distance(first, last);
   using point_t = typename std::iterator_traits<ForwardIt>::value_type;
 
   std::vector<point_t> hull(2 * n);
   std::copy(first, last, hull.begin());
-  auto middle = make_convex_set(hull.begin(), hull.begin() + n, ccw);
+  auto middle = make_convex_set(hull.begin(), hull.begin() + n, cw);
   std::reverse_copy(first, last, middle);
-  hull.erase(make_convex_set(middle, middle + n, ccw), hull.end());
+  hull.erase(make_convex_set(middle, middle + n, cw), hull.end());
   return hull;
 }
 
@@ -50,18 +51,18 @@ std::vector<typename std::iterator_traits<ForwardIt>::value_type> convex_hull(
 // elements inside the convex hull are placed in the range
 // [first, ch_begin) sorted lexicographically and all elements in the boundary
 // of the convex hull are placed in the range [ch_begin, last) sorted by
-// counterclockwise  order.
+// counterclockwise order.
 // Returns: ch_begin.
 template <class ForwardIt, class ClockRotation>
 ForwardIt convex_hull_partition(ForwardIt first, ForwardIt last,
-                                ClockRotation &&ccw) {
+                                ClockRotation &&cw) {
   using point_t = typename std::iterator_traits<ForwardIt>::value_type;
   assert(std::is_sorted(first, last));
 
   std::vector<point_t> lhull(first, last);
   std::vector<point_t> uhull(lhull.rbegin(), lhull.rend());
-  lhull.erase(make_convex_set(begin(lhull), end(lhull), ccw), end(lhull));
-  uhull.erase(make_convex_set(begin(uhull), end(uhull), ccw), end(uhull));
+  lhull.erase(make_convex_set(begin(lhull), end(lhull), cw), end(lhull));
+  uhull.erase(make_convex_set(begin(uhull), end(uhull), cw), end(uhull));
 
   std::vector<point_t> tmp;
   std::set_difference(first, last, begin(lhull), end(lhull),
@@ -73,6 +74,7 @@ ForwardIt convex_hull_partition(ForwardIt first, ForwardIt last,
 
   assert(ch_end == last);
   return ch_begin;
+}
 }
 
 #endif  // HEADER GUARD
