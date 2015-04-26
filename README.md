@@ -6,12 +6,12 @@ This repository will help us to get the victory
 
 How do I, as a developer, start working on the project?
 
-	1. _Pleace be ordained_
-	2. _Upload algorithms needed for code reuse_
+1. Please be ordered
+2. Upload algorithms needed for code reuse
 
 ## Changelog
 
-  * [2014-07-07] : [New feature](https://gitlab.com/Weyker/contest-utilities/tree/master) ! Creado el Repo.
+* [2014-07-07] : [New feature](https://gitlab.com/Weyker/contest-utilities/tree/master) ! Creado el Repo.
 
 ## Version
 
@@ -23,8 +23,8 @@ How do I, as a developer, start working on the project?
 
 ### Order is Victory
 
-- _for commit, please choose the corresponding directory for the file._
-- _comment the complexity of the algorithm._
+- For commit, please choose the corresponding directory for the file.
+- Comment the complexity of the algorithm.
 
 
 ## License

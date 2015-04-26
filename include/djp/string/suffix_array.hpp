@@ -55,11 +55,11 @@ std::vector<size_t> make_lcp_array(const std::string& str,
 
   for (size_t i = 0; i != N; ++i) rank[sa[i]] = i;
 
-  for (size_t i = 0, k = 0; i < N; ++i) {
+  for (size_t i = 0, len = 0; i < N; ++i) {
     if (rank[i] == N - 1) continue;
-    for (size_t j = sa[rank[i] + 1]; str[i + k] == str[j + k];) ++k;
-    lcp[rank[i]] = k;
-    if (k) --k;
+    for (size_t j = sa[rank[i] + 1]; str[i + len] == str[j + len];) ++len;
+    lcp[rank[i]] = len;
+    if (len) --len;
   }
   return lcp;
 }
