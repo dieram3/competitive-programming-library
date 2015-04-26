@@ -8,7 +8,6 @@
 
 #include <vector>
 #include <iterator>
-#include <cassert>
 
 namespace djp {
 
@@ -21,11 +20,11 @@ template <class RandomIt, class Key>
 void counting_sort(RandomIt first, RandomIt last, size_t num_keys, Key key) {
   using T = typename std::iterator_traits<RandomIt>::value_type;
   std::vector<size_t> cnt(num_keys);
-  std::vector<T> elems(first, last);  // Make move iterator if necessary.
+  std::vector<T> elems(first, last);
   for (const T& x : elems) ++cnt[key(x)];
   for (size_t k = 0, acc_freq = 0, freq; k != num_keys; ++k)
     freq = cnt[k], cnt[k] = acc_freq, acc_freq += freq;
-  for (const T& x : elems) first[cnt[key(x)]++] = std::move(x);
+  for (const T& x : elems) first[cnt[key(x)]++] = x;
 }
 
 }  // namespace djp
