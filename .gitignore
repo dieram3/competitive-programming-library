@@ -180,3 +180,5 @@ tramp
 bin/
 lib/
 bii/
+build/
+cmake/
