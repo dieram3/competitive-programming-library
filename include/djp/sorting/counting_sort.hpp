@@ -8,8 +8,22 @@
 
 #include <vector>
 #include <iterator>
+#include <numeric>
+#include <utility>
 
 namespace djp {
+
+template <class ForwardIt, class RandomIt, class Key>
+void counting_sort_copy(ForwardIt first, ForwardIt last, RandomIt d_first,
+                        size_t num_keys, Key key) {
+  using reference = typename std::iterator_traits<ForwardIt>::reference;
+  using diff_t = typename std::iterator_traits<RandomIt>::difference_type;
+  std::vector<diff_t> cnt(num_keys);
+  std::for_each(first, last, [&](reference x) { ++cnt[key(x)]; });
+  diff_t acc_freq = 0, freq;
+  for (auto& cnt_k : cnt) freq = cnt_k, cnt_k = acc_freq, acc_freq += freq;
+  std::for_each(first, last, [&](reference x) { d_first[cnt[key(x)]++] = x; });
+}
 
 /// \brief Stably sorts the range [first, last) according to a given key.
 /// Complexity: O(N + K) Where N == std::distance(first, last) and
@@ -19,12 +33,8 @@ namespace djp {
 template <class RandomIt, class Key>
 void counting_sort(RandomIt first, RandomIt last, size_t num_keys, Key key) {
   using T = typename std::iterator_traits<RandomIt>::value_type;
-  std::vector<size_t> cnt(num_keys);
   std::vector<T> elems(first, last);
-  for (const T& x : elems) ++cnt[key(x)];
-  for (size_t k = 0, acc_freq = 0, freq; k != num_keys; ++k)
-    freq = cnt[k], cnt[k] = acc_freq, acc_freq += freq;
-  for (const T& x : elems) first[cnt[key(x)]++] = x;
+  counting_sort_copy(elems.begin(), elems.end(), first, num_keys, key);
 }
 
 }  // namespace djp
