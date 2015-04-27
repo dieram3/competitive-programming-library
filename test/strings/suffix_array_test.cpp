@@ -1,4 +1,4 @@
-#include <djp/string/suffix_array.hpp>
+#include <djp/strings/suffix_array.hpp>
 #include <gtest/gtest.h>
 #include <iostream>
 
