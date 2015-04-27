@@ -4,12 +4,11 @@
 #include <string>
 #include <algorithm>
 #include <vector>
-#include <djp/strings/string_view.hpp>
 
 namespace djp {
 
-std::vector<string_view> split(const std::string& str, const std::string& sep) {
-  std::vector<string_view> tokens;
+std::vector<std::string> split(const std::string& str, const std::string& sep) {
+  std::vector<std::string> tokens;
   auto pos = str.find_first_not_of(sep);
   while (pos != std::string::npos) {
     auto end_pos = str.find_first_of(sep, pos + 1);

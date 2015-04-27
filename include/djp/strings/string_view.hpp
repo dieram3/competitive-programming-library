@@ -8,50 +8,55 @@
 
 namespace djp {
 
-class string_view {
-public:
-    using const_iterator = std::string::const_iterator;
-    using iterator = const_iterator;
-    using size_type = std::string::size_type;
-    static constexpr auto npos = std::string::npos;
+template <class CharT, class Traits = std::char_traits<char>>
+class basic_string_view {
+ public:
+  using value_type = CharT;
+  using const_pointer = const CharT*;
+  using const_reference = const CharT&;
+  using size_type = std::size_t;
+  static constexpr size_type npos = size_type(-1);
 
-    string_view(iterator first, iterator last) : begin_(first), end_(last) {}
+  basic_string_view(const CharT* s, size_type count) : data_{s}, len_{count} {}
 
-    string_view(const std::string& str) : string_view(str.begin(), str.end()) {}
+  bool empty() const { return len_ == 0; }
+  size_type size() const { return len_; }
+  const_pointer data() const { return data_; }
+  const_pointer begin() const { return data(); }
+  const_pointer end() const { return data() + size(); }
+  const_reference operator[](size_type i) const { return data_[i]; }
 
-    string_view(const std::string& str, size_type pos, size_type count = npos) {
-        assert(pos <= str.size());
-        count = std::min(count, str.size() - pos);
-        begin_ = str.begin() + pos;
-        end_ = begin_ + count;
-    }
+  basic_string_view substr(size_type pos = 0, size_type count = npos) const {
+    assert(pos < size());
+    count = std::min(count, size() - pos);
+    return basic_string_view(data() + pos, count);
+  }
 
-    bool empty() const { return begin_ == end_; }
-    size_type size() const { return end_ - begin_; }
-    const char* data() const { return &*begin_; }
-    iterator begin() const { return begin_; }
-    iterator end() const { return end_; }
-    char operator[](size_type i) const { return begin_[i]; }
+  int compare(basic_string_view v) const {
+    auto rlen = std::min(size(), v.size());
+    int cmp = Traits::compare(data(), v.data(), rlen);
+    if (cmp != 0) return cmp;
+    if (size() < v.size()) return -1;
+    if (size() > v.size()) return 1;
+    return 0;
+  }
 
-private:
-    iterator begin_;
-    iterator end_;
+  friend bool operator<(basic_string_view lhs, basic_string_view rhs) {
+    return lhs.compare(rhs) < 0;
+  }
+
+  friend bool operator==(basic_string_view lhs, basic_string_view rhs) {
+    return lhs.compare(rhs) == 0;
+  }
+
+ private:
+  const_pointer data_;
+  size_type len_;
 };
 
-bool operator<(const string_view& lhs, const string_view& rhs) {
-    return std::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
-}
+using string_view = basic_string_view<char>;
+using wstring_view = basic_string_view<wchar_t>;
 
-bool operator==(const string_view& lhs, const string_view& rhs) {
-    return lhs.size() == rhs.size() &&
-            std::equal(lhs.begin(), lhs.end(), rhs.begin());
-}
+}  // namespace djp
 
-std::ostream& operator<<(std::ostream& output, const string_view& sv) {
-    return output.write(sv.data(), sv.size());
-}
-
-
-} // namespace djp
-
-#endif // Header guard
+#endif  // Header guard
