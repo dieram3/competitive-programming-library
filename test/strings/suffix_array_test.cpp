@@ -1,6 +1,12 @@
 #include <djp/strings/suffix_array.hpp>
 #include <gtest/gtest.h>
-#include <iostream>
+#include <random>
+#include <algorithm>
+#include <functional>
+
+TEST(make_suffix_array, WorksOnEmptyStrings) {
+  EXPECT_TRUE(djp::make_suffix_array("").empty());
+}
 
 TEST(make_suffix_array, WorksOnSmallStrings) {
   std::string str = "banana";
@@ -8,22 +14,43 @@ TEST(make_suffix_array, WorksOnSmallStrings) {
   EXPECT_EQ(sa, djp::make_suffix_array(str));
 }
 
-TEST(make_suffix_array, WorksOnLongStrings) {
+TEST(make_suffix_array, WorksOnRepeatedStrings) {
   std::string str(10000, 'a');
   std::vector<size_t> sa(str.size());
   std::iota(sa.rbegin(), sa.rend(), 0);
   EXPECT_EQ(sa, djp::make_suffix_array(str));
 }
 
-TEST(make_suffix_array, WorksWithTheAlphabet) {
-  std::string str(52, 0);
-  auto middle = str.begin() + 26;
-  std::iota(str.begin(), middle, 'A');
-  std::iota(middle, str.end(), 'a');
-
+TEST(make_suffix_array, WorksWith256chars) {
+  std::string str(256, 0);
+  std::iota(str.begin(), str.end(), 0);
   std::vector<size_t> sa(str.size());
   std::iota(sa.begin(), sa.end(), size_t{});
-  EXPECT_EQ(djp::make_suffix_array(str), sa);
+  EXPECT_EQ(sa, djp::make_suffix_array(str));
+}
+
+TEST(make_suffix_array, WorksWithStringFilledWithNull) {
+  std::string str(100, '\0');
+  std::vector<size_t> sa(str.size());
+  std::iota(sa.rbegin(), sa.rend(), size_t{});
+  EXPECT_EQ(sa, djp::make_suffix_array(str));
+}
+
+TEST(make_suffix_array, WorksWithRandomBigStrings) {
+  std::string str(10000, '\0');
+  std::mt19937 gen;
+  std::uniform_int_distribution<unsigned char> dist(0, 255);
+  std::generate(str.begin(), str.end(), std::bind(dist, gen));
+
+  auto suffix_less = [&str](size_t s1, size_t s2) {
+    constexpr auto npos = std::string::npos;
+    return str.compare(s1, npos, str, s2, npos) < 0;
+  };
+
+  const auto sa = djp::make_suffix_array(str);
+
+  // It relies on uniform distribution, so different suffixes mismatch quickly.
+  ASSERT_TRUE(std::is_sorted(sa.begin(), sa.end(), suffix_less));
 }
 
 TEST(make_lcp_array, WorksOnSmallStrings) {
