@@ -12,10 +12,11 @@
 std::vector<size_t> z_function(const std::string &str) {
   size_t n = str.length();
   std::vector<size_t> z(n);
+
   for (size_t i = 1, l = 0, r = 0; i < n; ++i) {
-    if (i <= r) z[i] = std::min(r - i + 1, z[i - l]);
+    if (i < r) z[i] = std::min(r - i, z[i - l]);
     while (i + z[i] < n && str[z[i]] == str[i + z[i]]) ++z[i];
-    if (i + z[i] - 1 > r) l = i, r = i + z[i] - 1;
+    if (i + z[i] > r) l = i, r = i + z[i];
   }
   return std::move(z);
 }
