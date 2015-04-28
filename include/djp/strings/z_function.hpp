@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 
+namespace djp {
 /// \brief Computes the Z-function of str.
 /// Each element of the Z-function is described like this: the element z[i] is
 /// the longest common prefix between str and str.substr(i).
@@ -19,6 +20,7 @@ std::vector<size_t> z_function(const std::string &str) {
     if (i + z[i] > r) l = i, r = i + z[i];
   }
   return std::move(z);
+}
 }
 
 #endif  // HEADER GUARD
