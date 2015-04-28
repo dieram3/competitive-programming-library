@@ -20,7 +20,7 @@ std::vector<size_t> z_function(const std::string &str) {
     while (i + z[i] < n && str[z[i]] == str[i + z[i]]) ++z[i];
     if (i + z[i] > r) l = i, r = i + z[i];
   }
-  return std::move(z);
+  return z;
 }
 }
 
