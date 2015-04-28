@@ -14,6 +14,7 @@ std::vector<size_t> z_function(const std::string &str) {
   size_t n = str.length();
   std::vector<size_t> z(n);
 
+  z[0] = n;  // since str and str.substr(0) are equal
   for (size_t i = 1, l = 0, r = 0; i < n; ++i) {
     if (i < r) z[i] = std::min(r - i, z[i - l]);
     while (i + z[i] < n && str[z[i]] == str[i + z[i]]) ++z[i];
