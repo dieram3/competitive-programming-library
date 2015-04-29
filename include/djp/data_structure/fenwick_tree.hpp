@@ -76,6 +76,6 @@ class prefix_adder {
   std::vector<T> elems_;
 };
 
-} // namespace djp
+}  // namespace djp
 
-#endif // HEADER GUARD
+#endif  // HEADER GUARD
