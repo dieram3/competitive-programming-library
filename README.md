@@ -1,7 +1,7 @@
 # Competitive Programming Utilities
 
 ## Introduction
-CP-utils is a recopilation of typical algorithms and data structures used in competitive programming contests. It is intended to be used mainly in online contests, so you can copy and paste the source code. However, by the fact that in some contests you have to type everything, the source code is maintained short (but not so short, because generallity and ease of use is another target).
+CP-utils is a library that contains implementations of typical algorithms and data structures used in programming contests. It is intended to be used mainly in online contests, where you can copy and paste code easily. However, by the fact that in some programming contests you have to type everything from scratch, the source code is maintained short (but not so short because generality and ease of use is another important target of the library).
 
 ## Modules
 
@@ -16,47 +16,52 @@ Currently CP-utils has support for the following areas:
 - Sorting
 - Strings
 
-Also has a utility module which is used by the other modules.
+It also has a module called *utility* which is used by the other modules.
 
 ## Installation
 
-If you want download this repo, run the test and/or compile the examples, do the following:
+If you want to download CP-utils for running the tests and/or compiling the examples, do the following:
 
-First you need [biicode](https://www.biicode.com) installed on your system with [C++ tools](http://docs.biicode.com/c++/installation.html#install-c-c-tools) installed.
+First, you need [biicode](https://www.biicode.com) installed on your system 
+including its [tools for C/C++](http://docs.biicode.com/c++/installation.html#install-c-c-tools).
 
-Then run the following commands on the root of the project:
-```
+Then, run the following commands on the root directory of the project:
+```Shell
 bii init -L
 bii find
 bii build
 ```
 
-This will generate a bin folder which will contain all the generated executables, including the test.
+The generated executable files will be put on a sub-directory of the root called *bin*.
 
 ## Compatibility
 
-This project need a compliant C++11 compiler and library.
+CP-utils needs a compliant C++11 compiler.
 
-At this moment, this has been tested with the following compilers:
-- clang 3.5 on OS X 64 bit
+It has been tested with the following compilers:
+- clang 3.5 on MacOS X 64-bit
 
-## A simple example
+## Dependencies
 
-The following code snippet shows a simple use of CP-utils. This uses a suffix array to show the suffixes of 'mississippi' sorted lexicographically.
+CP-utils only depends on the Standard C++ Library.
+
+## Simple usage example
+
+The following code snippet shows how to generate a suffix array and using it.
 
 ```C++
 #include <iostream>
 #include <string>
-#include <djp/strings/suffix_array.hpp>  // for djp::suffix_array
+#include <djp/strings/suffix_array.hpp>  // for djp::make_suffix_array
 
 int main() {
   // We have a text
   std::string text = "mississippi";
 
-  // We compute the suffix array
+  // We generate the suffix array
   auto sa = djp::make_suffix_array(text);
 
-  // And then, we show the suffixes sorted lexicographically.
+  // And then, we use it to show the suffixes sorted lexicographically.
   for (size_t suffix : sa) std::cout << text.substr(suffix) << '\n';
 }
 
@@ -64,4 +69,5 @@ int main() {
 
 ## How to contribute
 
-You can use issues and pull requests for add, fix or improve source code. The conditions is, maintain the code legible and global variable independent.
+You can submit a pull request to improve the library. The code must be well documented, easily legible and independent of global variables. Use Issues for feedback. Thanks!
+
