@@ -47,19 +47,19 @@ The following code snippet shows a simple use of CP-utils. This uses a suffix ar
 ```C++
 #include <iostream>
 #include <string>
-#include <djp/strings/suffix_array.hpp>
+#include <djp/strings/suffix_array.hpp>  // for djp::suffix_array
 
 int main() {
   // We have a text
   std::string text = "mississippi";
-  std::cout << "The suffixes of '" << text
-            << "' sorted lexicographically are:\n";
+
   // We compute the suffix array
   auto sa = djp::make_suffix_array(text);
 
   // And then, we show the suffixes sorted lexicographically.
   for (size_t suffix : sa) std::cout << text.substr(suffix) << '\n';
 }
+
 ```
 
 ## How to contribute
