@@ -1,4 +1,4 @@
-# Competitive Programming Utilities (CP-utils)
+# Competitive Programming Utilities
 
 ## Introduction
 CP-utils is a recopilation of typical algorithms and data structures used in competitive programming contests. It is intended to be used mainly in online contests, so you can copy and paste the source code. However, by the fact that in some contests you have to type everything, the source code is maintained short (but not so short, because generallity and ease of use is another target).
