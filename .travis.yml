@@ -10,11 +10,6 @@ env:
   - BUILD_TYPE=Debug
   - BUILD_TYPE=Release  
 
-matrix:
-  include:
-    - env: CLANG_VERSION=3.4 BUILD_TYPE=Debug CPP=11 ASAN=On LIBCXX=On
-      os: osx
-
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
