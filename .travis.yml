@@ -1,0 +1,23 @@
+language: cpp
+
+branches:
+  only:
+    - master
+
+compiler:
+  - clang
+  - gcc
+
+env:
+  - BUILD_TYPE=Debug
+  - BUILD_TYPE=Release  
+
+install:
+  - wget http://apt.biicode.com/install.sh && chmod +x install.sh && ./install.sh #Install biicode
+  - bii setup:cpp #Install biicode required C/C++ tools (GCC, cmake, etc)
+
+script:
+  - bii find --update 
+  - bii configure -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC -DCMAKE_BUILD_TYPE=$BUILD_TYPE
+  - bii build
+  - ./bin/dieram3_contest-utilities_test_main #Run tests
