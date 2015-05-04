@@ -4,15 +4,24 @@ branches:
   only:
     - master
 
-compiler:
-  - clang
-  - gcc
+compiler: gcc
 
 env:
   - BUILD_TYPE=Debug
   - BUILD_TYPE=Release  
 
+matrix:
+  include:
+    - env: CLANG_VERSION=3.4 BUILD_TYPE=Debug CPP=11 ASAN=On LIBCXX=On
+      os: osx
+
+before_install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+
 install:
+  - sudo apt-get install -qq gcc-4.9 g++-4.9 
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
   - wget http://apt.biicode.com/install.sh && chmod +x install.sh && sudo ./install.sh #Install biicode
   - bii setup:cpp
 
