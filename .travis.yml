@@ -13,8 +13,8 @@ env:
   - BUILD_TYPE=Release  
 
 install:
-  - wget http://apt.biicode.com/install.sh && chmod +x install.sh && ./install.sh #Install biicode
-  - bii setup:cpp #Install biicode required C/C++ tools (GCC, cmake, etc)
+  - wget http://apt.biicode.com/install.sh && chmod +x install.sh && sudo ./install.sh #Install biicode
+  - bii setup:cpp
 
 script:
   - bii find --update 
