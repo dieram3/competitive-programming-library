@@ -17,6 +17,7 @@ install:
   - bii setup:cpp
 
 script:
+  - bii init -L
   - bii find --update 
   - bii configure -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - bii build
