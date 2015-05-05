@@ -7,6 +7,7 @@
 #define DJP_DATA_STRUCTURE_FENWICK_TREE_HPP
 
 #include <vector>
+#include <cstddef>
 
 namespace djp {
 

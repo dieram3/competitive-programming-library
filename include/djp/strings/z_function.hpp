@@ -1,8 +1,10 @@
 #ifndef DJP_STRING_Z_FUNCTION_HPP
 #define DJP_STRING_Z_FUNCTION_HPP
 
+#include <algorithm>
 #include <vector>
 #include <string>
+#include <cstddef>
 
 namespace djp {
 /// \brief Computes the Z-function of str.

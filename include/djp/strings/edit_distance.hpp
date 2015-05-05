@@ -4,6 +4,7 @@
 #include <djp/utility/matrix.hpp>
 #include <algorithm>
 #include <iterator>
+#include <cstddef>
 
 /// \todo analyze: damerau_levenshtein_distance
 /// \todo design: longest_common_subsequence

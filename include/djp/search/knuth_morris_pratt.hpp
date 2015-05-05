@@ -11,13 +11,13 @@
 #define DJP_SEARCH_KNUTH_MORRIS_PRATT_HPP
 
 #include <vector>
-#include <iterator>
+#include <cstddef>
 
 namespace djp {
 
 template <class RandomIt1>
 class kmp_searcher {
-  using diff_t = ptrdiff_t;
+  using diff_t = std::ptrdiff_t;
   RandomIt1 pattern_;  // Iterator to the first element of the pattern.
   std::vector<diff_t> mismatch_;  // Table to skip back on mismatch
 

@@ -8,6 +8,9 @@
 
 #include <vector>
 #include <queue>
+#include <utility>
+#include <functional>
+#include <cstddef>
 
 namespace djp {
 

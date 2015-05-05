@@ -2,6 +2,7 @@
 #define DJP_UTILITY_ITERATOR_RANGE_HPP
 
 #include <iterator>
+#include <cstddef>
 
 namespace djp {
 

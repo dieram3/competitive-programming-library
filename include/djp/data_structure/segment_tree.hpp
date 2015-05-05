@@ -9,6 +9,7 @@
 #include <vector>
 #include <utility>
 #include <cassert>
+#include <cstddef>
 
 namespace djp {
 
