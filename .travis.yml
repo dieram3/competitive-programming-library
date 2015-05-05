@@ -25,4 +25,4 @@ script:
   - bii find --update 
   - bii configure -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC -DCMAKE_BUILD_TYPE=$BUILD_TYPE
   - bii build
-  - ./bin/dieram3_contest-utilities_test_main #Run tests
+  - ./bin/user_CP-utils_test_main #Run tests
