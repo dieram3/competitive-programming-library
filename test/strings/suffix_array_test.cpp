@@ -7,7 +7,10 @@
 #include <gtest/gtest.h>
 #include <random>
 #include <algorithm>
+#include <numeric>
 #include <functional>
+#include <string>
+#include <vector>
 
 TEST(make_suffix_array, WorksOnEmptyStrings) {
   EXPECT_TRUE(djp::make_suffix_array("").empty());

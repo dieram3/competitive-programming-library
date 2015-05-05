@@ -5,6 +5,9 @@
 
 #include <djp/combinatorics/basics.hpp>
 #include <gtest/gtest.h>
+#include <vector>
+#include <algorithm>
+#include <functional>
 #include <cstdint>
 
 TEST(nth_permutation, WorksOnAllPermutations) {

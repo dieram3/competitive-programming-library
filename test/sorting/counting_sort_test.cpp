@@ -5,11 +5,12 @@
 
 #include <djp/sorting/counting_sort.hpp>
 #include <gtest/gtest.h>
-#include <iterator>
 #include <type_traits>
 #include <random>
 #include <algorithm>
+#include <iterator>
 #include <functional>
+#include <limits>
 
 namespace {
 

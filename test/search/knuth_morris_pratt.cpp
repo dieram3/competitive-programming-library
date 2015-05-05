@@ -7,8 +7,9 @@
 #include <gtest/gtest.h>
 #include <string>
 #include <random>
-#include <functional>
 #include <algorithm>
+#include <iterator>
+#include <functional>
 
 TEST(kmp_searcher, SearchsQuickly) {
   std::string pattern(1000, 'a');

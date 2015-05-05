@@ -6,6 +6,9 @@
 #include <djp/geometry/convex_hull.hpp>
 #include <gtest/gtest.h>
 #include <tuple>
+#include <algorithm>
+#include <iterator>
+#include <cstdint>
 
 namespace {
 
