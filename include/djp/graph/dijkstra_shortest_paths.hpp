@@ -10,13 +10,17 @@
 #include <queue>
 #include <utility>
 #include <functional>
+#include <limits>
 #include <cstddef>
+#include <cassert>
 
 namespace djp {
 
+namespace v1 {
+
 template <class Graph>
-std::vector<size_t> dijkstra_shortest_paths(const Graph& g, size_t source) {
-  using pq_value_t = std::pair<size_t, size_t>;  // (dist[v], v)
+std::vector<size_t> dijkstra_shortest_paths(const Graph &g, size_t source) {
+  using pq_value_t = std::pair<size_t, size_t>; // (dist[v], v)
   using pq_type = std::priority_queue<void, std::vector<pq_value_t>,
                                       std::greater<pq_value_t>>;
 
@@ -42,6 +46,51 @@ std::vector<size_t> dijkstra_shortest_paths(const Graph& g, size_t source) {
   return dist;
 }
 
-}  // namespace djp
+} // namespace v1
 
-#endif  // Header guard
+// v2 outperforms v1 especially if the graph is dense
+inline namespace v2 {
+
+/// \brief Solves the Single-Source shortest paths problem
+/// \returns A vector containing the shortest distances to each vertex.
+/// Complexity: O(V*log(V) + E)
+/// where V == g.num_vertices() && E == g.num_edges()
+template <class Graph, class Distance = std::size_t>
+std::vector<Distance> dijkstra_shortest_paths(const Graph &g, size_t source) {
+
+  using dist_t = Distance;
+  struct pq_elem {
+    dist_t dist;
+    size_t vertex;
+    bool operator<(const pq_elem &that) const { return dist > that.dist; }
+  };
+  constexpr dist_t inf = std::numeric_limits<dist_t>::max();
+
+  std::vector<bool> visited(g.num_vertices(), false);
+  std::vector<dist_t> dist(g.num_vertices(), inf);
+
+  std::priority_queue<pq_elem> pq;
+  pq.push({dist[source] = 0, source});
+
+  while (!pq.empty()) {
+    const size_t u = pq.top().vertex;
+    pq.pop();
+    if (visited[u])
+      continue;
+
+    visited[u] = true;
+    for (auto edge : g.out_edges(u)) {
+      const size_t v = edge->target;
+      const dist_t alt = dist[u] + edge->weight; // alternative
+      if (alt < dist[v])
+        pq.push({dist[v] = alt, v});
+    }
+  }
+  return dist;
+}
+
+} // namespace v2
+
+} // namespace djp
+
+#endif // Header guard

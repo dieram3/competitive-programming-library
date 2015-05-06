@@ -6,13 +6,13 @@
 #ifndef DJP_GRAPH_ADJACENCY_LIST_HPP
 #define DJP_GRAPH_ADJACENCY_LIST_HPP
 
-#include <vector>  // for std::vector
-#include <list>    // for std::list
+#include <vector> // for std::vector
+#include <list>   // for std::list
 
 namespace djp {
 
 class adjacency_list {
- public:
+public:
   using size_type = std::size_t;
 
   struct edge {
@@ -43,9 +43,10 @@ class adjacency_list {
     add_edge(v2, v1, weight);
   }
 
-  size_type num_vertices() const noexcept { return vertices.size(); }
+  size_type num_vertices() const { return vertices.size(); }
+  size_type num_edges() const { return edges.size(); }
 
-  const out_edges_list& out_edges(size_type vertex_id) const {
+  const out_edges_list &out_edges(size_type vertex_id) const {
     return vertices[vertex_id].out_edges;
   }
 
@@ -55,11 +56,11 @@ class adjacency_list {
 
   static size_type null_vertex() noexcept { return -1; }
 
- private:
+private:
   vertex_list vertices;
   edge_list edges;
 };
 
-}  // namespace djp
+} // namespace djp
 
-#endif  // Header guard
+#endif // Header guard
