@@ -51,7 +51,7 @@ std::vector<size_t> dijkstra_shortest_paths(const Graph &g, size_t source) {
 // v2 outperforms v1 especially if the graph is dense
 inline namespace v2 {
 
-/// \brief Solves the Single-Source shortest paths problem
+/// \brief Solves the Single-Source Shortest Paths problem.
 /// \returns A vector containing the shortest distances to each vertex.
 /// Complexity: O(V*log(V) + E)
 /// where V == g.num_vertices() && E == g.num_edges()

@@ -40,7 +40,8 @@ The generated executable files will be put on a sub-directory of the root called
 CP-utils needs a compliant C++11 compiler.
 
 It has been tested with the following compilers:
-- clang 3.5 on MacOS X 64-bit
+- clang 3.5 on OS X
+- gcc 4.9 on Linux
 
 ## Dependencies
 

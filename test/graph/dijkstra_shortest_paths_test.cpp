@@ -15,7 +15,7 @@
 namespace {
 
 // Complexity: O(V*avg_degree)
-// It can generate parallel edges.
+// It might generate parallel edges.
 // You can visualize the generated graph on http://g.ivank.net/
 
 djp::adjacency_list make_random_graph(size_t num_vertices,
