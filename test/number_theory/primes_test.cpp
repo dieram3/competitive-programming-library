@@ -4,6 +4,8 @@
 
 TEST(sieve_of_eratosthenes, FindPrimes) {
   const auto is_prime = djp::sieve_of_eratosthenes(7919 + 1);
+  EXPECT_FALSE(is_prime[0]);
+  EXPECT_FALSE(is_prime[1]);
   EXPECT_TRUE(is_prime[2]);
   EXPECT_TRUE(is_prime[3]);
   EXPECT_FALSE(is_prime[4]);
@@ -11,6 +13,6 @@ TEST(sieve_of_eratosthenes, FindPrimes) {
   EXPECT_TRUE(is_prime[7919]);
   EXPECT_FALSE(is_prime[7917]);
 
-  auto num_primes = std::count(is_prime.begin() + 2, is_prime.end(), true);
+  auto num_primes = std::count(is_prime.begin(), is_prime.end(), true);
   EXPECT_EQ(1000, num_primes);
 }
