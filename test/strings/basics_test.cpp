@@ -4,3 +4,26 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <djp/strings/basics.hpp>
+#include <gtest/gtest.h>
+
+TEST(split, SplitsWell) {
+  {
+    std::string str("abc,abc,abcd");
+    const auto tokens = djp::split(str, ",");
+    ASSERT_EQ(3, tokens.size());
+    EXPECT_EQ("abc", tokens[0]);
+    EXPECT_EQ("abc", tokens[1]);
+    EXPECT_EQ("abcd", tokens[2]);
+  }
+  {
+    std::string str(",abc,bac, cba; gaga, blah, da;;");
+    const auto tokens = djp::split(str, " ,;");
+    ASSERT_EQ(6, tokens.size());
+    EXPECT_EQ("abc", tokens[0]);
+    EXPECT_EQ("bac", tokens[1]);
+    EXPECT_EQ("cba", tokens[2]);
+    EXPECT_EQ("gaga", tokens[3]);
+    EXPECT_EQ("blah", tokens[4]);
+    EXPECT_EQ("da", tokens[5]);
+  }
+}
