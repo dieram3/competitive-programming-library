@@ -12,6 +12,7 @@ namespace djp {
 /// A token is defined as a sequence of consecutive characters that are not
 /// contained in \p sep.
 /// Complexity: O(N*M) where N == str.size() && M = sep.size()
+/// \note Be aware that this function could generate allocation overhead.
 std::vector<std::string> split(const std::string &str, const std::string &sep) {
   std::vector<std::string> tokens;
   auto pos = str.find_first_not_of(sep);

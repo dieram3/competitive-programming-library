@@ -14,15 +14,20 @@
 
 namespace {
 
+struct edge_data {
+  unsigned long weight;
+};
+
+using graph_t = djp::adjacency_list<edge_data>;
+
 // Complexity: O(V*avg_degree)
 // It might generate parallel edges.
 // You can visualize the generated graph on http://g.ivank.net/
 
-djp::adjacency_list make_random_graph(size_t num_vertices,
-                                      double out_degree_mean) {
+graph_t make_random_graph(std::size_t num_vertices, double out_degree_mean) {
   assert(num_vertices != 0);
 
-  djp::adjacency_list graph(num_vertices);
+  graph_t graph(num_vertices);
 
   std::random_device rd;
   std::default_random_engine gen1(rd());
@@ -40,7 +45,7 @@ djp::adjacency_list make_random_graph(size_t num_vertices,
   for (size_t src = 0; src < num_vertices; ++src) {
     size_t degree = gen_degree();
     while (degree--)
-      graph.add_edge(src, gen_dst(), gen_weight());
+      graph.add_edge(src, gen_dst()).weight = gen_weight();
   }
 
   return graph;
@@ -49,17 +54,17 @@ djp::adjacency_list make_random_graph(size_t num_vertices,
 } // Anonymous namesapce
 
 TEST(dijkstra_shortest_paths, WorksWithAdjacencyList) {
-  djp::adjacency_list graph(6);
+  graph_t graph(6);
 
-  graph.add_bidir_edge(0, 1, 7);
-  graph.add_bidir_edge(0, 2, 9);
-  graph.add_bidir_edge(0, 5, 14);
-  graph.add_bidir_edge(1, 2, 10);
-  graph.add_bidir_edge(1, 3, 15);
-  graph.add_bidir_edge(2, 3, 11);
-  graph.add_bidir_edge(2, 5, 2);
-  graph.add_bidir_edge(3, 4, 6);
-  graph.add_bidir_edge(4, 5, 9);
+  graph.add_bidir_edge(0, 1, edge_data{7});
+  graph.add_bidir_edge(0, 2, edge_data{9});
+  graph.add_bidir_edge(0, 5, edge_data{14});
+  graph.add_bidir_edge(1, 2, edge_data{10});
+  graph.add_bidir_edge(1, 3, edge_data{15});
+  graph.add_bidir_edge(2, 3, edge_data{11});
+  graph.add_bidir_edge(2, 5, edge_data{2});
+  graph.add_bidir_edge(3, 4, edge_data{6});
+  graph.add_bidir_edge(4, 5, edge_data{9});
 
   auto spaths = djp::dijkstra_shortest_paths(graph, 0);
 
