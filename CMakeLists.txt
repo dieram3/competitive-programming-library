@@ -1,10 +1,17 @@
-enable_testing()
+cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
+project("Quotient filter" CXX)
+
+if (NOT CMAKE_BUILD_TYPE)
+  message(STATUS "No build type selected, default to Debug")
+  set(CMAKE_BUILD_TYPE "Debug")
+endif()
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 include_directories("include")
+add_subdirectory("utils")
 
-file(GLOB_RECURSE TEST_SOURCES test/*.cpp)
-list(REMOVE_ITEM TEST_SOURCES "test/main")
-list(APPEND BII_test_main_SRC ${TEST_SOURCES})
-
-ADD_BII_TARGETS()
-
-TARGET_COMPILE_OPTIONS(${BII_BLOCK_TARGET} INTERFACE "-std=c++11")
+enable_testing()
+add_subdirectory("test")
