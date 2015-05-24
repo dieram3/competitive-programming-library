@@ -17,12 +17,15 @@ before_install:
 install:
   - sudo apt-get install -qq gcc-4.9 g++-4.9 
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 90
-  - wget http://apt.biicode.com/install.sh && chmod +x install.sh && sudo ./install.sh #Install biicode
-  - bii setup:cpp
+
+before_script:
+  - cmake --version
+  - $CXX --version
+  - $CC --version  
 
 script:
-  - bii init -L
-  - bii find --update 
-  - bii configure -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC -DCMAKE_BUILD_TYPE=$BUILD_TYPE
-  - bii build
-  - ./bin/user_CP-utils_test_main #Run tests
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
+  - make
+  - make test 
