@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.1.3 FATAL_ERROR)
 project("CP-utils" CXX C) # C is needed for FindThreads
 
 if (NOT CMAKE_BUILD_TYPE)
