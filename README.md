@@ -23,17 +23,16 @@ It also has a module called *utility* which is used by the other modules.
 
 If you want to download CP-utils for running the tests and/or compiling the examples, do the following:
 
-First, you need [biicode](https://www.biicode.com) installed on your system 
-including its [tools for C/C++](http://docs.biicode.com/c++/installation.html#install-c-c-tools).
+First, you need [cmake](http://www.cmake.org) installed on your system.
 
 Then, run the following commands on the root directory of the project:
 ```Shell
-bii init -L
-bii find
-bii build
+mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make && make test
 ```
 
-The generated executable files will be put on a sub-directory of the root called *bin*.
+The generated executable files will be put on a sub-directory of the build folder called *bin*.
 
 ## Compatibility
 
