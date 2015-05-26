@@ -3,6 +3,7 @@ function(add_unittest test_name)
   set(target_name "${test_name}_test")	
   add_executable(${target_name} ${ARGN})
   target_link_libraries(${target_name} CP_utils gtest_main gtest)
+  set_property(TARGET ${target_name} PROPERTY CXX_EXTENSIONS OFF)
   add_test(NAME ${test_name} COMMAND ${target_name})
 endfunction()
 

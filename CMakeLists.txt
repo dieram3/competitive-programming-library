@@ -32,7 +32,8 @@ target_include_directories(CP_utils INTERFACE "include")
 target_compile_features(CP_utils INTERFACE
 	cxx_auto_type
 	cxx_lambdas
-	cxx_nullptr) 
+	cxx_nullptr
+	) 
 
 # ---------------------------------------
 # Add the unit tests  
