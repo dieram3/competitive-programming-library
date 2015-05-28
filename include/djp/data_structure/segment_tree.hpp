@@ -13,14 +13,13 @@
 
 namespace djp {
 
-template <class T, class BinaryOp>
-class segment_tree {
- public:
+template <class T, class BinaryOp> class segment_tree {
+public:
   using value_type = T;
   using size_type = std::size_t;
   using pos_type = std::size_t;
 
- private:
+private:
   using range_t = std::pair<pos_type, pos_type>;
 
   struct node {
@@ -37,16 +36,18 @@ class segment_tree {
     size_type tree_pos;
   };
 
- public:
+public:
+  /// Default constructor
+  segment_tree() : size_{0}, op_{}, tree_{} {}
+
   /// Constructs the segment tree with the elements in the range [first, last)
   /// using the associative binary operator op.
   /// Complexity: 2*(last - first) applications of op.
   template <class ForwardIt>
   segment_tree(ForwardIt first, ForwardIt last, BinaryOp op = {})
-      : size_(std::distance(first, last)),
-        op_(op),
+      : size_(std::distance(first, last)), op_(op),
         tree_(optimal_tree_size(size_)) {
-    auto take_element = [first](T& value) mutable { value = *first++; };
+    auto take_element = [first](T &value) mutable { value = *first++; };
     for_each(0, size(), take_element);
   }
 
@@ -69,26 +70,31 @@ class segment_tree {
   /// Complexity: Constant
   size_type size() const { return size_; }
 
- private:
+private:
   node root() const { return {0, size(), 0}; }
 
-  T& elem(const node& nd) { return tree_[nd.tree_pos]; }
+  T &elem(const node &nd) { return tree_[nd.tree_pos]; }
 
-  const T& elem(const node& nd) const { return tree_[nd.tree_pos]; }
+  const T &elem(const node &nd) const { return tree_[nd.tree_pos]; }
 
   static size_type optimal_tree_size(size_type sz) {
-    if (!sz) return 0;
+    if (!sz)
+      return 0;
     size_type res = 2;
-    while (sz != 1) sz = sz / 2 + sz % 2, res *= 2;
+    while (sz != 1)
+      sz = sz / 2 + sz % 2, res *= 2;
     return res - 1;
   }
 
-  T accumulate(const node& nd, pos_type first, pos_type last) const {
-    if (nd.begin == first && nd.end == last) return elem(nd);
+  T accumulate(const node &nd, pos_type first, pos_type last) const {
+    if (nd.begin == first && nd.end == last)
+      return elem(nd);
     assert(!nd.is_leaf());
 
-    if (last <= nd.middle) return accumulate(nd.left(), first, last);
-    if (first >= nd.middle) return accumulate(nd.right(), first, last);
+    if (last <= nd.middle)
+      return accumulate(nd.left(), first, last);
+    if (first >= nd.middle)
+      return accumulate(nd.right(), first, last);
 
     const auto lsum = accumulate(nd.left(), first, nd.middle);
     const auto rsum = accumulate(nd.right(), nd.middle, last);
@@ -96,24 +102,27 @@ class segment_tree {
   }
 
   template <class UnaryFunc>
-  void for_each(const node& nd, const range_t& target, UnaryFunc& f) {
-    if (nd.is_leaf()) return f(elem(nd));
+  void for_each(const node &nd, const range_t &target, UnaryFunc &f) {
+    if (nd.is_leaf())
+      return f(elem(nd));
 
     const auto lchild = nd.left();
     const auto rchild = nd.right();
 
-    if (target.first < nd.middle) for_each(lchild, target, f);
-    if (target.second > nd.middle) for_each(rchild, target, f);
+    if (target.first < nd.middle)
+      for_each(lchild, target, f);
+    if (target.second > nd.middle)
+      for_each(rchild, target, f);
 
     elem(nd) = op_(elem(lchild), elem(rchild));
   }
 
- private:  // Private data members
+private: // Private data members
   size_type size_;
   BinaryOp op_;
   std::vector<T> tree_;
 };
 
-}  // namespace djp
+} // namespace djp
 
-#endif  // Header guard
+#endif // Header guard
