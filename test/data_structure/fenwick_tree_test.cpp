@@ -8,7 +8,7 @@
 
 TEST(fenwick_tree, IsSizeable) {
   djp::fenwick_tree<unsigned> ftree(23);
-  ASSERT_EQ(23, ftree.size());
+  ASSERT_EQ(23u, ftree.size());
 }
 
 TEST(fenwick_tree, IsZeroConstructed) {
@@ -20,7 +20,7 @@ TEST(fenwick_tree, SumPrefixAndIsMutable) {
   djp::fenwick_tree<long> ftree(10);
   for (size_t i = 0; i < ftree.size(); ++i) ftree.increase(i, 10 * i);
   for (size_t i = 0, acc = 0; i < ftree.size(); ++i, acc += i * 10)
-    EXPECT_EQ(acc, ftree.sum(i));
+    EXPECT_EQ((long)acc, ftree.sum(i));
 
   EXPECT_EQ(80 + 90, ftree.sum(8, 9));
   EXPECT_EQ(30 + 40 + 50, ftree.sum(3, 5));
@@ -33,7 +33,7 @@ TEST(fenwick_tree, SumPrefixAndIsMutable) {
 
 TEST(prefix_adder, IsSizeable) {
   djp::prefix_adder<int> adder(17);
-  EXPECT_EQ(17, adder.size());
+  EXPECT_EQ(17u, adder.size());
 }
 
 TEST(prefix_adder, SumPrefixAndIsMutable) {

@@ -1,10 +1,13 @@
 
-function(add_unittest test_name)
-  set(target_name "${test_name}_test")	
-  add_executable(${target_name} ${ARGN})
-  target_link_libraries(${target_name} CP_utils gtest_main gtest)
-  set_property(TARGET ${target_name} PROPERTY CXX_EXTENSIONS OFF)
-  add_test(NAME ${test_name} COMMAND ${target_name})
+function(add_unittest TEST_NAME)
+  set(TARGET_ID "${TEST_NAME}_test")	
+  add_executable(${TARGET_ID} ${ARGN})
+  target_link_libraries(${TARGET_ID} CP_utils gtest_main gtest)
+  set_property(TARGET ${TARGET_ID} PROPERTY CXX_EXTENSIONS OFF)
+  target_compile_options(${TARGET_ID} PRIVATE 
+  	$<$<CXX_COMPILER_ID:AppleClang>:-Wall -Wextra>
+  	)
+  add_test(NAME ${TEST_NAME} COMMAND ${TARGET_ID})
 endfunction()
 
 add_subdirectory(combinatorics)

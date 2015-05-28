@@ -27,7 +27,7 @@ TEST(rmq_lca, WorksOnSmallCases) {
   tree.add_edge(9, 11);
   tree.add_edge(9, 12);
 
-  ASSERT_EQ(12, tree.num_edges());
+  ASSERT_EQ(12u, tree.num_edges());
 
   auto children_of = [&tree](size_t v) {
     std::vector<size_t> children(tree.out_degree(v));
@@ -43,9 +43,9 @@ TEST(rmq_lca, WorksOnSmallCases) {
   const size_t root = 0;
   const djp::rmq_lca find_lca(tree.num_vertices(), root, children_of);
 
-  EXPECT_EQ(2, find_lca(8, 11));
-  EXPECT_EQ(9, find_lca(11, 12));
-  EXPECT_EQ(0, find_lca(12, 3));
-  EXPECT_EQ(0, find_lca(3, 12));
-  EXPECT_EQ(6, find_lca(10, 11));
+  EXPECT_EQ(2, (int)find_lca(8, 11));
+  EXPECT_EQ(9, (int)find_lca(11, 12));
+  EXPECT_EQ(0, (int)find_lca(12, 3));
+  EXPECT_EQ(0, (int)find_lca(3, 12));
+  EXPECT_EQ(6, (int)find_lca(10, 11));
 }

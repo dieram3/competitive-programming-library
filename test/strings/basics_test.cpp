@@ -10,7 +10,7 @@ TEST(split, SplitsWell) {
   {
     std::string str("abc,abc,abcd");
     const auto tokens = djp::split(str, ",");
-    ASSERT_EQ(3, tokens.size());
+    ASSERT_EQ(3u, tokens.size());
     EXPECT_EQ("abc", tokens[0]);
     EXPECT_EQ("abc", tokens[1]);
     EXPECT_EQ("abcd", tokens[2]);
@@ -18,7 +18,7 @@ TEST(split, SplitsWell) {
   {
     std::string str(",abc,bac, cba; gaga, blah, da;;");
     const auto tokens = djp::split(str, " ,;");
-    ASSERT_EQ(6, tokens.size());
+    ASSERT_EQ(6u, tokens.size());
     EXPECT_EQ("abc", tokens[0]);
     EXPECT_EQ("bac", tokens[1]);
     EXPECT_EQ("cba", tokens[2]);

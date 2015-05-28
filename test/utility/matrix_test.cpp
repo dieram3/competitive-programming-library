@@ -8,8 +8,8 @@ TEST(matrix, ConstrucstWell) {
   // elements are value-initialized
   {
     djp::matrix<int> mat({5, 7});
-    EXPECT_EQ(5, mat.rows());
-    EXPECT_EQ(7, mat.cols());
+    EXPECT_EQ(5u, mat.rows());
+    EXPECT_EQ(7u, mat.cols());
 
     for (std::size_t i = 0; i < mat.rows(); ++i)
       for (std::size_t j = 0; j < mat.cols(); ++j)
@@ -19,8 +19,8 @@ TEST(matrix, ConstrucstWell) {
   // elements are copy-initialized
   {
     djp::matrix<bool> mat({3, 4}, true);
-    EXPECT_EQ(3, mat.rows());
-    EXPECT_EQ(4, mat.cols());
+    EXPECT_EQ(3u, mat.rows());
+    EXPECT_EQ(4u, mat.cols());
 
     for (std::size_t i = 0; i < mat.rows(); ++i)
       for (std::size_t j = 0; j < mat.cols(); ++j)
@@ -30,11 +30,11 @@ TEST(matrix, ConstrucstWell) {
 
 TEST(matrix, IndexesWell) {
   djp::matrix<int> mat({8, 5});
-  EXPECT_EQ(0, mat.pos({0, 0}));
+  EXPECT_EQ(0u, mat.pos({0, 0}));
   EXPECT_EQ(mat.cols(), mat.pos({1, 0}));
-  EXPECT_EQ(3, mat.pos({0, 3}));
-  EXPECT_EQ(4 * mat.cols(), mat.pos({4, 0}));
-  EXPECT_EQ(6 * mat.cols() + 4, mat.pos({6, 4}));
+  EXPECT_EQ(3u, mat.pos({0, 3}));
+  EXPECT_EQ(4u * mat.cols(), mat.pos({4, 0}));
+  EXPECT_EQ(6u * mat.cols() + 4, mat.pos({6, 4}));
 }
 
 TEST(matrix, IsConstAware) {

@@ -10,11 +10,11 @@ static_assert(djp::adjacency_list<>::null_vertex() + 1 == 0,
 
 TEST(adjacency_list, ConstructWell) {
   djp::adjacency_list<> graph(15);
-  EXPECT_EQ(15, graph.num_vertices());
-  EXPECT_EQ(0, graph.num_edges());
+  EXPECT_EQ(15u, graph.num_vertices());
+  EXPECT_EQ(0u, graph.num_edges());
 
   for (size_t v = 0; v < graph.num_vertices(); ++v) {
-    EXPECT_EQ(0, graph.out_degree(v));
+    EXPECT_EQ(0u, graph.out_degree(v));
   }
 }
 
