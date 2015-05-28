@@ -32,9 +32,9 @@ TEST(disjoint_set, WorksOnSmallSets) {
   EXPECT_NE(roots[3], roots[6]);
   EXPECT_NE(roots[6], roots[0]);
 
-  EXPECT_EQ(5, roots[0]->num_elements);
-  EXPECT_EQ(2, roots[2]->num_elements);
-  EXPECT_EQ(1, roots[6]->num_elements);
+  EXPECT_EQ(5u, roots[0]->num_elements);
+  EXPECT_EQ(2u, roots[2]->num_elements);
+  EXPECT_EQ(1u, roots[6]->num_elements);
 }
 
 TEST(disjoint_set, WorksOnBigSets) {

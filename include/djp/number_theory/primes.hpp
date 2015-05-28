@@ -8,7 +8,7 @@ namespace djp {
 
 /// Generates a vector<bool> v of the given size, where
 /// v[i] indicates if i is a prime number or not.
-/// Complexity: O(N * log log N) where N == size
+/// Complexity: O(N * log log N) where N == \p size
 std::vector<bool> sieve_of_eratosthenes(size_t size) {
   std::vector<bool> is_prime(size, true);
   if (0 < size)

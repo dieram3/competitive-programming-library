@@ -12,8 +12,7 @@
 
 namespace {
 
-template <class T>
-struct point {
+template <class T> struct point {
   T x, y, z;
 
   point(T x = 0, T y = 0, T z = 0) : x{x}, y{y}, z{z} {}
@@ -32,8 +31,7 @@ struct point {
   }
 };
 
-template <class ForwardIt>
-bool is_ccw_sorted(ForwardIt first, ForwardIt last) {
+template <class ForwardIt> bool is_ccw_sorted(ForwardIt first, ForwardIt last) {
   using point_t = typename std::iterator_traits<ForwardIt>::value_type;
   std::iter_swap(first, std::min_element(first, last));
 
@@ -45,7 +43,7 @@ bool is_ccw_sorted(ForwardIt first, ForwardIt last) {
                         });
 }
 
-}  // Anonymous namespace
+} // Anonymous namespace
 
 TEST(convex_hull, SortsPointsInCounterclockwiseOrder) {
   using scalar_t = int32_t;

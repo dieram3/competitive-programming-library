@@ -5,8 +5,8 @@ function(add_unittest TEST_NAME)
   target_link_libraries(${TARGET_ID} CP_utils gtest_main gtest)
   set_property(TARGET ${TARGET_ID} PROPERTY CXX_EXTENSIONS OFF)
   target_compile_options(${TARGET_ID} PRIVATE 
-  	$<$<CXX_COMPILER_ID:AppleClang>:-Wall -Wextra>
-  	)
+  $<$<CXX_COMPILER_ID:AppleClang>:-Wall -Wextra -pedantic -Wdocumentation>
+  )
   add_test(NAME ${TEST_NAME} COMMAND ${TARGET_ID})
 endfunction()
 
