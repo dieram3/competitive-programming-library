@@ -1,18 +1,22 @@
 #include <djp/number_theory/primes.hpp>
 #include <gtest/gtest.h>
-#include <algorithm> // for std::count
+#include <algorithm>
+#include <iterator>
 
 TEST(sieve_of_eratosthenes, FindPrimes) {
-  const auto is_prime = djp::sieve_of_eratosthenes(7919 + 1);
-  EXPECT_FALSE(is_prime[0]);
-  EXPECT_FALSE(is_prime[1]);
-  EXPECT_TRUE(is_prime[2]);
-  EXPECT_TRUE(is_prime[3]);
-  EXPECT_FALSE(is_prime[4]);
-  EXPECT_TRUE(is_prime[5]);
-  EXPECT_TRUE(is_prime[7919]);
-  EXPECT_FALSE(is_prime[7917]);
+  const auto primes = djp::sieve_of_eratosthenes(7919 + 1);
+  auto is_prime = [&primes](size_t num) {
+    return std::binary_search(begin(primes), end(primes), num);
+  };
 
-  auto num_primes = std::count(is_prime.begin(), is_prime.end(), true);
-  EXPECT_EQ(1000, num_primes);
+  EXPECT_FALSE(is_prime(0));
+  EXPECT_FALSE(is_prime(1));
+  EXPECT_TRUE(is_prime(2));
+  EXPECT_TRUE(is_prime(3));
+  EXPECT_FALSE(is_prime(4));
+  EXPECT_TRUE(is_prime(5));
+  EXPECT_TRUE(is_prime(7919));
+  EXPECT_FALSE(is_prime(7917));
+
+  EXPECT_EQ(1000, primes.size());
 }

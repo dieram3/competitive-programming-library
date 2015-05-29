@@ -8,9 +8,8 @@
 
 namespace djp {
 
-class adjacency_graph {
-  
-};
+/// \todo Diego Implements this now
+class adjacency_graph {};
 
 } // namespace djp
 
