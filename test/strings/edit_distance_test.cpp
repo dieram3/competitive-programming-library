@@ -25,7 +25,7 @@ TEST(levenshtein_distance, HandlesSmallInput) {
   std::string str2 = "sitting";
   std::reverse(str2.begin(), str2.end());
   // This must compile
-  const int distance = djp::levenshtein_distance(str1.begin(), str1.end(),
-                                                 str2.rbegin(), str2.rend());
-  EXPECT_EQ(3, distance);
+  const auto distance = djp::levenshtein_distance(str1.begin(), str1.end(),
+                                                  str2.rbegin(), str2.rend());
+  EXPECT_EQ(3, (int)distance);
 }

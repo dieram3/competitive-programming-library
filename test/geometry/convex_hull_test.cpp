@@ -15,7 +15,7 @@ namespace {
 template <class T> struct point {
   T x, y, z;
 
-  point(T x = 0, T y = 0, T z = 0) : x{x}, y{y}, z{z} {}
+  point(T x_ = 0, T y_ = 0, T z_ = 0) : x{x_}, y{y_}, z{z_} {}
 
   friend bool operator<(const point &p, const point &q) {
     return std::tie(p.x, p.y, p.z) < std::tie(q.x, q.y, q.z);

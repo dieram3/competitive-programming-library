@@ -15,13 +15,12 @@
 
 namespace djp {
 
-template <class RandomIt1>
-class kmp_searcher {
+template <class RandomIt1> class kmp_searcher {
   using diff_t = std::ptrdiff_t;
-  RandomIt1 pattern_;  // Iterator to the first element of the pattern.
-  std::vector<diff_t> mismatch_;  // Table to skip back on mismatch
+  RandomIt1 pattern_; // Iterator to the first element of the pattern.
+  std::vector<diff_t> mismatch_; // Table to skip back on mismatch
 
- public:
+public:
   kmp_searcher(RandomIt1 p_first, RandomIt1 p_last)
       : pattern_{p_first}, mismatch_(p_last - p_first + 1) {
     mismatch_[0] = -1;
@@ -42,7 +41,8 @@ class kmp_searcher {
         matched = mismatch_[matched];
       ++first;
       ++matched;
-      if (matched == pattern_length()) return first - matched;
+      if (matched == pattern_length())
+        return first - matched;
     }
     return last;
   }
@@ -60,6 +60,6 @@ kmp_searcher<RandomIt> make_kmp_searcher(RandomIt p_first, RandomIt p_last) {
   return {p_first, p_last};
 }
 
-}  // namespace djp
+} // namespace djp
 
-#endif  // Header guard
+#endif // Header guard

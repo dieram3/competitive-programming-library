@@ -21,7 +21,7 @@ public: // Types
 
   struct edge : public EdgeData {
     edge(const edge &) = delete; // Prevent accidental copy.
-    edge(vertex_id source, vertex_id target) : source{source}, target{target} {}
+    edge(vertex_id src, vertex_id tgt) : source{src}, target{tgt} {}
     vertex_id source;
     vertex_id target;
   };
