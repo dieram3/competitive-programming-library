@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/math/modular.hpp>
+#include <djp/number_theory/modular.hpp>
 #include <gtest/gtest.h>
 
 TEST(modular, HandlesArithmeticOps) {
