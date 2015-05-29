@@ -1,7 +1,8 @@
 #include <djp/number_theory/primes.hpp>
 #include <gtest/gtest.h>
-#include <algorithm>
-#include <iterator>
+#include <algorithm> // for std::binary_search
+#include <iterator>  // fot std::begin
+#include <cstddef>   // for std::size_t
 
 TEST(sieve_of_eratosthenes, FindPrimes) {
   const auto primes = djp::sieve_of_eratosthenes(7919 + 1);

@@ -1,10 +1,11 @@
 #ifndef DJP_NUMBER_THEORY_PRIMES_HPP
 #define DJP_NUMBER_THEORY_PRIMES_HPP
 
-#include <vector>    // for std::vector<bool>
+#include <vector>    // for std::vector
 #include <cstddef>   // for std::size_t
 #include <algorithm> // for std::fill_n, std::count
 #include <iterator>  // for std::begin, std::end
+#include <cassert>   // for assert macro
 
 namespace djp {
 
@@ -29,6 +30,8 @@ std::vector<size_t> sieve_of_eratosthenes(size_t limit) {
   for (size_t i = 2; i < limit; ++i)
     if (is_prime[i])
       primes.push_back(i);
+
+  assert(num_primes == primes.size());
 
   return primes;
 }
