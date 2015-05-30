@@ -7,10 +7,13 @@
 #define DJP_GRAPH_LOWER_COMMON_ANCESTOR_HPP
 
 #include <djp/data_structure/segment_tree.hpp> // Used for Range Minimum Query
-#include <stack>
-#include <vector>
+
 #include <algorithm> // for std::swap
-#include <cstddef>   // for std::size_t
+#include <iterator>  // for std::begin, std::end
+#include <stack>     // for std::stack
+#include <vector>    // for std::vector
+
+#include <cstddef> // for std::size_t
 
 namespace djp {
 
@@ -71,7 +74,7 @@ public:
     }
 
     // Initialize the Range Minimum Query.
-    euler_tour_ = decltype(euler_tour_)(euler_tour.begin(), euler_tour.end());
+    euler_tour_.assign(euler_tour.begin(), euler_tour.end());
   }
 
   /// Computes the longest common ancestor between n1 and n2

@@ -61,6 +61,7 @@ template <class T> bool miller_primality_test(const T p) {
   // E[i] is the first false positive using T[1..i]
   // E = {2047, 1373653, 25326001, 3215031751, unknown: proven upto UINT32_MAX}
   std::array<T, 5> test_numbers = {{2, 3, 5, 7, 11}};
+  // TODO: narrow the test number to be proven according to the value of p.
 
   if (std::binary_search(begin(test_numbers), end(test_numbers), p))
     return true;

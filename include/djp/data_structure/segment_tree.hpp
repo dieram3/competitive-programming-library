@@ -44,11 +44,20 @@ public:
   /// using the associative binary operator op.
   /// Complexity: 2*(last - first) applications of op.
   template <class ForwardIt>
-  segment_tree(ForwardIt first, ForwardIt last, BinaryOp op = {})
-      : size_(std::distance(first, last)), op_(op),
-        tree_(optimal_tree_size(size_)) {
+  segment_tree(ForwardIt first, ForwardIt last, BinaryOp op = {}) {
+    assign(first, last, op);
+  }
+
+  /// Reconstruct the segment tree with the elements in the range [first, last)
+  /// using the associative binary operator op.
+  /// Complexity: 2*(last - first) applications of op.
+  template <class ForwardIt>
+  void assign(ForwardIt first, ForwardIt last, BinaryOp op = {}) {
+    size_ = std::distance(first, last);
+    op_ = op;
+    tree_.resize(optimal_tree_size(size_));
     auto take_element = [first](T &value) mutable { value = *first++; };
-    for_each(0, size(), take_element);
+    for_each(0, size_, take_element);
   }
 
   // Computes the sum of the elements positioned in the range [first, last)

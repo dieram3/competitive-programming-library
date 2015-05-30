@@ -67,7 +67,7 @@ template <class T> T mod_pow(T base, std::size_t exp, T mod) {
   assert(mod > 1);
 
   if ((mod - 1) > std::numeric_limits<T>::max() / (mod - 1)) {
-    // FIXME: delegate to safe version.
+    // TODO: Implement safe version so it can delegate.
     throw std::domain_error(
         "mod_pow migh overflow. The safe version is unimplemented.");
   }

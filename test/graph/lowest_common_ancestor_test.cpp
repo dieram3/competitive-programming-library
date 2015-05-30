@@ -8,6 +8,7 @@
 #include <gtest/gtest.h>
 
 #include <vector>
+
 #include <cstddef>
 #include <cassert>
 
