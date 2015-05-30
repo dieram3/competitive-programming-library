@@ -25,8 +25,7 @@ template <class T> std::vector<T> sieve_of_eratosthenes(T limit) {
   std::vector<bool> is_prime(limit, true);
   std::fill_n(begin(is_prime), std::min(T{2}, limit), false);
 
-  // FIXME: if limit == std::numeric_limits<T>::max() the loop will be infinite.
-  for (T i = 2; i * i < limit; ++i) {
+  for (T i = 2; i < limit / i; ++i) {
     if (!is_prime[i])
       continue;
     for (T j = i * i; j < limit; j += i)

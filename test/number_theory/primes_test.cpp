@@ -89,3 +89,14 @@ TEST(miller_primality_test, WorksOnItsRange) {
               djp::miller_primality_test<uint64_t>(number));
   }
 }
+
+//#include <chrono>
+//#include <iostream>
+// TEST(sieve_of_eratosthenes, Benchmark) {
+//  using namespace std::chrono;
+//  auto start = steady_clock::now();
+//  djp::sieve_of_eratosthenes(100000000);
+//  auto end = steady_clock::now();
+//  duration<double> elapsed(end - start);
+//  std::cout << "Elapsed: " << elapsed.count() << " sec\n";
+//}
