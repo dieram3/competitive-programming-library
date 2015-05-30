@@ -1,13 +1,15 @@
 #ifndef DJP_NUMBER_THEORY_PRIMES_HPP
 #define DJP_NUMBER_THEORY_PRIMES_HPP
 
-#include <vector>    // for std::vector
-#include <array>     // for std::array
-#include <cstddef>   // for std::size_t
-#include <algorithm> // for std::fill_n, std::count
-#include <iterator>  // for std::begin, std::end
-#include <cassert>   // for assert macro
 #include <djp/number_theory/modular.hpp>
+
+#include <algorithm> // for std::fill_n, std::count
+#include <array>     // for std::array
+#include <iterator>  // for std::begin, std::end
+#include <vector>    // for std::vector
+
+#include <cassert> // for assert macro
+#include <cstddef> // for std::size_t
 
 namespace djp {
 
@@ -40,14 +42,20 @@ template <class T> std::vector<T> sieve_of_eratosthenes(T limit) {
 }
 
 /// \brief Test if a number is a probable prime.
-/// If p <= UINT32_MAX it is guaranted that the answer will be correct.
-/// \arg p The number to be tested.
+/// \param p The number to be tested.
+///
+/// The following is guaranteed:
+///   -# The function will never return a false positive if p <= UINT32_MAX
+///   -# The function will never return a false negative.
 template <class T> bool miller_primality_test(const T p) {
   if (p < 2)
     return false;
   if (p != 2 && p % 2 == 0)
     return false;
 
+  // T = {2, 3, 5, 7, 11}
+  // E[i] is the first false positive using T[1..i]
+  // E = {2047, 1373653, 25326001, 3215031751, unknown: proven upto UINT32_MAX}
   std::array<T, 5> test_numbers = {{2, 3, 5, 7, 11}};
 
   if (std::binary_search(begin(test_numbers), end(test_numbers), p))

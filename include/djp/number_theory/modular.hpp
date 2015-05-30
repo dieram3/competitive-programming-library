@@ -6,9 +6,10 @@
 #ifndef DJP_NUMBER_THEORY_MODULAR_HPP
 #define DJP_NUMBER_THEORY_MODULAR_HPP
 
-#include <type_traits>
-#include <stdexcept>
 #include <limits>
+#include <stdexcept>
+#include <type_traits>
+
 #include <cassert>
 #include <cstddef>
 
@@ -64,6 +65,7 @@ private:
 /// O(log(exp)) Otherwise O(log^2(exp))
 template <class T> T mod_pow(T base, std::size_t exp, T mod) {
   assert(mod > 1);
+
   if ((mod - 1) > std::numeric_limits<T>::max() / (mod - 1)) {
     // FIXME: delegate to safe version.
     throw std::domain_error(
