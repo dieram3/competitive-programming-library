@@ -3,11 +3,14 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/common_factor.hpp>
+#include <djp/number_theory/basics.hpp>
 #include <gtest/gtest.h>
+
+#include <cstdint>
 
 using djp::gcd;
 using djp::lcm;
+using djp::ceil_div;
 
 TEST(gcd, HandlesPositiveInput) {
   EXPECT_EQ(5, gcd(10, 5));
@@ -32,4 +35,13 @@ TEST(lcm, HandlesZeroInput) {
   EXPECT_EQ(0, lcm(0, 5));
   EXPECT_EQ(0, lcm(5, 0));
   EXPECT_EQ(0, lcm(0, 0));
+}
+
+TEST(ceil_div, WorksWell) {
+  EXPECT_EQ(0, ceil_div(0, 1));
+  EXPECT_EQ(0, ceil_div(0, 2));
+  EXPECT_EQ(3, ceil_div(9, 3));
+  EXPECT_EQ(4, ceil_div(10, 3));
+  EXPECT_EQ(UINT64_MAX, ceil_div(UINT64_MAX, UINT64_C(1)));
+  EXPECT_EQ(16, ceil_div(31, 2));
 }

@@ -7,6 +7,7 @@
 #define DJP_NUMBER_THEORY_PRIMES_HPP
 
 #include <djp/number_theory/modular.hpp>
+#include <djp/number_theory/basics.hpp>
 
 #include <algorithm> // for std::fill_n, std::count
 #include <array>     // for std::array
@@ -20,12 +21,14 @@ namespace djp {
 
 /// \brief Finds all primes number less than \p limit
 /// \returns A sorted vector containing all primes numbers less than \p limit
+/// \pre \p limit shall not be a negative number.
 /// Complexity: O(N * log log N) where N == \p limit
 template <class T> std::vector<T> sieve_of_eratosthenes(T limit) {
   std::vector<bool> is_prime(limit, true);
   std::fill_n(begin(is_prime), std::min(T{2}, limit), false);
 
-  for (T i = 2; i < limit / i; ++i) {
+  // Safely query if i * i < limit ( otherwise overflow could occur.)
+  for (T i = 2; i < ceil_div(limit, i); ++i) {
     if (!is_prime[i])
       continue;
     for (T j = i * i; j < limit; j += i)

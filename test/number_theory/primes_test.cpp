@@ -17,18 +17,6 @@
 
 namespace {
 
-/// \brief Safely checks if a * b < c
-/// \pre a, b, c shall not be negative integers.
-template <class T> constexpr bool multiply_lt(T a, T b, T c) {
-  return b != 0 && a < c / b;
-}
-
-/// \brief Safely checks if a * b > c
-/// \pre a, b, c shall not be negative integers.
-template <class T> constexpr bool multiply_gt(T a, T b, T c) {
-  return b != 0 && a > c / b;
-}
-
 /// \brief Checks if a number is prime by using the given sieve.
 /// \pre \p sieve shall not be empty.
 /// \pre \p sieve shall be a sorted sequence of consecutive primes numbers
@@ -38,11 +26,12 @@ template <class T> bool is_prime_sieve(T number, const std::vector<T> &sieve) {
   if (number <= sieve.back())
     return std::binary_search(begin(sieve), end(sieve), number);
 
-  if (multiply_lt(sieve.back(), sieve.back(), number))
+  using djp::ceil_div;
+  if (sieve.back() < ceil_div(number, sieve.back()))
     throw std::logic_error("The sieve is too small");
 
   for (const T prime : sieve) {
-    if (multiply_gt(prime, prime, number))
+    if (prime > number / prime)
       break;
     if (number % prime == 0)
       return false;
@@ -69,6 +58,38 @@ TEST(sieve_of_eratosthenes, FindPrimes) {
   EXPECT_FALSE(is_prime(7917));
 
   EXPECT_EQ(1000, primes.size());
+}
+
+TEST(sieve_of_eratosthenes, FindAllRequiredPrimes) {
+  auto num_primes_below =
+      [](int32_t number) { return djp::sieve_of_eratosthenes(number).size(); };
+
+  EXPECT_EQ(0, num_primes_below(0));
+  EXPECT_EQ(0, num_primes_below(1));
+  EXPECT_EQ(0, num_primes_below(2));
+
+  EXPECT_EQ(4, num_primes_below(10));
+  EXPECT_EQ(4, num_primes_below(11));
+  EXPECT_EQ(5, num_primes_below(12));
+
+  EXPECT_EQ(9, num_primes_below(29));
+  EXPECT_EQ(10, num_primes_below(30));
+}
+
+TEST(is_prime_sieve, WorksWell) {
+  const auto small_sieve = djp::sieve_of_eratosthenes<int32_t>(30);
+  EXPECT_EQ(10, small_sieve.size());
+  EXPECT_EQ(29, small_sieve.back());
+  EXPECT_FALSE(is_prime_sieve(841, small_sieve));
+  EXPECT_THROW(is_prime_sieve(842, small_sieve), std::logic_error);
+
+  const auto big_sieve = djp::sieve_of_eratosthenes(842);
+  auto is_prime = [&big_sieve](int32_t p) {
+    return std::binary_search(begin(big_sieve), end(big_sieve), p);
+  };
+
+  for (int32_t p = 0; p < 842; ++p)
+    EXPECT_EQ(is_prime(p), is_prime_sieve(p, small_sieve));
 }
 
 TEST(miller_primality_test, WorksOnItsRange) {
