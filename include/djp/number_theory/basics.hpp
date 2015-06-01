@@ -23,6 +23,18 @@ template <class T> constexpr T ceil_div(T a, T b) {
   return a / b + T(a % b == 0 ? 0 : 1);
 }
 
+/// \brief Safely checks if a * b < c
+/// \pre a, b, c shall not be negative numbers.
+template <class T> constexpr bool multiply_less(T a, T b, T c) {
+  return b == 0 ? a * b < c : a < ceil_div(c, b);
+}
+
+/// \brief Safely checks if a * b > c
+/// \pre a, b, c shall not be negative numbers.
+template <class T> constexpr bool multiply_greater(T a, T b, T c) {
+  return b != 0 && a > c / b;
+}
+
 } // namespace djp
 
 #endif // Header guard
