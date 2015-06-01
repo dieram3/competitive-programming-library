@@ -40,6 +40,11 @@ template <class T> bool is_prime_sieve(T number, const std::vector<T> &sieve) {
   return true;
 }
 
+template <class Function> static inline void repeat(std::size_t n, Function f) {
+  while (n--)
+    f();
+}
+
 } // anonymous namesapce
 
 TEST(sieve_of_eratosthenes, FindPrimes) {
@@ -95,20 +100,28 @@ TEST(is_prime_sieve, WorksWell) {
 TEST(miller_primality_test, WorksOnItsRange) {
   auto sieve = djp::sieve_of_eratosthenes<uint32_t>(66000);
   EXPECT_FALSE(is_prime_sieve(UINT32_MAX, sieve));
-  EXPECT_FALSE(djp::miller_primality_test<uint64_t>(UINT32_MAX));
+  EXPECT_FALSE(djp::miller_rabin_primality_test<uint64_t>(UINT32_MAX));
 
   for (auto prime : sieve)
-    EXPECT_TRUE(djp::miller_primality_test<uint64_t>(prime));
+    EXPECT_TRUE(djp::miller_rabin_primality_test<uint64_t>(prime));
 
   std::random_device rd;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<uint32_t> dist(0, UINT32_MAX);
 
-  for (size_t i = 0; i < 10000; ++i) {
+  repeat(12345, [&dist, &gen, &sieve] {
     const uint32_t number = dist(gen);
     EXPECT_EQ(is_prime_sieve(number, sieve),
-              djp::miller_primality_test<uint64_t>(number));
-  }
+              djp::miller_rabin_primality_test<uint64_t>(number));
+  });
+
+  EXPECT_THROW(djp::miller_rabin_primality_test((UINT64_C(1) << 32) | 1),
+               std::domain_error);
+
+  EXPECT_FALSE(djp::miller_rabin_primality_test(UINT64_MAX - 1));
+  EXPECT_TRUE(djp::miller_rabin_primality_test(2));
+  EXPECT_FALSE(djp::miller_rabin_primality_test(1));
+  EXPECT_FALSE(djp::miller_rabin_primality_test(0));
 }
 
 //#include <chrono>

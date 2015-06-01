@@ -12,10 +12,12 @@
 #include <algorithm> // for std::fill_n, std::count
 #include <array>     // for std::array
 #include <iterator>  // for std::begin, std::end
+#include <stdexcept> // for std::domain_error
 #include <vector>    // for std::vector
 
 #include <cassert> // for assert macro
 #include <cstddef> // for std::size_t
+#include <cstdint> // for UINT32_MAX
 
 namespace djp {
 
@@ -49,41 +51,62 @@ template <class T> std::vector<T> sieve_of_eratosthenes(T limit) {
 }
 
 /// \brief Test if a number is a probable prime.
-/// \param p The number to be tested.
-///
-/// The following is guaranteed:
-///   -# The function will never return a false positive if p <= UINT32_MAX
-///   -# The function will never return a false negative.
-template <class T> bool miller_primality_test(const T p) {
-  if (p < 2)
-    return false;
-  if (p != 2 && p % 2 == 0)
-    return false;
+/// \param n The number to be tested.
+/// \returns true if p is a probable prime, false is p is composite.
+/// \pre All numbers of \p test_numbers shall be in the range [2, n - 1]
+/// \pre n shall be and odd number greater than 2.
+template <class T, class Range>
+bool miller_rabin_primality_test(const T n, const Range &test_numbers) {
 
-  // T = {2, 3, 5, 7, 11}
-  // E[i] is the first false positive using T[1..i]
-  // E = {2047, 1373653, 25326001, 3215031751, unknown: proven upto UINT32_MAX}
-  std::array<T, 5> test_numbers = {{2, 3, 5, 7, 11}};
-  // TODO: narrow the test number to be proven according to the value of p.
-
-  if (std::binary_search(begin(test_numbers), end(test_numbers), p))
-    return true;
-
-  T s = p - 1;
-  while (s % 2 == 0)
-    s /= 2;
+  // write n − 1 as 2^s*d with d odd by factoring powers of 2 from n − 1
+  const size_t s = __builtin_ctzll(n - 1);
+  const T d = (n - 1) >> s;
 
   for (const T a : test_numbers) {
-    T temp = s;
-    T mod = mod_pow(a, s, p);
-    while (temp != p - 1 && mod != 1 && mod != p - 1) {
-      mod = (mod * mod) % p;
-      temp *= 2;
+    assert(a >= 2 && a < n);
+    T x = mod_pow(a, d, n);
+    if (x == 1 || x == n - 1)
+      continue;
+
+    size_t reps = s - 1;
+    bool probable_prime = false;
+    while (reps--) {
+      x = x * x % n;
+      if (x == 1)
+        return false;
+      if (x == n - 1) {
+        probable_prime = true;
+        break;
+      }
     }
-    if (mod != p - 1 && temp % 2 == 0)
+    if (!probable_prime)
       return false;
   }
   return true;
+}
+
+/// \brief Checks if \p n is a prime number.
+/// \param n The number to be tested.
+/// \throws std::domain error if p > UINT32_MAX and p is odd.
+template <class T> bool miller_rabin_primality_test(const T n) {
+  if (n == 2)
+    return true;
+  if (n < 2 || n % 2 == 0)
+    return false;
+
+  auto test_with = [n](std::initializer_list<T> ilist) {
+    return miller_rabin_primality_test(n, ilist);
+  };
+
+  // http://en.wikipedia.org/wiki/Miller–Rabin_primality_test
+  // Pomerance, Selfridge and Wagstaff[8] and Jaeschke[9] have verified that
+  if (n < 2047)
+    return test_with({2});
+  if (n < 9080191)
+    return test_with({31, 73});
+  if (n <= T(UINT32_MAX))
+    return test_with({2, 7, 61});
+  throw std::domain_error("miller_rabin_primality_test");
 }
 
 } // namespace djp
