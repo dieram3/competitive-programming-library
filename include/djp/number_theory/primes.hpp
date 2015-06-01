@@ -69,7 +69,7 @@ inline bool is_prime_mr(const uint32_t n) {
     if (x == 1 || x == n - 1)
       return true;
 
-    for (size_t rep = 1; rep < s; ++rep) {
+    for (size_t rep = 0; rep < s - 1; ++rep) {
       x = x * x % n;
       if (x == 1)
         return false;
