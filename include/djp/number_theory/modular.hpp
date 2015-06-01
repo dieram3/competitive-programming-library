@@ -12,6 +12,7 @@
 
 #include <cassert>
 #include <cstddef>
+#include <cstdint> // for uint64_t
 
 namespace djp {
 
@@ -22,7 +23,7 @@ template <class T, T Mod> class modular {
                 "The MOD value may produce overflow");
 
 public:
-  constexpr modular(T value = 0) : value_{value < Mod ? value : value % Mod} {}
+  constexpr modular(T value = 0) : value_{value % Mod} {}
 
   modular &operator+=(modular other) { return *this = (*this) + other; }
   modular &operator-=(modular other) { return *this = (*this) - other; }
@@ -60,24 +61,25 @@ private:
   T value_;
 };
 
-/// \brief Computes a ^ b % MOD
+/// \brief Computes a * b % mod
+template <class T> T mod_mul(T a, T b, T mod) {
+  static_assert(std::is_unsigned<T>::value, "Mod mul: T must be unsigned");
+  using BT = typename std::conditional<sizeof(T) <= sizeof(std::uint32_t),
+                                       std::uint64_t, __uint128_t>::type;
+  static_assert(sizeof(BT) >= 2 * sizeof(T), "Cannot do safe mod mul");
+  return static_cast<T>(BT(a) * BT(b) % BT(mod));
+}
+
+/// \brief Computes a ^ b % mod
+/// \pre \p mod > 1
 /// Complexity: If (mod - 1)^2 <= std::numeric_limits<T>::max()
 /// O(log(exp)) Otherwise O(log^2(exp))
 template <class T> T mod_pow(T base, std::size_t exp, T mod) {
-  assert(mod > 1);
-
-  if ((mod - 1) > std::numeric_limits<T>::max() / (mod - 1)) {
-    // TODO: Implement safe version so it can delegate.
-    throw std::domain_error(
-        "mod_pow migh overflow. The safe version is unimplemented.");
-  }
-
   T result = 1;
-  base %= mod;
   while (exp) {
     if (exp & 1)
-      result = (result * base) % mod;
-    base = (base * base) % mod;
+      result = mod_mul(result, base, mod);
+    base = mod_mul(base, base, mod);
     exp >>= 1;
   }
   return result;

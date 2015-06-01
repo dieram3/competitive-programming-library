@@ -6,6 +6,8 @@
 #include <djp/number_theory/primes.hpp>
 #include <gtest/gtest.h>
 
+#include <djp/utility/basics.hpp> // for djp::repeat
+
 #include <algorithm> // for std::binary_search
 #include <iterator>  // fot std::begin
 #include <random>    // for std::mt19937
@@ -26,8 +28,7 @@ template <class T> bool is_prime_sieve(T number, const std::vector<T> &sieve) {
   if (number <= sieve.back())
     return std::binary_search(begin(sieve), end(sieve), number);
 
-  using djp::ceil_div;
-  if (sieve.back() < ceil_div(number, sieve.back()))
+  if (sieve.back() < djp::ceil_div(number, sieve.back()))
     throw std::logic_error("The sieve is too small");
 
   for (const T prime : sieve) {
@@ -40,14 +41,9 @@ template <class T> bool is_prime_sieve(T number, const std::vector<T> &sieve) {
   return true;
 }
 
-template <class Function> static inline void repeat(std::size_t n, Function f) {
-  while (n--)
-    f();
-}
-
 } // anonymous namesapce
 
-TEST(sieve_of_eratosthenes, FindPrimes) {
+TEST(sieve_of_eratosthenes, FindsPrimes) {
   const auto primes = djp::sieve_of_eratosthenes(7919 + 1);
   auto is_prime = [&primes](size_t num) {
     return std::binary_search(begin(primes), end(primes), num);
@@ -65,7 +61,7 @@ TEST(sieve_of_eratosthenes, FindPrimes) {
   EXPECT_EQ(1000, primes.size());
 }
 
-TEST(sieve_of_eratosthenes, FindAllRequiredPrimes) {
+TEST(sieve_of_eratosthenes, FindsAllRequiredPrimes) {
   auto num_primes_below =
       [](int32_t number) { return djp::sieve_of_eratosthenes(number).size(); };
 
@@ -107,16 +103,16 @@ TEST(is_prime_mr, WorksOnItsRange) {
 
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<uint32_t> dist(0, UINT32_MAX);
+  std::uniform_int_distribution<uint32_t> dist;
 
-  repeat(12345, [&dist, &gen, &sieve] {
+  djp::repeat(12345, [&dist, &gen, &sieve] {
     const uint32_t number = dist(gen);
     EXPECT_EQ(is_prime_sieve(number, sieve), djp::is_prime_mr(number));
   });
 
-  EXPECT_TRUE(djp::is_prime_mr(2));
-  EXPECT_FALSE(djp::is_prime_mr(1));
-  EXPECT_FALSE(djp::is_prime_mr(0));
+  EXPECT_TRUE(djp::is_prime_mr(2u));
+  EXPECT_FALSE(djp::is_prime_mr(1u));
+  EXPECT_FALSE(djp::is_prime_mr(0u));
 }
 
 //#include <chrono>

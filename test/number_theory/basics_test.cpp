@@ -6,19 +6,10 @@
 #include <djp/number_theory/basics.hpp>
 #include <gtest/gtest.h>
 
+#include <djp/utility/basics.hpp> // for djp::repeat
 #include <random>
-
 #include <cstdint>
 #include <cstdio>
-
-namespace {
-
-template <class Function> static inline void repeat(std::size_t n, Function f) {
-  while (n--)
-    f();
-}
-
-} // Anonymous namespace.
 
 TEST(gcd, HandlesPositiveInput) {
   using djp::gcd;
@@ -96,7 +87,7 @@ TEST(multiply_comparators, WorksWell) {
 
   // Pathological cases are difficult to find thereby many repetitions
   // are needed to check that multiply_greater works well.
-  repeat(250000, [&gen] {
+  djp::repeat(250000, [&gen] {
     std::uniform_int_distribution<uint32_t> dist(0, UINT16_MAX);
     const auto a = dist(gen);
     const auto b = dist(gen);

@@ -53,7 +53,11 @@ template <class T> std::vector<T> sieve_of_eratosthenes(T limit) {
 /// \brief Checks if \p n is a prime number.
 /// \param n The number to be tested.
 /// \note mr stands for Miller-Rabin
-inline bool is_prime_mr(const uint32_t n) {
+/// \pre T shall be an unsigned type with at most 32 bits.
+template <class T> bool is_prime_mr(const T n) {
+  static_assert(std::is_unsigned<T>::value, "is_prime_mr: T must be unsigned");
+  static_assert(sizeof(T) <= sizeof(std::uint32_t),
+                "is_prime_mr: T must have at most 32 bits");
   if (n == 2)
     return true;
   if (n < 2 || n % 2 == 0)
@@ -61,16 +65,16 @@ inline bool is_prime_mr(const uint32_t n) {
 
   // write n − 1 as 2^s*d with d odd by factoring powers of 2 from n − 1
   const size_t s = __builtin_ctzll(n - 1);
-  const uint32_t d = (n - 1) >> s;
+  const T d = (n - 1) >> s;
 
-  auto witness = [n, s, d](const uint32_t a) {
+  auto witness = [n, s, d](const T a) {
     assert(a >= 2 && a < n);
-    uint64_t x = mod_pow<uint64_t>(a, d, n);
+    T x = mod_pow(a, d, n);
     if (x == 1 || x == n - 1)
       return true;
 
     for (size_t rep = 0; rep < s - 1; ++rep) {
-      x = x * x % n;
+      x = mod_mul(x, x, n);
       if (x == 1)
         return false;
       if (x == n - 1)
