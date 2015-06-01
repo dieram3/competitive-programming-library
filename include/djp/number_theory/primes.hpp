@@ -87,7 +87,19 @@ inline bool is_prime_mr(const uint32_t n) {
     return test_with({2});
   if (n < 9080191)
     return test_with({31, 73});
-  return test_with({2, 7, 61});
+
+  return test_with({2, 7, 61}); // this works if n < 4'759'123'141
+
+  //  if (n < 1'122'004'669'633)
+  //    return test_with({2, 13, 23, 1662803});
+  //  if (n < 2'152'302'898'747)
+  //    return test_with({2, 3, 5, 7, 11});
+  //  if (n < 3'474'749'660'383)
+  //    return test_with({2, 3, 5, 7, 11, 13});
+  //  if (n < 341'550'071'728'321)
+  //    return test_with({2, 3, 5, 7, 11, 13, 17});
+  //  if (n < 3'825'123'056'546'413'051)
+  //    return test_with({2, 3, 5, 7, 11, 13, 17, 19, 23});
 }
 
 } // namespace djp
