@@ -9,7 +9,7 @@
 #include <djp/number_theory/modular.hpp>
 #include <djp/number_theory/basics.hpp>
 
-#include <algorithm> // for std::fill_n, std::count
+#include <algorithm> // for std::fill_n, std::count, std::all_of
 #include <array>     // for std::array
 #include <iterator>  // for std::begin, std::end
 #include <stdexcept> // for std::domain_error
@@ -17,7 +17,7 @@
 
 #include <cassert> // for assert macro
 #include <cstddef> // for std::size_t
-#include <cstdint> // for UINT32_MAX
+#include <cstdint> // for std::uint64_t, UINT32_MAX
 
 namespace djp {
 
@@ -50,63 +50,44 @@ template <class T> std::vector<T> sieve_of_eratosthenes(T limit) {
   return primes;
 }
 
-/// \brief Test if a number is a probable prime.
-/// \param n The number to be tested.
-/// \returns true if p is a probable prime, false is p is composite.
-/// \pre All numbers of \p test_numbers shall be in the range [2, n - 1]
-/// \pre n shall be and odd number greater than 2.
-template <class T, class Range>
-bool miller_rabin_primality_test(const T n, const Range &test_numbers) {
-
-  // write n − 1 as 2^s*d with d odd by factoring powers of 2 from n − 1
-  const size_t s = __builtin_ctzll(n - 1);
-  const T d = (n - 1) >> s;
-
-  for (const T a : test_numbers) {
-    assert(a >= 2 && a < n);
-    T x = mod_pow(a, d, n);
-    if (x == 1 || x == n - 1)
-      continue;
-
-    size_t reps = s - 1;
-    bool probable_prime = false;
-    while (reps--) {
-      x = x * x % n;
-      if (x == 1)
-        return false;
-      if (x == n - 1) {
-        probable_prime = true;
-        break;
-      }
-    }
-    if (!probable_prime)
-      return false;
-  }
-  return true;
-}
-
 /// \brief Checks if \p n is a prime number.
 /// \param n The number to be tested.
-/// \throws std::domain error if p > UINT32_MAX and p is odd.
-template <class T> bool miller_rabin_primality_test(const T n) {
+/// \note mr stands for Miller-Rabin
+inline bool is_prime_mr(const uint32_t n) {
   if (n == 2)
     return true;
   if (n < 2 || n % 2 == 0)
     return false;
 
-  auto test_with = [n](std::initializer_list<T> ilist) {
-    return miller_rabin_primality_test(n, ilist);
+  // write n − 1 as 2^s*d with d odd by factoring powers of 2 from n − 1
+  const size_t s = __builtin_ctzll(n - 1);
+  const uint32_t d = (n - 1) >> s;
+
+  auto witness = [n, s, d](const uint32_t a) {
+    assert(a >= 2 && a < n);
+    uint64_t x = mod_pow<uint64_t>(a, d, n);
+    if (x == 1 || x == n - 1)
+      return true;
+
+    for (size_t rep = 1; rep < s; ++rep) {
+      x = x * x % n;
+      if (x == 1)
+        return false;
+      if (x == n - 1)
+        return true;
+    }
+    return false;
   };
 
-  // http://en.wikipedia.org/wiki/Miller–Rabin_primality_test
-  // Pomerance, Selfridge and Wagstaff[8] and Jaeschke[9] have verified that
+  auto test_with = [witness](std::initializer_list<uint32_t> ilist) {
+    return std::all_of(begin(ilist), end(ilist), witness);
+  };
+
   if (n < 2047)
     return test_with({2});
   if (n < 9080191)
     return test_with({31, 73});
-  if (n <= T(UINT32_MAX))
-    return test_with({2, 7, 61});
-  throw std::domain_error("miller_rabin_primality_test");
+  return test_with({2, 7, 61});
 }
 
 } // namespace djp

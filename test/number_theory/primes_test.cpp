@@ -97,13 +97,13 @@ TEST(is_prime_sieve, WorksWell) {
     EXPECT_EQ(is_prime(p), is_prime_sieve(p, small_sieve));
 }
 
-TEST(miller_primality_test, WorksOnItsRange) {
+TEST(is_prime_mr, WorksOnItsRange) {
   auto sieve = djp::sieve_of_eratosthenes<uint32_t>(66000);
   EXPECT_FALSE(is_prime_sieve(UINT32_MAX, sieve));
-  EXPECT_FALSE(djp::miller_rabin_primality_test<uint64_t>(UINT32_MAX));
+  EXPECT_FALSE(djp::is_prime_mr(UINT32_MAX));
 
   for (auto prime : sieve)
-    EXPECT_TRUE(djp::miller_rabin_primality_test<uint64_t>(prime));
+    EXPECT_TRUE(djp::is_prime_mr(prime));
 
   std::random_device rd;
   std::mt19937 gen(rd());
@@ -111,17 +111,12 @@ TEST(miller_primality_test, WorksOnItsRange) {
 
   repeat(12345, [&dist, &gen, &sieve] {
     const uint32_t number = dist(gen);
-    EXPECT_EQ(is_prime_sieve(number, sieve),
-              djp::miller_rabin_primality_test<uint64_t>(number));
+    EXPECT_EQ(is_prime_sieve(number, sieve), djp::is_prime_mr(number));
   });
 
-  EXPECT_THROW(djp::miller_rabin_primality_test((UINT64_C(1) << 32) | 1),
-               std::domain_error);
-
-  EXPECT_FALSE(djp::miller_rabin_primality_test(UINT64_MAX - 1));
-  EXPECT_TRUE(djp::miller_rabin_primality_test(2));
-  EXPECT_FALSE(djp::miller_rabin_primality_test(1));
-  EXPECT_FALSE(djp::miller_rabin_primality_test(0));
+  EXPECT_TRUE(djp::is_prime_mr(2));
+  EXPECT_FALSE(djp::is_prime_mr(1));
+  EXPECT_FALSE(djp::is_prime_mr(0));
 }
 
 //#include <chrono>
