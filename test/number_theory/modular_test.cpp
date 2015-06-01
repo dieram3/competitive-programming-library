@@ -5,7 +5,10 @@
 
 #include <djp/number_theory/modular.hpp>
 #include <gtest/gtest.h>
-#include <cstdint> // for SIZE_MAX
+
+#include <djp/utility/basics.hpp> // for djp::repeat
+#include <random>
+#include <cstdint> // for std::uint32_t, SIZE_MAX
 
 TEST(modular, HandlesArithmeticOps) {
   using modular_t = djp::modular<unsigned, 7>;
@@ -27,6 +30,19 @@ TEST(modular, HandlesArithmeticOps) {
   EXPECT_TRUE(congruent(b / a, 3));
   EXPECT_EQ(4, static_cast<int>(a));
   EXPECT_EQ(5, static_cast<int>(b));
+}
+
+TEST(mod_mul, WorksWell) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<std::uint32_t> dist;
+
+  djp::repeat(12345, [&gen, &dist] {
+    const std::uint32_t a = dist(gen);
+    const std::uint32_t b = dist(gen);
+    constexpr std::uint32_t mod = 1000000000 + 7;
+    EXPECT_EQ(std::uint64_t(a) * b % mod, djp::mod_mul(a, b, mod));
+  });
 }
 
 TEST(mod_pow, WorksWhenOverflowDoesNotNeedControl) {
