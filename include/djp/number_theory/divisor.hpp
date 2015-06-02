@@ -6,15 +6,16 @@
 #ifndef DJP_NUMBER_THEORY_DIVISOR_HPP
 #define DJP_NUMBER_THEORY_DIVISOR_HPP
 
-#include <stdexcept>
-#include <cassert> // for assert
-#include <cstddef> // for std::size_t
+#include <stdexcept> // for std::logic_error
+#include <cassert>   // for assert
+#include <cstddef>   // for std::size_t
 
 namespace djp {
 
-/// \brief Counts how may divisors has \p n
+/// \brief Counts how many divisors has a number.
 /// \param n The number to be tested.
-/// \pre n > 0
+/// \returns The number of divisors.
+/// \pre The number to be tested shall be positive.
 template <class T>
 std::size_t count_divisors(T n) {
   std::size_t ans = 1;
@@ -27,19 +28,21 @@ std::size_t count_divisors(T n) {
     ans *= (exp + 1);
   }
 
-  if (n > 1)
-    ans *= 2;
-
-  return ans;
+  return n > 1 ? 2 * ans : ans;
 }
 
-/// \brief Counts how may divisors has \p n
+/// \brief Counts how many divisors has a number.
 /// \param n The number to be tested.
 /// \param sieve A sieve of prime numbers.
-/// \pre \p n > 0
-/// \pre \p sieve shall not be empty.
-/// \pre \p sieve shall be a sorted sequence of consecutive prime numbers
+/// \returns The number of divisors.
+/// \pre The number to be tested shall be positive.
+/// \pre The sieve shall not be empty.
+/// \pre The sieve shall be a sorted sequence of consecutive prime numbers
 ///      starting from 2.
+/// \throws std::logic_error if the sieve was not sufficient to determine
+///         how many divisors has \p n. In order to avoid this, the square of
+///         of the last prime of the sieve should be greater than or equal to
+///         number to be tested.
 template <class T, class Range>
 std::size_t count_divisors(T n, const Range &sieve) {
   assert(n > 0);
