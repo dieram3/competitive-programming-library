@@ -24,7 +24,8 @@ namespace {
 /// \pre \p sieve shall be a sorted sequence of consecutive primes numbers
 ///      starting from 2.
 /// \pre \p std::pow(sieve.back(), 2) <= number
-template <class T> bool is_prime_sieve(T number, const std::vector<T> &sieve) {
+template <class T>
+bool is_prime_sieve(T number, const std::vector<T> &sieve) {
   if (number <= sieve.back())
     return std::binary_search(begin(sieve), end(sieve), number);
 
@@ -122,6 +123,6 @@ TEST(is_prime_mr, WorksOnItsRange) {
 //  auto start = steady_clock::now();
 //  djp::sieve_of_eratosthenes(100000000);
 //  auto end = steady_clock::now();
-//  duration<double> elapsed(end - start);
-//  std::cout << "Elapsed: " << elapsed.count() << " sec\n";
+//  duration<double, std::milli> elapsed(end - start);
+//  std::cout << "Elapsed: " << elapsed.count() << " ms\n";
 //}

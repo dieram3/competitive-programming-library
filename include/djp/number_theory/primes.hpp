@@ -25,28 +25,29 @@ namespace djp {
 /// \returns A sorted vector containing all primes numbers less than \p limit
 /// \pre \p limit shall not be a negative number.
 /// Complexity: O(N * log log N) where N == \p limit
-template <class T> std::vector<T> sieve_of_eratosthenes(T limit) {
-  std::vector<bool> is_prime(limit, true);
-  std::fill_n(begin(is_prime), std::min(T{2}, limit), false);
+template <class T = std::uint32_t>
+std::vector<T> sieve_of_eratosthenes(size_t limit) {
+  if (limit < 2)
+    return {};
 
-  // Safely query if i * i < limit ( otherwise overflow could occur.)
-  for (T i = 2; i < ceil_div(limit, i); ++i) {
+  std::vector<bool> is_prime(limit, true);
+  is_prime[0] = is_prime[1] = false;
+
+  for (size_t i = 2; i * i < limit; ++i) {
     if (!is_prime[i])
       continue;
-    for (T j = i * i; j < limit; j += i)
+    for (size_t j = i * i; j < limit; j += i)
       is_prime[j] = false;
   }
 
-  // Now construct the prime list
   const size_t num_primes = std::count(begin(is_prime), end(is_prime), true);
   std::vector<T> primes;
   primes.reserve(num_primes);
-  for (T i = 2; i < limit; ++i)
+  for (size_t i = 2; i < limit; ++i)
     if (is_prime[i])
-      primes.push_back(i);
+      primes.push_back(static_cast<T>(i));
 
   assert(num_primes == primes.size());
-
   return primes;
 }
 
@@ -54,7 +55,8 @@ template <class T> std::vector<T> sieve_of_eratosthenes(T limit) {
 /// \param n The number to be tested.
 /// \note mr stands for Miller-Rabin
 /// \pre T shall be an unsigned type with at most 32 bits.
-template <class T> bool is_prime_mr(const T n) {
+template <class T>
+bool is_prime_mr(const T n) {
   static_assert(std::is_unsigned<T>::value, "is_prime_mr: T must be unsigned");
   static_assert(sizeof(T) <= sizeof(std::uint32_t),
                 "is_prime_mr: T must have at most 32 bits");

@@ -50,7 +50,5 @@ TEST(mod_pow, WorksWhenOverflowDoesNotNeedControl) {
   EXPECT_EQ(10817, djp::mod_pow<uint32_t>(2017, 1238912398, 65536));
   EXPECT_EQ(12, djp::mod_pow<uint32_t>(22342, 1238912398, 13));
   EXPECT_EQ(8001, djp::mod_pow<uint32_t>(25237, 131312, 65536));
-  EXPECT_EQ(370, djp::mod_pow<uint64_t>(292, SIZE_MAX, 41202));
-  EXPECT_EQ(UINT32_MAX,
-            djp::mod_pow<uint64_t>(UINT64_MAX, SIZE_MAX, 4294967296));
+  EXPECT_EQ(370, djp::mod_pow<uint32_t>(292, SIZE_MAX, 41202));
 }

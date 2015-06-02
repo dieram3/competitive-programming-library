@@ -16,7 +16,8 @@
 
 namespace djp {
 
-template <class T, T Mod> class modular {
+template <class T, T Mod>
+class modular {
   static_assert(std::is_unsigned<T>::value, "T must be unsigned");
   static_assert(Mod >= 2, "Mod must be greater than or equal to 2");
   static_assert((Mod - 1) <= std::numeric_limits<T>::max() / (Mod - 1),
@@ -53,7 +54,8 @@ public:
   }
   friend bool congruent(modular a, modular b) { return T(a) == T(b); }
 
-  template <class Integer> explicit operator Integer() const {
+  template <class Integer>
+  explicit operator Integer() const {
     return static_cast<Integer>(value_);
   }
 
@@ -62,19 +64,19 @@ private:
 };
 
 /// \brief Computes a * b % mod
-template <class T> T mod_mul(T a, T b, T mod) {
+template <class T>
+T mod_mul(T a, T b, T mod) {
   static_assert(std::is_unsigned<T>::value, "Mod mul: T must be unsigned");
-  using BT = typename std::conditional<sizeof(T) <= sizeof(std::uint32_t),
-                                       std::uint64_t, __uint128_t>::type;
-  static_assert(sizeof(BT) >= 2 * sizeof(T), "Cannot do safe mod mul");
-  return static_cast<T>(BT(a) * BT(b) % BT(mod));
+  static_assert(sizeof(T) <= sizeof(std::uint32_t), "Cannot do safe mod mul");
+  return std::uint64_t(a) * b % mod;
 }
 
 /// \brief Computes a ^ b % mod
 /// \pre \p mod > 1
 /// Complexity: If (mod - 1)^2 <= std::numeric_limits<T>::max()
 /// O(log(exp)) Otherwise O(log^2(exp))
-template <class T> T mod_pow(T base, std::size_t exp, T mod) {
+template <class T>
+T mod_pow(T base, std::size_t exp, T mod) {
   T result = 1;
   while (exp) {
     if (exp & 1)

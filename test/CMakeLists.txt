@@ -13,10 +13,9 @@ function(add_unittest TEST_NAME)
   -Wno-c++98-compat 
   -Wno-c++98-compat-pedantic
   -Wno-padded
-  -Wno-global-constructors
-  -Wno-missing-prototypes
-  -Wno-sign-conversion 
   -Wno-old-style-cast
+  -Wno-sign-conversion 
+  -Wno-global-constructors
   >)
 
   add_test(NAME ${TEST_NAME} COMMAND ${TARGET_ID})
