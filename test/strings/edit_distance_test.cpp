@@ -29,3 +29,28 @@ TEST(levenshtein_distance, HandlesSmallInput) {
                                                   str2.rbegin(), str2.rend());
   EXPECT_EQ(3, (int)distance);
 }
+
+//#include <algorithm>
+//#include <functional>
+//#include <iostream>
+//#include <chrono>
+//#include <random>
+//#include <string>
+// TEST(levenshtein_distance, benchmark) {
+//  std::string str1(5000, '\0');
+//  std::string str2(6000, '\0');
+//  std::default_random_engine urng(12387123);
+//  std::uniform_int_distribution<char> dist('a', 'z');
+//  auto gen = std::bind(dist, std::ref(urng));
+//  std::generate(str1.begin(), str1.end(), gen);
+//  std::generate(str2.begin(), str2.end(), gen);
+//
+//  using namespace std::chrono;
+//  auto start = steady_clock::now();
+//  auto distance = djp::levenshtein_distance(str1.begin(), str1.end(),
+//                                            str2.begin(), str2.end());
+//  auto end = steady_clock::now();
+//  duration<double, std::milli> elapsed = end - start;
+//  std::cout << distance << '\n'; // With libc++ 3.6 should be 4957
+//  std::cout << elapsed.count() << "ms\n";
+//}

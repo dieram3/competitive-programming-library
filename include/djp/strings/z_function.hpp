@@ -1,5 +1,5 @@
-#ifndef DJP_STRING_Z_FUNCTION_HPP
-#define DJP_STRING_Z_FUNCTION_HPP
+#ifndef DJP_STRINGS_Z_FUNCTION_HPP
+#define DJP_STRINGS_Z_FUNCTION_HPP
 
 #include <algorithm>
 #include <vector>
@@ -7,6 +7,7 @@
 #include <cstddef>
 
 namespace djp {
+
 /// \brief Computes the Z-function of str.
 /// Each element of the Z-function is described like this: the element z[i] is
 /// the longest common prefix between str and str.substr(i).
@@ -28,6 +29,6 @@ inline std::vector<size_t> z_function(const std::string &str) {
   return z;
 }
 
-} // namespace djp
+} // end namespace djp
 
-#endif // HEADER GUARD
+#endif // Header guard
