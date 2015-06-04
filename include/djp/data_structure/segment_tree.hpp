@@ -41,7 +41,7 @@ public:
   void modify(size_t pos, const T &value) {
     tree[pos += elems] = value;
     for (; pos > 1; pos >>= 1)
-      tree[pos >> 1] = (tree[pos] + tree[pos ^ 1]);
+      tree[pos >> 1] = op(tree[pos], tree[pos ^ 1]);
   }
 
   T accumulate(size_t l, size_t r) const {
