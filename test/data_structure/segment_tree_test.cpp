@@ -9,7 +9,7 @@
 #include <numeric>
 #include <functional>
 
-using djp::segment_tree;
+using namespace djp;
 
 namespace {
 
@@ -31,8 +31,8 @@ TEST(segment_tree, HandlesSum) {
 
 TEST(segment_tree, HandlesForeach) {
   auto stree = make_iota_segment_tree(10);
-  auto multiply_by_2 = [](int &elem) { elem *= 2; };
-  stree.for_each(0, 5, multiply_by_2);
+  for (size_t i = 0; i != 5; ++i)
+    stree.modify(i, 2 * stree.elem(i));
   EXPECT_EQ(2, stree.accumulate(0, 1));
   EXPECT_EQ(10, stree.accumulate(1, 3));
   EXPECT_EQ(30, stree.accumulate(0, 5));
@@ -46,9 +46,8 @@ TEST(segment_tree, HandlesForeach) {
 //#include <cstdint>
 //#include <iostream>
 // TEST(segment_tree, Benchmark) {
-//  std::vector<uint64x_t> vec(1000000);
-//  std::random_device rd;
-//  std::mt19937_64 gen(rd());
+//  std::vector<uint64_t> vec(1000000);
+//  std::mt19937_64 gen(2352341);
 //  {
 //    std::uniform_int_distribution<uint64_t> dist;
 //    std::generate(vec.begin(), vec.end(), std::bind(dist, std::ref(gen)));
