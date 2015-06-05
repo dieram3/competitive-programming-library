@@ -11,6 +11,7 @@ if (NOT CMAKE_BUILD_TYPE)
 endif()
 
 find_package(Threads) # Needed for gtest
+find_package(Doxygen)
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -41,3 +42,9 @@ target_compile_features(CP_utils INTERFACE
 
 enable_testing()
 add_subdirectory("test")
+
+# ---------------------------------------
+# Add documentation
+# ---------------------------------------
+
+add_subdirectory("doc")
