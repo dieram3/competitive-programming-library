@@ -6,50 +6,12 @@
 #ifndef DJP_GRAPH_DIJKSTRA_SHORTEST_PATHS_HPP
 #define DJP_GRAPH_DIJKSTRA_SHORTEST_PATHS_HPP
 
-#include <vector>
-#include <queue>
-#include <utility>
-#include <functional>
-#include <limits>
-#include <cstddef>
-#include <cassert>
+#include <vector>  // for std::vector
+#include <queue>   // for std::priority_queue
+#include <limits>  // for std::numeric_limits
+#include <cstddef> // for std::size_t
 
 namespace djp {
-
-namespace v1 {
-
-template <class Graph>
-std::vector<size_t> dijkstra_shortest_paths(const Graph &g, size_t source) {
-  using pq_value_t = std::pair<size_t, size_t>; // (dist[v], v)
-  using pq_type = std::priority_queue<void, std::vector<pq_value_t>,
-                                      std::greater<pq_value_t>>;
-
-  std::vector<size_t> dist(g.num_vertices(), -1);
-  dist[source] = 0;
-
-  pq_type pq;
-  pq.emplace(dist[source], source);
-
-  while (!pq.empty()) {
-    const size_t u = pq.top().second;
-    pq.pop();
-
-    for (auto edge : g.out_edges(u)) {
-      const size_t v = edge->target;
-      const size_t weight_uv = edge->weight;
-      if (dist[v] > dist[u] + weight_uv) {
-        dist[v] = dist[u] + weight_uv;
-        pq.emplace(dist[v], v);
-      }
-    }
-  }
-  return dist;
-}
-
-} // namespace v1
-
-// v2 outperforms v1 especially if the graph is dense
-inline namespace v2 {
 
 /// \brief Solves the Single-Source Shortest Paths problem.
 /// \returns A vector containing the shortest distances to each vertex.
@@ -88,8 +50,6 @@ std::vector<Distance> dijkstra_shortest_paths(const Graph &g, size_t source) {
   }
   return dist;
 }
-
-} // namespace v2
 
 } // namespace djp
 
