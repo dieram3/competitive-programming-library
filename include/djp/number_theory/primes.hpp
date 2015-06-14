@@ -21,10 +21,13 @@
 
 namespace djp {
 
-/// \brief Finds all primes number less than \p limit
-/// \returns A sorted vector containing all primes numbers less than \p limit
-/// \pre \p limit shall not be a negative number.
-/// Complexity: O(N * log log N) where N == \p limit
+/// \brief Finds all primes number less than a given number.
+/// \param limit The upper bound limit.
+/// \returns A sorted \c vector containing all primes numbers less than \p
+/// limit.
+/// \pre \p limit shall be a non-negative number.
+/// \par Complexity
+/// O(N * log log N) where N == \p limit.
 template <class T = std::uint32_t>
 std::vector<T> sieve_of_eratosthenes(size_t limit) {
   if (limit < 2)

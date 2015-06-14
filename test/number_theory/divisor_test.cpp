@@ -10,9 +10,11 @@
 #include <djp/number_theory/primes.hpp> // for djp::sieve_of_eratosthenes
 #include <djp/utility/basics.hpp>       // for djp::repeat
 
+#include <algorithm> // for std::sort
 #include <random>    // for std::mt19937
 #include <stdexcept> // for std::logic_error
 #include <utility>   // for std::pair
+#include <vector>    // for std::vector
 #include <cstddef>   // for std::size_t
 #include <cstdio>    // for std::sprintf
 #include <cstdint>   //for std::uint32_t
@@ -64,4 +66,24 @@ TEST(count_divisors, WorksWell) {
   EXPECT_EQ(2, count_divisors(829, small_sieve));
   EXPECT_EQ(2, count_divisors(839, small_sieve));
   EXPECT_THROW(count_divisors(853, small_sieve), std::logic_error);
+}
+
+TEST(find_divisors, WorksWell) {
+  auto sieve = djp::sieve_of_eratosthenes(66000);
+  using vec = std::vector<std::uint32_t>;
+
+  auto divisors_of = [&sieve](std::uint32_t n) {
+    auto divs = djp::find_divisors(n, sieve);
+    std::sort(divs.begin(), divs.end());
+    return divs;
+  };
+
+  EXPECT_EQ(vec({1, 2}), divisors_of(2));
+  EXPECT_EQ(vec({1, 2, 3, 4, 6, 12}), divisors_of(12));
+  EXPECT_EQ(vec({1, 2, 3, 4, 6, 8, 12, 24}), divisors_of(24));
+  EXPECT_EQ(vec({1, 4729, 21379, 101101291}), divisors_of(101101291));
+
+  EXPECT_EQ(vec({1, INT32_MAX}), divisors_of(INT32_MAX));
+  EXPECT_EQ(vec({1, 2, 4, 13, 26, 52}), divisors_of(52));
+  EXPECT_EQ(32, divisors_of(UINT32_MAX).size());
 }
