@@ -18,6 +18,8 @@ class adjacency_list {
 
 public: // Types
   using vertex_id = std::size_t;
+  using edge_data = EdgeData;
+  using vertex_data = VertexData;
 
   struct edge : public EdgeData {
     edge(const edge &) = delete; // Prevent accidental copy.
@@ -26,26 +28,23 @@ public: // Types
     vertex_id target;
   };
 
-  using edge_list = std::list<edge>;
-  using edge_iterator = typename edge_list::const_iterator;
-  using conn_edge_list = std::vector<edge_iterator>; // connected edges
-
   struct vertex : public VertexData {
     vertex() = default;
     vertex(const vertex &) = delete; // Prevent accidental copy.
-    conn_edge_list out_edges;
-    conn_edge_list in_edges;
+    std::vector<edge *> out_edges;
+    std::vector<edge *> in_edges;
   };
 
   using vertex_list = std::vector<vertex>;
+  using edge_list = std::list<edge>;
 
 public: // Essential Member functions
   adjacency_list(std::size_t num_vertices) : vertices_(num_vertices) {}
 
   EdgeData &add_edge(vertex_id source, vertex_id target) {
     edges_.emplace_front(source, target);
-    vertices_[source].out_edges.push_back(edges_.cbegin());
-    vertices_[target].in_edges.push_back(edges_.cbegin());
+    vertices_[source].out_edges.push_back(&edges_.front());
+    vertices_[target].in_edges.push_back(&edges_.front());
     return edges_.front();
   }
 
@@ -63,11 +62,11 @@ public: // Essential Member functions
   static constexpr vertex_id null_vertex() noexcept { return -1; }
 
 public: // Helper functions
-  const conn_edge_list &out_edges(vertex_id v) const {
+  const std::vector<edge *> &out_edges(vertex_id v) const {
     return vertices_[v].out_edges;
   }
 
-  const conn_edge_list &in_edges(vertex_id v) const {
+  const std::vector<edge *> &in_edges(vertex_id v) const {
     return vertices_[v].in_edges;
   }
 
