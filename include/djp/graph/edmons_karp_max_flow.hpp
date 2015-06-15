@@ -24,8 +24,16 @@ namespace djp {
 /// \returns The maximum possible flow from \p source to \p target.
 /// \pre \p g shall not have parallel edges.
 /// \pre \p source shall not be equal to \p target.
+/// \pre For each edge <em>(u, v)</em> in \c g.edges() must exist an edge
+/// <em>(v, u)</em>. Note that if no edge <em>(v, u)</em> was intended, it
+/// should have a capacity of 0.
 /// \par Complexity
 /// O(V * E^2)
+/// \todo Make this function more user-friendly.
+/// \todo Try not to allocate a matrix for the residual graph.
+/// \todo Provide a way to return the flow of each edge. A possible solution
+/// is requiring a 'flow' data member for edges. It also would solve the matrix
+/// allocation problem.
 template <class Graph>
 auto edmonds_karp_max_flow(const Graph &g, size_t source, size_t target)
     -> decltype(g.edges().begin()->capacity) {
