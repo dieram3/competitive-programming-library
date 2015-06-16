@@ -35,34 +35,6 @@ static inline void add_edge(graph_t &g, size_t v1, size_t v2, long c1,
   edge2.rev_edge = &edge1;
 }
 
-//#include <random>
-// static graph_t make_random_graph(std::size_t num_vertices, double
-// connection_p,
-//                                 uint32_t seed1, uint32_t seed2) {
-//  assert(num_vertices != 0);
-//
-//  graph_t graph(num_vertices);
-//  const size_t max_parallel = 3;
-//
-//  std::default_random_engine gen1(seed1), gen2(seed2);
-//  std::bernoulli_distribution connect_dist(connection_p / max_parallel);
-//
-//  std::poisson_distribution<size_t> cap_dist(5.0);
-//
-//  auto connect = std::bind(connect_dist, std::ref(gen1));
-//  auto gen_cap = std::bind(cap_dist, std::ref(gen2));
-//  for (size_t i = 0; i != num_vertices; ++i)
-//    for (size_t j = i + 1; j != num_vertices; ++j)
-//      for (size_t p = 0; p != max_parallel; ++p) {
-//        size_t cap1 = connect() ? gen_cap() : 0;
-//        size_t cap2 = connect() ? gen_cap() : 0;
-//        if (cap1 || cap2)
-//          add_edge(graph, i, j, cap1, cap2);
-//      }
-//
-//  return graph;
-//}
-
 TEST(edmonds_karp_max_flow, WorksOnBasicCases) {
   graph_t g(4);
   add_edge(g, 0, 1, 20, 20);
@@ -111,6 +83,34 @@ TEST(edmonds_karp_max_flow, WorksWhenNeedsUndoing) {
   EXPECT_EQ(3, edmonds_karp_max_flow(g, 0, 11));
 }
 
+//#include <random>
+// static graph_t make_random_graph(std::size_t num_vertices, double
+// connection_p,
+//                                 uint32_t seed1, uint32_t seed2) {
+//  assert(num_vertices != 0);
+//
+//  graph_t graph(num_vertices);
+//  const size_t max_parallel = 3;
+//
+//  std::default_random_engine gen1(seed1), gen2(seed2);
+//  std::bernoulli_distribution connect_dist(connection_p / max_parallel);
+//
+//  std::poisson_distribution<size_t> cap_dist(5.0);
+//
+//  auto connect = std::bind(connect_dist, std::ref(gen1));
+//  auto gen_cap = std::bind(cap_dist, std::ref(gen2));
+//  for (size_t i = 0; i != num_vertices; ++i)
+//    for (size_t j = i + 1; j != num_vertices; ++j)
+//      for (size_t p = 0; p != max_parallel; ++p) {
+//        size_t cap1 = connect() ? gen_cap() : 0;
+//        size_t cap2 = connect() ? gen_cap() : 0;
+//        if (cap1 || cap2)
+//          add_edge(graph, i, j, cap1, cap2);
+//      }
+//
+//  return graph;
+//}
+//
 //#include <chrono>
 //#include <iostream>
 // TEST(edmonds_karp_max_flow, Benchmark) {

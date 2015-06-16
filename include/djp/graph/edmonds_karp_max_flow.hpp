@@ -8,8 +8,8 @@
 #ifndef DJP_GRAPH_EDMONS_KARP_MAX_FLOW_HPP
 #define DJP_GRAPH_EDMONS_KARP_MAX_FLOW_HPP
 
-#include <algorithm>   // For std::fill, std::min
-#include <iterator>    // For std::begin, std::end
+#include <algorithm>   // For std::min
+#include <limits>      // For std::numeric_limits
 #include <queue>       // For std::queue
 #include <type_traits> // For std::is_signed and std::is_floating_point
 #include <utility>     // For std::declval
@@ -20,49 +20,58 @@ namespace djp {
 
 /// Solves the maximum flow problem using the Edmonds-Karp algorithm.
 ///
-/// The \c edge_data of \c Graph must have the following fields:
+/// The member type \c edge of \c Graph must contain the following fields:
 /// \li \c capacity: The maximum flow allowed through the edge.
 /// \li \c flow: Output field where the final flow of each edge will be put on.
+/// This field should be mutable.
 /// \li \c rev_edge: A pointer to the reversed edge. Note that if the reverse
 /// edge was not intended to be part of the modeled graph, it should have a
 /// capacity of 0.
 ///
-/// \param g The graph that represents the flow network.
+/// \tparam Graph Must be a valid graph type.
+/// \tparam FlowType The type of the flow. It shall be either a signed integer
+/// or a floating point type.
+/// \param graph The graph that represents the flow network.
 /// \param source The source vertex.
 /// \param target The target vertex.
 /// \returns The maximum possible flow from \p source to \p target.
 /// \pre \p source shall not be equal to \p target.
 /// \par Complexity
-/// At most O(V * E^2) flow operations, where <tt>V == g.num_vertices()</tt> and
-/// <tt>E == g.num_edges()</tt>.
+/// At most O(V * E^2) memory accesses, where <tt>V = graph.num_vertices()</tt>
+/// and <tt>E = graph.num_edges()</tt>.
+/// \todo Add example.
 template <typename Graph, typename FlowType = decltype(
                               std::declval<typename Graph::edge>().flow)>
-FlowType edmonds_karp_max_flow(Graph &g, size_t source, size_t target) {
+FlowType edmonds_karp_max_flow(Graph &graph, size_t source, size_t target) {
   static_assert(std::is_signed<FlowType>::value ||
                     std::is_floating_point<FlowType>::value,
                 "The flow type must be signed or floating point.");
 
-  for (auto &edge : g.edges())
+  for (auto &edge : graph.edges())
     edge.flow = 0;
 
-  std::vector<typename Graph::edge *> parent(g.num_vertices());
+  std::vector<typename Graph::edge *> parent(graph.num_vertices());
+  std::vector<unsigned> last_queue(graph.num_vertices());
 
-  auto find_path = [source, target, &parent, &g] {
+  auto find_path = [source, target, &parent, &last_queue, &graph] {
     std::queue<size_t> queue;
     queue.push(source);
-    std::fill(begin(parent), end(parent), nullptr);
+    const auto current_queue = ++last_queue[source];
 
     while (!queue.empty()) {
       const size_t curr = queue.front();
       queue.pop();
-      for (auto *edge : g.out_edges(curr)) {
+      for (auto *edge : graph.out_edges(curr)) {
         const size_t child = edge->target;
-        if (parent[child] || edge->flow >= edge->capacity)
+        if (last_queue[child] == current_queue)
+          continue;
+        if (edge->flow >= edge->capacity)
           continue;
         parent[child] = edge;
         if (child == target)
           return true;
         queue.push(child);
+        last_queue[child] = current_queue;
       }
     }
     return false;
@@ -71,14 +80,11 @@ FlowType edmonds_karp_max_flow(Graph &g, size_t source, size_t target) {
   FlowType max_flow = 0;
 
   while (find_path()) {
-    auto *edge = parent[target];
-    FlowType path_flow = edge->capacity - edge->flow;
-    for (size_t curr = edge->source; curr != source; curr = edge->source) {
-      edge = parent[curr];
+    FlowType path_flow = std::numeric_limits<FlowType>::max();
+    for (auto *edge = parent[target]; edge; edge = parent[edge->source]) {
       path_flow = std::min(path_flow, edge->capacity - edge->flow);
     }
-    for (size_t curr = target; curr != source; curr = edge->source) {
-      edge = parent[curr];
+    for (auto *edge = parent[target]; edge; edge = parent[edge->source]) {
       edge->flow += path_flow;
       edge->rev_edge->flow -= path_flow;
     }
