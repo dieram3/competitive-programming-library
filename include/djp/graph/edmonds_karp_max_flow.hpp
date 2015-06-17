@@ -50,28 +50,30 @@ FlowType edmonds_karp_max_flow(Graph &graph, size_t source, size_t target) {
   for (auto &edge : graph.edges())
     edge.flow = 0;
 
-  std::vector<typename Graph::edge *> parent(graph.num_vertices());
-  std::vector<unsigned> last_queue(graph.num_vertices());
+  // last_queue_ids[v] represents the the last BFS queue in which the vertex v
+  // was inserted. Note that the source vertex is present in all BFS queues.
+  std::vector<unsigned> last_queue_ids(graph.num_vertices());
+  std::vector<typename Graph::edge *> parents(graph.num_vertices());
 
-  auto find_path = [source, target, &parent, &last_queue, &graph] {
+  auto find_path = [source, target, &parents, &last_queue_ids, &graph] {
     std::queue<size_t> queue;
     queue.push(source);
-    const auto current_queue = ++last_queue[source];
+    const auto current_queue_id = ++last_queue_ids[source];
 
     while (!queue.empty()) {
       const size_t curr = queue.front();
       queue.pop();
       for (auto *edge : graph.out_edges(curr)) {
         const size_t child = edge->target;
-        if (last_queue[child] == current_queue)
+        if (last_queue_ids[child] == current_queue_id)
           continue;
         if (edge->flow >= edge->capacity)
           continue;
-        parent[child] = edge;
+        parents[child] = edge;
         if (child == target)
           return true;
         queue.push(child);
-        last_queue[child] = current_queue;
+        last_queue_ids[child] = current_queue_id;
       }
     }
     return false;
@@ -81,10 +83,10 @@ FlowType edmonds_karp_max_flow(Graph &graph, size_t source, size_t target) {
 
   while (find_path()) {
     FlowType path_flow = std::numeric_limits<FlowType>::max();
-    for (auto *edge = parent[target]; edge; edge = parent[edge->source]) {
+    for (auto *edge = parents[target]; edge; edge = parents[edge->source]) {
       path_flow = std::min(path_flow, edge->capacity - edge->flow);
     }
-    for (auto *edge = parent[target]; edge; edge = parent[edge->source]) {
+    for (auto *edge = parents[target]; edge; edge = parents[edge->source]) {
       edge->flow += path_flow;
       edge->rev_edge->flow -= path_flow;
     }
