@@ -38,7 +38,7 @@ class rmq_lca {
 
 public:
   /// \brief Constructs a \c rmq_lca object.
-  /// \param num_nodes Number of nodes of the target tree.
+  /// \param num_vertices Number of vertices of the target tree.
   /// \param root Vertex descriptor of the root.
   /// \param children_of Function that when invoked as <tt>children_of(v)</tt>
   /// being \c v a valid vertex descriptor, it must return an \c InputRange
@@ -48,36 +48,36 @@ public:
   /// \par Complexity
   /// <tt>O(N)</tt>, where <tt>N = num_nodes</tt>
   template <class ChildrenOf>
-  rmq_lca(const size_t num_nodes, const size_t root, ChildrenOf children_of)
-      : euler_pos_(num_nodes) {
-    std::vector<bool> visited(num_nodes);
-    std::vector<size_t> depths(num_nodes);
+  rmq_lca(const size_t num_vertices, const size_t root, ChildrenOf children_of)
+      : euler_pos_(num_vertices) {
+    std::vector<bool> visited(num_vertices);
+    std::vector<size_t> depths(num_vertices);
 
     std::stack<size_t> stack;
     std::vector<euler_visit> euler_tour;
-    euler_tour.reserve(2 * num_nodes);
+    euler_tour.reserve(2 * num_vertices);
 
     depths[root] = 0;
     stack.push(root);
 
     while (!stack.empty()) {
-      const size_t cur_node = stack.top();
+      const size_t cur_vertex = stack.top();
       stack.pop();
-      const size_t cur_depth = depths[cur_node];
+      const size_t cur_depth = depths[cur_vertex];
 
-      euler_pos_[cur_node] = euler_tour.size();
-      euler_tour.push_back({cur_node, cur_depth});
+      euler_pos_[cur_vertex] = euler_tour.size();
+      euler_tour.push_back({cur_vertex, cur_depth});
 
-      if (visited[cur_node])
+      if (visited[cur_vertex])
         continue;
 
-      for (size_t child : children_of(cur_node)) {
+      for (size_t child : children_of(cur_vertex)) {
         depths[child] = cur_depth + 1;
-        stack.push(cur_node);
+        stack.push(cur_vertex);
         stack.push(child);
       }
 
-      visited[cur_node] = true;
+      visited[cur_vertex] = true;
     }
 
     // Initialize the Range Minimum Query.
@@ -91,12 +91,8 @@ public:
   /// <tt>O(log(N))</tt>, where \c N = number of vertices of the target
   /// graph.
   size_t operator()(size_t v1, size_t v2) const {
-    size_t begin = euler_pos_[v1];
-    size_t end = euler_pos_[v2];
-    if (end < begin)
-      std::swap(begin, end);
-    ++end;
-    return euler_tour_.accumulate(begin, end).node;
+    const auto range = std::minmax(euler_pos_[v1], euler_pos_[v2]);
+    return euler_tour_.accumulate(range.first, range.second + 1).node;
   }
 
 private:
