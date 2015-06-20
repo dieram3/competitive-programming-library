@@ -2,6 +2,8 @@
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
+/// \file
+/// \brief Defines classes and functions to find the lowest common ancestor.
 
 #ifndef DJP_GRAPH_LOWER_COMMON_ANCESTOR_HPP
 #define DJP_GRAPH_LOWER_COMMON_ANCESTOR_HPP
@@ -17,7 +19,10 @@
 
 namespace djp {
 
-/// This class computes the lowest common ancestor by using a RMQ.
+/// \brief Function like class to compute the lowest common ancestor.
+///
+/// This class uses a range minimum query data structure to find the lowest
+/// common ancestor between two vertices given a predefined root.
 class rmq_lca {
   struct euler_visit {
     std::size_t node;
@@ -32,14 +37,16 @@ class rmq_lca {
   };
 
 public:
-  /// \brief Object function to compute the lowest common ancestor efficiently.
-  /// The target graph must be a tree rooted at \p root.
-  /// Complexity: O(n) where n == num of vertices of the target graph.
-  /// \param num_nodes The number of nodes of the target tree.
-  /// \param root The root index of the given tree
-  /// \param children_of Function that when invoked as 'children_of(node)'
-  /// being 'node' a valid node index, it must return an InputRange containing
-  /// the indices of its children nodes.
+  /// \brief Constructs a \c rmq_lca object.
+  /// \param num_nodes Number of nodes of the target tree.
+  /// \param root Vertex descriptor of the root.
+  /// \param children_of Function that when invoked as <tt>children_of(v)</tt>
+  /// being \c v a valid vertex descriptor, it must return an \c InputRange
+  /// containing descriptors of all its children vertices.
+  /// \pre The target graph shall have no cycles i.e it must be a tree.
+  /// \pre The target graph shall be completely connected.
+  /// \par Complexity
+  /// <tt>O(N)</tt>, where <tt>N = num_nodes</tt>
   template <class ChildrenOf>
   rmq_lca(const size_t num_nodes, const size_t root, ChildrenOf children_of)
       : euler_pos_(num_nodes) {
@@ -77,11 +84,15 @@ public:
     euler_tour_.assign(euler_tour.begin(), euler_tour.end());
   }
 
-  /// Computes the longest common ancestor between n1 and n2
-  /// Complexity: O(n*log(n)) where n == num vertices of the target graph.
-  size_t operator()(size_t n1, size_t n2) const {
-    size_t begin = euler_pos_[n1];
-    size_t end = euler_pos_[n2];
+  /// \brief Computes the lowest common ancestor between two vertices.
+  /// \param v1 Descriptor of the first vertex.
+  /// \param v2 Descriptor of the second vertex.
+  /// \par Complexity
+  /// <tt>O(log(N))</tt>, where \c N = number of vertices of the target
+  /// graph.
+  size_t operator()(size_t v1, size_t v2) const {
+    size_t begin = euler_pos_[v1];
+    size_t end = euler_pos_[v2];
     if (end < begin)
       std::swap(begin, end);
     ++end;

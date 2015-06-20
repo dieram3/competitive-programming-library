@@ -1,8 +1,12 @@
-/// \author Jorge Aguirre
-/// \author Diego Ramirez
+//          Copyright Jorge Aguirre, Diego Ramírez April 2015
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
+/// \file
+/// \brief Implements the Convex Hull algorithm.
 
-#ifndef DJP_CONVEX_HULL_HPP
-#define DJP_CONVEX_HULL_HPP
+#ifndef DJP_GEOMETRY_CONVEX_HULL_HPP
+#define DJP_GEOMETRY_CONVEX_HULL_HPP
 
 #include <algorithm>
 #include <iterator>
@@ -11,9 +15,11 @@
 #include <type_traits>
 
 namespace djp {
+
 /// \brief Converts the range [first, last) in a convex set.
 /// \returns An iterator to the end of the convex set.
-/// Complexity: O(n) where n = last - first.
+/// \par Complexity
+/// O(N), where N = last - first.
 template <class BidirectionalIt, class ClockRotation>
 BidirectionalIt make_convex_set(BidirectionalIt first, BidirectionalIt last,
                                 ClockRotation &&ccw) {
@@ -29,7 +35,8 @@ BidirectionalIt make_convex_set(BidirectionalIt first, BidirectionalIt last,
 /// \brief Variation of Andrew's monotone chain convex hull algorithm
 /// \pre The points shall be sorted lexicographically.
 /// \returns The convex hull sorted by counterclockwise order.
-/// Complexity: O(N) where N = last - first.
+/// \par Complexity
+/// O(N) where N = last - first.
 template <class ForwardIt, class ClockRotation>
 std::vector<typename std::iterator_traits<ForwardIt>::value_type>
 convex_hull(ForwardIt first, ForwardIt last, ClockRotation &&ccw) {
@@ -44,16 +51,17 @@ convex_hull(ForwardIt first, ForwardIt last, ClockRotation &&ccw) {
   return hull;
 }
 
-/// \brief Variation of Andrew's monotone chain convex hull algorithm
-/// Requires: The range [first, last) is sorted lexicographically.
-/// Complexity: O(N) where N == std::distance(first, last)
+/// \brief Variation of Andrew's monotone chain convex hull algorithm.
 ///
 /// Reorders the points in the range [first, last] in such a way that all
 /// elements inside the convex hull are placed in the range
 /// [first, ch_begin) sorted lexicographically and all elements in the boundary
 /// of the convex hull are placed in the range [ch_begin, last) sorted by
 /// counterclockwise order.
-/// Returns: ch_begin.
+/// \returns ch_begin.
+/// \pre The range [first, last) shall be sorted lexicographically.
+/// \par Complexity
+/// O(N) where N == std::distance(first, last)
 template <class ForwardIt, class ClockRotation>
 ForwardIt convex_hull_partition(ForwardIt first, ForwardIt last,
                                 ClockRotation &&ccw) {
@@ -79,6 +87,6 @@ ForwardIt convex_hull_partition(ForwardIt first, ForwardIt last,
   return ch_begin;
 }
 
-} // namespace djp
+} // end namespace djp
 
-#endif // HEADER GUARD
+#endif // Header guard

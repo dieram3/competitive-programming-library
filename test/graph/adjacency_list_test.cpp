@@ -2,9 +2,6 @@
 #include <gtest/gtest.h>
 #include <cstddef> // for std::size_t
 
-// This is a small test
-// Who really test the adjacency list are all the graph algorithms.
-
 static_assert(djp::adjacency_list<>::null_vertex() + 1 == 0,
               "Null vertex has corrupt value");
 

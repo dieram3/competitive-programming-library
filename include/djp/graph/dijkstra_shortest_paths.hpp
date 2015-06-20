@@ -2,6 +2,8 @@
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
+/// \file
+/// \brief Implements Dijkstra's algorithm.
 
 #ifndef DJP_GRAPH_DIJKSTRA_SHORTEST_PATHS_HPP
 #define DJP_GRAPH_DIJKSTRA_SHORTEST_PATHS_HPP
@@ -13,10 +15,15 @@
 
 namespace djp {
 
-/// \brief Solves the Single-Source Shortest Paths problem.
-/// \returns A vector containing the shortest distances to each vertex.
-/// Complexity: O(V*log(V) + E)
-/// where V == g.num_vertices() && E == g.num_edges()
+/// \brief Solves the single-source shortest paths problem.
+/// \param g The target graph.
+/// \param source The source vertex.
+/// \returns A vector \c dist such that  <tt>dist[v]</tt> contains the shortest
+/// distance from the vertex \p source to the vertex \c v. Note that
+/// <tt>dist[source] == 0</tt>.
+/// \par Complexity
+/// O(V * log(V) + E), where <tt>V = g.num_vertices()</tt> and
+/// <tt>E = g.num_edges()</tt>
 template <class Graph, class Distance = std::size_t>
 std::vector<Distance> dijkstra_shortest_paths(const Graph &g, size_t source) {
 
