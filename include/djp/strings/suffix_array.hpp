@@ -2,6 +2,10 @@
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
+/// \file
+/// \brief Defines the function \c make_suffix_array.
+/// \todo Add a linear version of make_suffix_array. It is required for some
+/// contests.
 
 #ifndef DJP_STRINGS_SUFFIX_ARRAY_HPP
 #define DJP_STRINGS_SUFFIX_ARRAY_HPP
@@ -16,8 +20,16 @@
 
 namespace djp {
 
-/// \brief Computes the suffix array.
-/// Complexity: O(n*log(n)) time, O(n) space
+/// \brief Computes the suffix array of a given string.
+///
+/// \param str The target string.
+///
+/// \returns A vector containing the all the suffixes of \p str sorted
+/// lexicographically i.e the suffix array.
+///
+/// \par Complexity
+/// <tt>O(n * log(n))</tt> time, <tt>O(n)</tt> space.
+///
 inline std::vector<size_t> make_suffix_array(const std::string &str) {
   if (str.empty())
     return {};
@@ -51,9 +63,6 @@ inline std::vector<size_t> make_suffix_array(const std::string &str) {
   return sa;
 }
 
-// TODO: Add a linear version of make_suffix_array. It is required for some
-//       contests
-
-} // namespace djp
+} // end namespace djp
 
 #endif // Header guard

@@ -2,6 +2,8 @@
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
+/// \file
+/// \brief Defines the class \c matrix.
 
 #ifndef DJP_UTILITY_MATRIX_HPP
 #define DJP_UTILITY_MATRIX_HPP
@@ -12,7 +14,13 @@
 
 namespace djp {
 
-template <class T> class matrix {
+/// \brief Two-dimensional array.
+///
+/// This is a convenience class used for working with two-dimensional arrays on
+/// a contiguous chunk of memory.
+///
+template <typename T>
+class matrix {
 public:
   using index_type = std::pair<size_t, size_t>;
   using reference = typename std::vector<T>::reference;
@@ -34,6 +42,6 @@ private:
   std::vector<T> data_;
 };
 
-} // namespace djp
+} // end namespace djp
 
 #endif // Header guard

@@ -2,6 +2,7 @@
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
+/// \todo Put \c lcp_querier in a different file.
 
 #ifndef DJP_STRINGS_LCP_ARRAY_HPP
 #define DJP_STRINGS_LCP_ARRAY_HPP
@@ -15,9 +16,17 @@
 
 namespace djp {
 
-/// \brief Computes the LCP array.
-/// Complexity: O(n) time, O(n) space
-/// \note lcp[i] := longest common prefix between sa[i] and sa[i+1]
+/// \brief Generates the LCP array of the given string.
+///
+/// \param str The string to get the LCP array.
+/// \param sa The suffix array of \p str.
+///
+/// \par Complexity
+/// <tt>O(N)</tt> time, <tt>O(N)</tt> space.
+///
+/// \note <tt>lcp[i] :=</tt> longest common prefix between <tt>sa[i]</tt> and
+/// <tt>sa[i + 1]</tt>
+///
 inline std::vector<size_t> make_lcp_array(const std::string &str,
                                           const std::vector<size_t> &sa) {
   const size_t N = str.size();
@@ -39,18 +48,20 @@ inline std::vector<size_t> make_lcp_array(const std::string &str,
 }
 
 /// \brief Function like class used to compute the longest common prefix between
-///        any two substrings of the given string.
+///        any two suffixes of a given string.
 class lcp_querier {
   struct minimum {
     size_t operator()(size_t x, size_t y) const { return std::min(x, y); }
   };
 
 public:
-  /// \brief Contructs the LCP Querier
+  /// \brief Contructs the LCP Querier.
   /// \param str The target string.
   /// \param sa The suffix array of the given string.
-  /// \pre \p The target string \p str shall not be empty.
-  /// Complexity: O(N) where N == str.size()
+  /// \pre The target string \p str shall not be empty.
+  /// \par Complexity
+  /// <tt>O(N)</tt>, where <tt>N = str.size()</tt>
+  ///
   lcp_querier(const std::string &str, const std::vector<size_t> &sa)
       : rank_(sa.size()) {
     const size_t N = sa.size();
@@ -61,8 +72,12 @@ public:
     rmq_.assign(begin(lcp_array), end(lcp_array));
   }
 
-  /// \brief Computes the LCP between substrings i and j
-  /// Complexity: O(log(N)) where N == The size of the target string.
+  /// \brief Computes the LCP between a pair of suffixes.
+  /// \param i The first suffix.
+  /// \param j The second suffix.
+  /// \par Complexity
+  /// <tt>O(log(N))</tt> where <tt>N = </tt>The size of the target string.
+  ///
   size_t operator()(size_t i, size_t j) const {
     if (i == j)
       return rank_.size() - i;
@@ -76,6 +91,6 @@ private:
   segment_tree<size_t, minimum> rmq_;
 };
 
-} // namespace djp
+} // end namespace djp
 
 #endif // Header guard

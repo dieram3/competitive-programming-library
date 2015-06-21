@@ -1,3 +1,10 @@
+//          Copyright Diego Ramírez June 2015
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
+/// \file
+/// \brief Defines functions to compute the edit distance.
+
 #ifndef DJP_STRING_EDIT_DISTANCE_HPP
 #define DJP_STRING_EDIT_DISTANCE_HPP
 
@@ -11,12 +18,21 @@
 
 namespace djp {
 
-/// Computes the edit distance between the ranges [first1, last1) and
-/// [first2, last2). The set of operations taken into account are
-/// deletion, insertion and substitution. Each operation costs 1.
-/// Complexity: m*n comparisons of equality
-/// where m == last1 - first1, n == last2 - first2
-template <class RandomIt1, class RandomIt2>
+/// \brief Computes the edit distance between two ranges.
+///
+/// The set of operations taken into account are deletion, insertion and
+/// substitution. Each operation costs 1.
+///
+/// \param first1 Beginning of the first range.
+/// \param last1 End of the first range.
+/// \param first2 Beginning of the second range.
+/// \param last2 End of the second range.
+///
+/// \par Complexity
+/// <tt>m * n</tt> comparisons of equality, where <tt>m = last1 - first1</tt>
+/// and <tt>n = last2 - first2</tt>
+///
+template <typename RandomIt1, typename RandomIt2>
 std::size_t levenshtein_distance(RandomIt1 first1, RandomIt1 last1,
                                  RandomIt2 first2, RandomIt2 last2) {
   using std::size_t;
