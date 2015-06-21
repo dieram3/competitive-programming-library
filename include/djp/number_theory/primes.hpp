@@ -2,6 +2,8 @@
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
+/// \file
+/// \brief Defines functions related to prime numbers.
 
 #ifndef DJP_NUMBER_THEORY_PRIMES_HPP
 #define DJP_NUMBER_THEORY_PRIMES_HPP
@@ -27,8 +29,8 @@ namespace djp {
 /// limit.
 /// \pre \p limit shall be a non-negative number.
 /// \par Complexity
-/// O(N * log log N) where N == \p limit.
-template <class T = std::uint32_t>
+/// <tt>O(N * log log N)</tt>, where <tt>N = limit</tt>.
+template <typename T = std::uint32_t>
 std::vector<T> sieve_of_eratosthenes(size_t limit) {
   if (limit < 2)
     return {};
@@ -54,11 +56,11 @@ std::vector<T> sieve_of_eratosthenes(size_t limit) {
   return primes;
 }
 
-/// \brief Checks if \p n is a prime number.
+/// \brief Checks if a given number is prime.
 /// \param n The number to be tested.
 /// \note mr stands for Miller-Rabin
 /// \pre T shall be an unsigned type with at most 32 bits.
-template <class T>
+template <typename T>
 bool is_prime_mr(const T n) {
   static_assert(std::is_unsigned<T>::value, "is_prime_mr: T must be unsigned");
   static_assert(sizeof(T) <= sizeof(std::uint32_t),

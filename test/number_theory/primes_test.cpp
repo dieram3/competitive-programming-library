@@ -23,7 +23,7 @@ namespace {
 /// \pre \p sieve shall not be empty.
 /// \pre \p sieve shall be a sorted sequence of consecutive primes numbers
 ///      starting from 2.
-/// \pre \p std::pow(sieve.back(), 2) <= number
+/// \pre <tt>std::pow(sieve.back(), 2) <= number</tt>
 template <class T>
 bool is_prime_sieve(T number, const std::vector<T> &sieve) {
   if (number <= sieve.back())

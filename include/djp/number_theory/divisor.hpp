@@ -20,7 +20,7 @@ namespace djp {
 /// \returns The number of divisors.
 /// \pre The number to be tested shall be positive.
 /// \sa find_divisors
-template <class T>
+template <typename T>
 std::size_t count_divisors(T n) {
   std::size_t ans = 1;
   for (T d = 2; !(d > n / d); ++d) {
@@ -50,7 +50,7 @@ std::size_t count_divisors(T n) {
 /// value of \p n fits in a 32-bit unsigned integer.
 /// \sa find_divisors
 /// \sa sieve_of_eratosthenes
-template <class T, class Range>
+template <typename T, typename Range>
 std::size_t count_divisors(T n, const Range &sieve) {
   assert(n > 0);
 
@@ -86,7 +86,7 @@ std::size_t count_divisors(T n, const Range &sieve) {
 /// value of \p n fits in a 32-bit unsigned integer.
 /// \sa count_divisors
 /// \sa sieve_of_eratosthenes
-template <class T, class Range>
+template <typename T, typename Range>
 std::vector<T> find_divisors(T n, const Range &sieve) {
   assert(n > 0);
 
