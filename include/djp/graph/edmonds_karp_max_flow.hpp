@@ -24,7 +24,7 @@ namespace djp {
 /// \li \c capacity: The maximum flow allowed through the edge.
 /// \li \c flow: Output field where the final flow of each edge will be put on.
 /// This field should be mutable.
-/// \li \c rev_edge: A pointer to the reversed edge. Note that a reverse edge
+/// \li \c rev_edge: A pointer to the reverse edge. Note that a reverse edge
 /// must exist even though it was not intended to be part of the modeled graph.
 /// In such a case, the reverse edge should have a capacity of 0. In case of
 /// existence of parallel edges, each edge <tt>(u, v)</tt> must have its own
