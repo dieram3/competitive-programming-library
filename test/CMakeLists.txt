@@ -13,7 +13,6 @@ function(add_unittest TEST_NAME)
   -Wno-c++98-compat 
   -Wno-c++98-compat-pedantic
   -Wno-padded
-  -Wno-old-style-cast
   -Wno-sign-conversion 
   -Wno-global-constructors
   >)

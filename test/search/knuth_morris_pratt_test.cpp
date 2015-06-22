@@ -18,7 +18,7 @@ TEST(kmp_searcher, SearchsQuickly) {
   text.back() = 'b';
   auto search_on = djp::make_kmp_searcher(pattern.begin(), pattern.end());
   auto it = search_on(text.begin(), text.end());
-  EXPECT_EQ(pattern.size(), (size_t)std::distance(it, text.end()));
+  EXPECT_EQ(pattern.size(), std::distance(it, text.end()));
 }
 
 TEST(kmp_searcher, SearchCorrectly) {

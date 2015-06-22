@@ -14,12 +14,12 @@ TEST(levenshtein_distance, HandlesSmallInput) {
                                      str2.end());
   };
 
-  EXPECT_EQ(3, (int)lev_dist("kitten", "sitting"));
-  EXPECT_EQ(3, (int)lev_dist("in...suv...dell", "ins...sub...del"));
-  EXPECT_EQ(2, (int)lev_dist("hello world", "hallo word"));
-  EXPECT_EQ(0, (int)lev_dist("equal", "equal"));
-  EXPECT_EQ(2, (int)lev_dist("non swap no", "oon swap nn"));
-  EXPECT_EQ(11, (int)lev_dist("max_cost...", "12345678"));
+  EXPECT_EQ(3, lev_dist("kitten", "sitting"));
+  EXPECT_EQ(3, lev_dist("in...suv...dell", "ins...sub...del"));
+  EXPECT_EQ(2, lev_dist("hello world", "hallo word"));
+  EXPECT_EQ(0, lev_dist("equal", "equal"));
+  EXPECT_EQ(2, lev_dist("non swap no", "oon swap nn"));
+  EXPECT_EQ(11, lev_dist("max_cost...", "12345678"));
 
   std::string str1 = "kitten";
   std::string str2 = "sitting";
@@ -27,7 +27,7 @@ TEST(levenshtein_distance, HandlesSmallInput) {
   // This must compile
   const auto distance = djp::levenshtein_distance(str1.begin(), str1.end(),
                                                   str2.rbegin(), str2.rend());
-  EXPECT_EQ(3, (int)distance);
+  EXPECT_EQ(3, distance);
 }
 
 //#include <algorithm>
