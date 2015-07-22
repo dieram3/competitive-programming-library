@@ -75,6 +75,7 @@ convex_hull(ForwardIt first, ForwardIt last,
 /// counterclockwise order.
 /// \returns ch_begin.
 /// \pre The range [first, last) shall be sorted lexicographically.
+/// \pre Point class must implement the `-` operator and must have `x` and `y` as public members.
 /// \par Complexity
 /// O(N) where N == std::distance(first, last)
 template<class ForwardIt>
