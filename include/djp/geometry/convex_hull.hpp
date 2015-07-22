@@ -20,12 +20,23 @@ namespace djp {
 /// \returns An iterator to the end of the convex set.
 /// \par Complexity
 /// O(N), where N = last - first.
-template <class BidirectionalIt, class ClockRotation>
+template<class BidirectionalIt>
 BidirectionalIt make_convex_set(BidirectionalIt first, BidirectionalIt last,
-                                ClockRotation &&ccw) {
+                                bool with_collinear_points) {
+  using point_t = typename BidirectionalIt::value_type;
+
   auto end = first;
   for (auto i = first; i != last; ++i) {
-    while (end - first >= 2 && !ccw(end[-2], end[-1], *i))
+    auto is_clockwise = [&](const point_t &p0, const point_t &p1, const point_t &p2) {
+      auto cross = [&](const point_t &p, const point_t &q) {
+        return p.x * q.y - p.y * q.x;
+      };
+
+      return with_collinear_points ? cross(p1 - p0, p2 - p0) < 0 :
+             cross(p1 - p0, p2 - p0) <= 0;
+    };
+
+    while (end - first >= 2 && is_clockwise(end[-2], end[-1], *i))
       --end;
     *end++ = std::move(*i);
   }
@@ -34,20 +45,24 @@ BidirectionalIt make_convex_set(BidirectionalIt first, BidirectionalIt last,
 
 /// \brief Variation of Andrew's monotone chain convex hull algorithm
 /// \pre The points shall be sorted lexicographically.
+/// \pre Point class must implement the `-` operator and must have `x` and `y` as public members.
 /// \returns The convex hull sorted by counterclockwise order.
 /// \par Complexity
 /// O(N) where N = last - first.
-template <class ForwardIt, class ClockRotation>
+template<class ForwardIt>
 std::vector<typename std::iterator_traits<ForwardIt>::value_type>
-convex_hull(ForwardIt first, ForwardIt last, ClockRotation &&ccw) {
+convex_hull(ForwardIt first, ForwardIt last,
+            bool with_collinear_points = false) {
   std::size_t n = std::distance(first, last);
   using point_t = typename std::iterator_traits<ForwardIt>::value_type;
 
   std::vector<point_t> hull(2 * n);
   std::copy(first, last, hull.begin());
-  auto middle = make_convex_set(hull.begin(), hull.begin() + n, ccw);
+  auto middle = make_convex_set(hull.begin(), hull.begin() + n,
+                                with_collinear_points);
   std::reverse_copy(first, last, middle);
-  hull.erase(make_convex_set(middle, middle + n, ccw), hull.end());
+  hull.erase(make_convex_set(middle, middle + n, with_collinear_points),
+             hull.end());
   return hull;
 }
 
@@ -62,16 +77,18 @@ convex_hull(ForwardIt first, ForwardIt last, ClockRotation &&ccw) {
 /// \pre The range [first, last) shall be sorted lexicographically.
 /// \par Complexity
 /// O(N) where N == std::distance(first, last)
-template <class ForwardIt, class ClockRotation>
+template<class ForwardIt>
 ForwardIt convex_hull_partition(ForwardIt first, ForwardIt last,
-                                ClockRotation &&ccw) {
+                                bool with_collinear_points = false) {
   using point_t = typename std::iterator_traits<ForwardIt>::value_type;
   assert(std::is_sorted(first, last));
 
   std::vector<point_t> lhull(first, last);
   std::vector<point_t> uhull(lhull.rbegin(), lhull.rend());
-  lhull.erase(make_convex_set(begin(lhull), end(lhull), ccw), end(lhull));
-  uhull.erase(make_convex_set(begin(uhull), end(uhull), ccw), end(uhull));
+  lhull.erase(make_convex_set(begin(lhull), end(lhull), with_collinear_points),
+              end(lhull));
+  uhull.erase(make_convex_set(begin(uhull), end(uhull), with_collinear_points),
+              end(uhull));
 
   std::vector<point_t> tmp;
   std::set_difference(first, last, begin(lhull), end(lhull),

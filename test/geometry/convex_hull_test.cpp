@@ -50,19 +50,15 @@ TEST(convex_hull, SortsPointsInCounterclockwiseOrder) {
   using point_t = point<scalar_t>;
   using vector_t = std::vector<point_t>;
 
-  auto ccw = [](const point_t &p, const point_t &q, const point_t &r) {
-    return cross(q - p, r - p).z > 0;
-  };
-
   vector_t points = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}};
 
   std::sort(begin(points), end(points));
 
-  auto hull = djp::convex_hull(begin(points), end(points), ccw);
+  auto hull = djp::convex_hull(begin(points), end(points), true);
   EXPECT_TRUE(is_ccw_sorted(begin(hull), end(hull)));
 
   points.erase(begin(points),
-               djp::convex_hull_partition(begin(points), end(points), ccw));
+               djp::convex_hull_partition(begin(points), end(points), true));
 
   EXPECT_EQ(hull.size(), points.size());
 
@@ -78,10 +74,6 @@ TEST(convex_hull, WithCollinearPoints) {
   using scalar_t = int32_t;
   using point_t = point<scalar_t>;
   using vector_t = std::vector<point_t>;
-
-  auto ccw = [](const point_t &p, const point_t &q, const point_t &r) -> bool {
-    return cross(q - p, r - p).z >= 0;
-  };
 
   vector_t points = {// Square
                      {0, 0},
@@ -103,10 +95,10 @@ TEST(convex_hull, WithCollinearPoints) {
 
   std::sort(begin(points), end(points));
 
-  auto hull = djp::convex_hull(begin(points), end(points), ccw);
+  auto hull = djp::convex_hull(begin(points), end(points), true);
 
   points.erase(begin(points),
-               djp::convex_hull_partition(begin(points), end(points), ccw));
+               djp::convex_hull_partition(begin(points), end(points), true));
 
   const size_t expected_len = 8;
   EXPECT_EQ(expected_len, hull.size());
@@ -128,10 +120,6 @@ TEST(convex_hull, WithoutCollinearPoints) {
   using point_t = point<scalar_t>;
   using vector_t = std::vector<point_t>;
 
-  auto ccw = [](const point_t &p, const point_t &q, const point_t &r) {
-    return cross(q - p, r - p).z > 0;
-  };
-
   vector_t points = {// Square
                      {0, 0},
                      {0, 5},
@@ -152,10 +140,10 @@ TEST(convex_hull, WithoutCollinearPoints) {
 
   std::sort(begin(points), end(points));
 
-  auto hull = djp::convex_hull(begin(points), end(points), ccw);
+  auto hull = djp::convex_hull(begin(points), end(points));
 
   points.erase(begin(points),
-               djp::convex_hull_partition(begin(points), end(points), ccw));
+               djp::convex_hull_partition(begin(points), end(points)));
 
   const size_t expected_len = 4;
   EXPECT_EQ(expected_len, hull.size());
