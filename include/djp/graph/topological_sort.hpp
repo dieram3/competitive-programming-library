@@ -9,7 +9,7 @@
 #include <stdexcept> // for std::logical_error
 #include <vector>    // for std::vector
 #include <cstddef>   // for std::size_t
-#include <cassert>   // for std::assert
+#include <cassert>   // for assert
 
 namespace djp {
 

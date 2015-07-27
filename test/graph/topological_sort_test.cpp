@@ -6,8 +6,11 @@
 #include <djp/graph/topological_sort.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/adjacency_list.hpp>
-#include <vector>
+#include <djp/graph/adjacency_list.hpp> // for djp::adjacency_list
+
+#include <algorithm> // for std::find
+#include <stdexcept> // for std::logic_error
+#include <vector>    // for std::vector
 
 using namespace djp;
 
