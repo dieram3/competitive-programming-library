@@ -4,6 +4,7 @@ set(GRAPH_TEST_SOURCES
 	"dijkstra_shortest_paths_test.cpp"
   "edmonds_karp_max_flow_test.cpp"
 	"lowest_common_ancestor_test.cpp"
+  "topological_sort_test.cpp"
 	)
 
 add_unittest("graph" ${GRAPH_TEST_SOURCES})
