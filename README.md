@@ -71,3 +71,7 @@ int main() {
 
 You can submit a pull request to improve the library. The code must be well documented, easily legible and independent of global variables. Use Issues for feedback. Thanks!
 
+## Read the docs
+
+See http://dieram3.github.io/CP-utils
+
