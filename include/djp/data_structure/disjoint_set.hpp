@@ -31,11 +31,23 @@ public:
     return px;
   }
 
-  void make_union(size_t i, size_t j) {
+  /// \brief Makes an union between a pair of sets.
+  ///
+  /// \param i Index of element contained on the first set.
+  /// \param j Index of element contained on the second set.
+  ///
+  /// Makes a union between the set contained the first element and the set
+  /// containing the second element. If both elements belong to the same set,
+  /// this function does noting.
+  ///
+  /// \returns \c true if the elements i and j was part of different sets so
+  /// an union was made, \c false otherwise.
+  ///
+  bool make_union(size_t i, size_t j) {
     auto px = find_root(i);
     auto py = find_root(j);
     if (px == py)
-      return;
+      return false;
     if (px->depth < py->depth)
       std::swap(px, py);
     auto &parent = const_cast<node &>(*px);
@@ -43,6 +55,7 @@ public:
     child.parent = &parent;
     parent.num_elements += child.num_elements;
     parent.depth = std::max(parent.depth, child.depth + 1);
+    return true;
   }
 
 private:
