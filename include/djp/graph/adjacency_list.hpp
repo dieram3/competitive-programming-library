@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2014
+//          Copyright Diego Ramírez July 2014, July 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,29 +6,34 @@
 #ifndef DJP_GRAPH_ADJACENCY_LIST_HPP
 #define DJP_GRAPH_ADJACENCY_LIST_HPP
 
-#include <vector> // for std::vector
-#include <deque>  // for std::deque
+#include <deque>       // for std::deque
+#include <vector>      // for std::vector
+#include <type_traits> // for std::conditional, std::is_class
 
 namespace djp {
 
-struct no_data {};
-
-template <class EdgeData = no_data, class VertexData = no_data>
+template <class EdgeData = void, class VertexData = void>
 class adjacency_list {
+
+  struct no_data {};
 
 public: // Types
   using vertex_id = std::size_t;
-  using edge_data = EdgeData;
-  using vertex_data = VertexData;
 
-  struct edge : public EdgeData {
+  using edge_data = typename std::conditional<std::is_class<EdgeData>::value,
+                                              EdgeData, no_data>::type;
+  using vertex_data =
+      typename std::conditional<std::is_class<VertexData>::value, VertexData,
+                                no_data>::type;
+
+  struct edge : public edge_data {
     edge(const edge &) = delete; // Prevent accidental copy.
     edge(vertex_id src, vertex_id tgt) : source{src}, target{tgt} {}
     vertex_id source;
     vertex_id target;
   };
 
-  struct vertex : public VertexData {
+  struct vertex : public vertex_data {
     vertex() = default;
     vertex(const vertex &) = delete; // Prevent accidental copy.
     std::vector<edge *> out_edges;
@@ -41,15 +46,14 @@ public: // Types
 public: // Essential Member functions
   adjacency_list(std::size_t num_vertices) : vertices_(num_vertices) {}
 
-  EdgeData &add_edge(vertex_id source, vertex_id target) {
+  edge_data &add_edge(vertex_id source, vertex_id target) {
     edges_.emplace_back(source, target);
     vertices_[source].out_edges.push_back(&edges_.back());
     vertices_[target].in_edges.push_back(&edges_.back());
     return edges_.back();
   }
 
-  /// \todo Remove this function. Use the future undirected graph instead.
-  void add_bidir_edge(vertex_id v1, vertex_id v2, const EdgeData &ed = {}) {
+  void add_bidir_edge(vertex_id v1, vertex_id v2, const edge_data &ed = {}) {
     add_edge(v1, v2) = ed;
     add_edge(v2, v1) = ed;
   }
