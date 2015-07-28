@@ -7,7 +7,7 @@
 #define DJP_GRAPH_ADJACENCY_LIST_HPP
 
 #include <vector> // for std::vector
-#include <list>   // for std::list
+#include <deque>  // for std::deque
 
 namespace djp {
 
@@ -36,18 +36,19 @@ public: // Types
   };
 
   using vertex_list = std::vector<vertex>;
-  using edge_list = std::list<edge>;
+  using edge_list = std::deque<edge>;
 
 public: // Essential Member functions
   adjacency_list(std::size_t num_vertices) : vertices_(num_vertices) {}
 
   EdgeData &add_edge(vertex_id source, vertex_id target) {
-    edges_.emplace_front(source, target);
-    vertices_[source].out_edges.push_back(&edges_.front());
-    vertices_[target].in_edges.push_back(&edges_.front());
-    return edges_.front();
+    edges_.emplace_back(source, target);
+    vertices_[source].out_edges.push_back(&edges_.back());
+    vertices_[target].in_edges.push_back(&edges_.back());
+    return edges_.back();
   }
 
+  /// \todo Remove this function. Use the future undirected graph instead.
   void add_bidir_edge(vertex_id v1, vertex_id v2, const EdgeData &ed = {}) {
     add_edge(v1, v2) = ed;
     add_edge(v2, v1) = ed;

@@ -47,7 +47,8 @@ TEST(adjacency_list, LinksWell) {
   graph.add_edge(2, 1);
   graph.add_edge(0, 1);
   graph.add_edge(4, 3);
-  graph.add_bidir_edge(0, 2);
+  graph.add_edge(0, 2);
+  graph.add_edge(2, 0);
 
   EXPECT_TRUE(connects_to(3, 4));
   EXPECT_TRUE(connects_to(2, 1));
