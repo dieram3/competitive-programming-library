@@ -20,6 +20,9 @@ namespace djp {
 /// \returns A <tt>std::vector</tt> containing the edge descriptors of the MST
 /// sorted by weight.
 ///
+/// \par Complexity
+/// <tt>O(E * log(E))</tt>, where <tt>E = graph.num_edges()</tt>.
+///
 template <typename Graph>
 std::vector<const typename Graph::edge *>
 kruskal_minimum_spanning_tree(const Graph &graph) {
