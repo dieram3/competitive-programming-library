@@ -8,7 +8,6 @@
 
 #include <djp/graph/adjacency_list.hpp>
 #include <vector> // for std::vector
-#include <tuple>  // for std::tuple, std::tie
 using namespace djp;
 
 struct edge_data {
@@ -35,26 +34,28 @@ TEST(BellmanFordShortestPaths, WorksOnSingleVertexGraphs) {
 
 TEST(BellmanFordShortestPaths, WorksOnPositiveEdgeWeightGraphs) {
   graph_t graph(11);
-  std::tuple<size_t, size_t, long> edges[] = {{0, 1, 3L},
-                                              {1, 2, 3L},
-                                              {1, 4, 2L},
-                                              {2, 3, 4L},
-                                              {2, 8, 5L},
-                                              {4, 5, 2L},
-                                              {4, 7, 4L},
-                                              {5, 10, 3L},
-                                              {6, 9, 5L},
-                                              {6, 10, 3L},
-                                              {7, 8, 2L},
-                                              {7, 9, 2L},
-                                              {8, 9, 2L},
-                                              {9, 10, 2L}};
-  for (const auto &edge : edges) {
-    size_t source, target;
-    long weight;
-    std::tie(source, target, weight) = edge;
-    graph.add_bidir_edge(source, target, edge_data{weight});
-  }
+
+  graph.add_bidir_edge(0, 1, edge_data{3});
+
+  graph.add_bidir_edge(1, 2, edge_data{3});
+  graph.add_bidir_edge(1, 4, edge_data{2});
+
+  graph.add_bidir_edge(2, 3, edge_data{4});
+  graph.add_bidir_edge(2, 8, edge_data{5});
+
+  graph.add_bidir_edge(4, 5, edge_data{2});
+  graph.add_bidir_edge(4, 7, edge_data{4});
+
+  graph.add_bidir_edge(5, 10, edge_data{3});
+
+  graph.add_bidir_edge(6, 9, edge_data{5});
+  graph.add_bidir_edge(6, 10, edge_data{3});
+
+  graph.add_bidir_edge(7, 8, edge_data{2});
+  graph.add_bidir_edge(7, 9, edge_data{2});
+
+  graph.add_bidir_edge(8, 9, edge_data{2});
+  graph.add_bidir_edge(9, 10, edge_data{2});
 
   dist_t dist;
   EXPECT_TRUE(bellman_ford_shortest_paths(graph, 3, dist));
