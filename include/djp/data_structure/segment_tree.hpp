@@ -55,7 +55,7 @@ public:
     return ans;
   }
 
-  T elem(size_t pos) const { return tree[elems + pos]; }
+  const T &elem(size_t pos) const { return tree[elems + pos]; }
   size_t size() const { return elems; }
 };
 
