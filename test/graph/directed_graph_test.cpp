@@ -1,12 +1,20 @@
-#include <djp/graph/adjacency_list.hpp>
+//          Copyright Diego Ramírez July 2014, August 2015
+// Distributed under the Boost Software License, Version 1.0.
+//    (See accompanying file LICENSE_1_0.txt or copy at
+//          http://www.boost.org/LICENSE_1_0.txt)
+
+#include <djp/graph/directed_graph.hpp>
 #include <gtest/gtest.h>
+
 #include <cstddef> // for std::size_t
 
-static_assert(djp::adjacency_list<>::null_vertex() + 1 == 0,
+using namespace djp;
+
+static_assert(directed_graph<>::null_vertex() + 1 == 0,
               "Null vertex has corrupt value");
 
-TEST(adjacency_list, ConstructWell) {
-  djp::adjacency_list<> graph(15);
+TEST(DirectedGraph, ConstructWell) {
+  directed_graph<> graph(15);
   EXPECT_EQ(15u, graph.num_vertices());
   EXPECT_EQ(0u, graph.num_edges());
 
@@ -15,8 +23,8 @@ TEST(adjacency_list, ConstructWell) {
   }
 }
 
-TEST(adjacency_list, LinksWell) {
-  djp::adjacency_list<> graph(5);
+TEST(DirectedGraph, LinksWell) {
+  directed_graph<> graph(5);
 
   auto check_in = [&graph](std::size_t u, std::size_t v) {
     for (const auto &edge : graph.in_edges(v)) {

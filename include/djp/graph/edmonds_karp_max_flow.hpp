@@ -33,7 +33,7 @@ namespace djp {
 /// \tparam Graph Must be a valid graph type.
 /// \tparam FlowType The type of the flow. It shall be either a signed integer
 /// or a floating point type.
-/// \param graph The graph that represents the flow network.
+/// \param graph The directed graph that represents the flow network.
 /// \param source The source vertex.
 /// \param target The target vertex.
 /// \returns The maximum possible flow from \p source to \p target.
@@ -55,7 +55,7 @@ FlowType edmonds_karp_max_flow(Graph &graph, size_t source, size_t target) {
   // last_queue_ids[v] represents the the last BFS queue in which the vertex v
   // was inserted. Note that the source vertex is present in all BFS queues.
   std::vector<unsigned> last_queue_ids(graph.num_vertices());
-  std::vector<typename Graph::edge *> parents(graph.num_vertices());
+  std::vector<const typename Graph::edge *> parents(graph.num_vertices());
 
   auto find_path = [source, target, &parents, &last_queue_ids, &graph] {
     std::queue<size_t> queue;

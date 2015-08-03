@@ -6,7 +6,7 @@
 #include <djp/graph/topological_sort.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/adjacency_list.hpp> // for djp::adjacency_list
+#include <djp/graph/directed_graph.hpp> // for djp::directed_graph
 
 #include <algorithm> // for std::find
 #include <stdexcept> // for std::logic_error
@@ -14,8 +14,9 @@
 
 using namespace djp;
 
-template <typename Graph>
-static void check_toposort(const Graph &graph) {
+using digraph_t = directed_graph<>;
+
+static void check_toposort(const digraph_t &graph) {
   std::vector<bool> processed(graph.num_vertices());
 
   const auto sorted_list = topological_sort(graph);
@@ -34,8 +35,8 @@ static void check_toposort(const Graph &graph) {
             std::find(processed.begin(), processed.end(), false));
 }
 
-TEST(topological_sort, WorksOnMultipleSolution) {
-  adjacency_list<> graph(8);
+TEST(TopologicalSort, WorksOnMultipleSolution) {
+  digraph_t graph(8);
   graph.add_edge(3, 7);
   graph.add_edge(3, 4);
   graph.add_edge(2, 7);
@@ -48,8 +49,8 @@ TEST(topological_sort, WorksOnMultipleSolution) {
   check_toposort(graph);
 }
 
-TEST(topological_sort, WorksOnSeparatedComponents) {
-  adjacency_list<> graph(7);
+TEST(TopologicalSort, WorksOnSeparatedComponents) {
+  digraph_t graph(7);
   graph.add_edge(4, 0);
   graph.add_edge(1, 0);
   graph.add_edge(6, 5);
@@ -58,8 +59,8 @@ TEST(topological_sort, WorksOnSeparatedComponents) {
   check_toposort(graph);
 }
 
-TEST(topological_sort, WorksOnUniqueSolution) {
-  adjacency_list<> graph(4);
+TEST(TopologicalSort, WorksOnUniqueSolution) {
+  digraph_t graph(4);
   graph.add_edge(3, 0);
   graph.add_edge(0, 2);
   graph.add_edge(2, 1);
@@ -70,17 +71,18 @@ TEST(topological_sort, WorksOnUniqueSolution) {
   EXPECT_EQ(1, sorted_list[3]);
 }
 
-TEST(topological_sort, DetectsBidirectionalEdges) {
-  adjacency_list<> graph(4);
+TEST(TopologicalSort, DetectsBidirectionalEdges) {
+  digraph_t graph(4);
   graph.add_edge(0, 1);
-  graph.add_bidir_edge(1, 2);
+  graph.add_edge(1, 2);
+  graph.add_edge(2, 1);
   graph.add_edge(2, 3);
 
   EXPECT_THROW(topological_sort(graph), std::logic_error);
 }
 
-TEST(topological_sort, ThrowsIfNotADag) {
-  adjacency_list<> graph(4);
+TEST(TopologicalSort, ThrowsIfNotADag) {
+  digraph_t graph(4);
   graph.add_edge(3, 0);
   graph.add_edge(0, 1);
   graph.add_edge(1, 2);

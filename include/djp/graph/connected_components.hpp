@@ -56,7 +56,7 @@ std::size_t connected_components(const Graph &graph,
       dfs_stack.pop();
 
       for (const auto *edge : graph.out_edges(current)) {
-        const size_t neighbor = edge->target;
+        const size_t neighbor = edge->get_neighbor(current);
         if (component_of[neighbor] != invalid_component) {
           assert(component_of[neighbor] == current_component);
           continue;

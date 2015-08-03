@@ -6,7 +6,7 @@
 #include <djp/graph/kruskal_minimum_spanning_tree.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/adjacency_list.hpp>
+#include <djp/graph/undirected_graph.hpp>
 using namespace djp;
 
 struct edge_data {
@@ -14,20 +14,20 @@ struct edge_data {
 };
 
 /// \todo Use a real undirected graph.
-using undirected_graph = adjacency_list<edge_data>;
+using undigraph_t = undirected_graph<edge_data>;
 
-TEST(kruskal_minimum_spanning_tree, WorksOnEmptyGraph) {
-  undirected_graph graph(0);
+TEST(KruskalMinimumSpanningTree, WorksOnEmptyGraph) {
+  undigraph_t graph(0);
   EXPECT_EQ(0, kruskal_minimum_spanning_tree(graph).size());
 }
 
-TEST(kruskal_minimum_spanning_tree, WorksOnSingleVertexGraph) {
-  undirected_graph graph(1);
+TEST(KruskalMinimumSpanningTree, WorksOnSingleVertexGraph) {
+  undigraph_t graph(1);
   EXPECT_EQ(0, kruskal_minimum_spanning_tree(graph).size());
 }
 
-TEST(kruskal_minimum_spanning_tree, WorksOnTrees) {
-  undirected_graph graph(6);
+TEST(KruskalMinimumSpanningTree, WorksOnTrees) {
+  undigraph_t graph(6);
   graph.add_edge(0, 1).weight = -1; // 0
   graph.add_edge(3, 1).weight = 5;  // 1
   graph.add_edge(1, 2).weight = 10; // 2
@@ -59,8 +59,8 @@ TEST(kruskal_minimum_spanning_tree, WorksOnTrees) {
   EXPECT_EQ(2, mst_edges[4]->target);
 }
 
-TEST(kruskal_minimum_spanning_tree, WorksWell) {
-  undirected_graph graph(5);
+TEST(KruskalMinimumSpanningTree, WorksWell) {
+  undigraph_t graph(5);
   graph.add_edge(0, 2).weight = 8;
   graph.add_edge(2, 3).weight = 5;
   graph.add_edge(3, 0).weight = 6;

@@ -6,13 +6,15 @@
 #include <djp/graph/connected_components.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/adjacency_list.hpp>
+#include <djp/graph/undirected_graph.hpp>
 #include <algorithm> // for std::max_element
 #include <vector>    // for std::vector
 using namespace djp;
 
-template <typename Graph>
-void check_labels(const Graph &graph, const std::vector<size_t> &expected) {
+using undigraph_t = undirected_graph<>;
+
+static void check_labels(const undigraph_t &graph,
+                         const std::vector<size_t> &expected) {
   const size_t num_components =
       expected.empty()
           ? 0
@@ -28,61 +30,61 @@ void check_labels(const Graph &graph, const std::vector<size_t> &expected) {
   EXPECT_EQ(expected, labels);
 }
 
-TEST(connected_components, WorksOnEmptyGraphs) {
-  adjacency_list<> graph(0);
+TEST(ConnectedComponents, WorksOnEmptyGraphs) {
+  undigraph_t graph(0);
   check_labels(graph, {});
 }
 
-TEST(connected_components, WorksOnSingleVertexGraphs) {
-  adjacency_list<> graph(1);
+TEST(ConnectedComponents, WorksOnSingleVertexGraphs) {
+  undigraph_t graph(1);
   check_labels(graph, {0});
 }
 
-TEST(connected_components, WorksOnTotallyDisconnectedGraphs) {
-  adjacency_list<> graph(10);
+TEST(ConnectedComponents, WorksOnTotallyDisconnectedGraphs) {
+  undigraph_t graph(10);
   check_labels(graph, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 }
 
-TEST(connected_components, WorksOnSingleComponentGraphs) {
-  adjacency_list<> graph(6);
-  graph.add_bidir_edge(0, 1);
-  graph.add_bidir_edge(1, 2);
-  graph.add_bidir_edge(3, 4);
-  graph.add_bidir_edge(4, 5);
-  graph.add_bidir_edge(1, 4);
-  graph.add_bidir_edge(2, 5);
+TEST(ConnectedComponents, WorksOnSingleComponentGraphs) {
+  undigraph_t graph(6);
+  graph.add_edge(0, 1);
+  graph.add_edge(1, 2);
+  graph.add_edge(3, 4);
+  graph.add_edge(4, 5);
+  graph.add_edge(1, 4);
+  graph.add_edge(2, 5);
 
   check_labels(graph, {0, 0, 0, 0, 0, 0});
 }
 
-TEST(connected_components, WorksOnMultilpleComponentGraphs) {
-  adjacency_list<> graph(14);
+TEST(ConnectedComponents, WorksOnMultilpleComponentGraphs) {
+  undigraph_t graph(14);
   // Component 0
-  graph.add_bidir_edge(4, 0);
-  graph.add_bidir_edge(4, 9);
-  graph.add_bidir_edge(4, 8);
+  graph.add_edge(4, 0);
+  graph.add_edge(4, 9);
+  graph.add_edge(4, 8);
 
   // Component 1
-  graph.add_bidir_edge(1, 2);
-  graph.add_bidir_edge(2, 3);
-  graph.add_bidir_edge(3, 1);
+  graph.add_edge(1, 2);
+  graph.add_edge(2, 3);
+  graph.add_edge(3, 1);
 
   // Component 2
-  graph.add_bidir_edge(5, 12);
-  graph.add_bidir_edge(5, 7);
-  graph.add_bidir_edge(5, 10);
-  graph.add_bidir_edge(5, 11);
-  graph.add_bidir_edge(10, 12);
-  graph.add_bidir_edge(12, 11);
-  graph.add_bidir_edge(11, 7);
-  graph.add_bidir_edge(7, 10);
+  graph.add_edge(5, 12);
+  graph.add_edge(5, 7);
+  graph.add_edge(5, 10);
+  graph.add_edge(5, 11);
+  graph.add_edge(10, 12);
+  graph.add_edge(12, 11);
+  graph.add_edge(11, 7);
+  graph.add_edge(7, 10);
 
   // Component 3
   // 6 is alone and has no edge.
 
   // Component 4
-  graph.add_bidir_edge(13, 13);
-  graph.add_bidir_edge(13, 13);
+  graph.add_edge(13, 13);
+  graph.add_edge(13, 13);
 
   check_labels(graph, {0, 1, 1, 1, 0, 2, 3, 2, 0, 0, 2, 2, 2, 4});
 }

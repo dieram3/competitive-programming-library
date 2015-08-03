@@ -4,7 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <djp/graph/lowest_common_ancestor.hpp>
-#include <djp/graph/adjacency_list.hpp>
+#include <djp/graph/directed_graph.hpp>
 #include <gtest/gtest.h>
 
 #include <vector>
@@ -12,8 +12,8 @@
 #include <cstddef>
 #include <cassert>
 
-TEST(rmq_lca, WorksOnSmallCases) {
-  djp::adjacency_list<> tree(13);
+TEST(RMQLowestCommonAncestor, WorksOnSmallCases) {
+  djp::directed_graph<> tree(13);
 
   tree.add_edge(0, 1);
   tree.add_edge(0, 2);

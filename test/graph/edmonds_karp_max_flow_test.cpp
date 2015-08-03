@@ -6,7 +6,7 @@
 #include <djp/graph/edmonds_karp_max_flow.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/adjacency_list.hpp>
+#include <djp/graph/directed_graph.hpp>
 #include <functional>
 #include <cassert>
 #include <cstddef>
@@ -19,12 +19,11 @@ struct edge_data {
   const edge_data *rev_edge;
   mutable long flow;
 };
-
 } // end anonymous namespace
 
-using graph_t = adjacency_list<edge_data>;
+using digraph_t = directed_graph<edge_data>;
 
-static inline void add_edge(graph_t &g, size_t v1, size_t v2, long c1,
+static inline void add_edge(digraph_t &g, size_t v1, size_t v2, long c1,
                             long c2 = 0) {
   auto &edge1 = g.add_edge(v1, v2);
   auto &edge2 = g.add_edge(v2, v1);
@@ -35,8 +34,8 @@ static inline void add_edge(graph_t &g, size_t v1, size_t v2, long c1,
   edge2.rev_edge = &edge1;
 }
 
-TEST(edmonds_karp_max_flow, WorksOnBasicCases) {
-  graph_t g(4);
+TEST(EdmondsKarpMaxFlow, WorksOnBasicCases) {
+  digraph_t g(4);
   add_edge(g, 0, 1, 20, 20);
   add_edge(g, 0, 2, 10);
   add_edge(g, 1, 2, 5);
@@ -60,8 +59,8 @@ TEST(edmonds_karp_max_flow, WorksOnBasicCases) {
   EXPECT_EQ(15, edmonds_karp_max_flow(g, 3, 2));
 }
 
-TEST(edmonds_karp_max_flow, WorksWhenNeedsUndoing) {
-  graph_t g(12);
+TEST(EdmondsKarpMaxFlow, WorksWhenNeedsUndoing) {
+  digraph_t g(12);
   add_edge(g, 0, 1, 1);
   add_edge(g, 0, 2, 1);
   add_edge(g, 0, 3, 1);

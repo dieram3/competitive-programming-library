@@ -1,20 +1,19 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramírez July 2014, July-August 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DJP_GRAPH_UNDIRECTED_GRAPH_HPP
-#define DJP_GRAPH_UNDIRECTED_GRAPH_HPP
+#ifndef DJP_GRAPH_DIRECTED_GRAPH_HPP
+#define DJP_GRAPH_DIRECTED_GRAPH_HPP
 
 #include <deque>       // for std::deque
-#include <type_traits> // for std::conditional, std::is_clas
+#include <type_traits> // for std::conditional, std::is_class
 #include <vector>      // for std::vector
-#include <cstddef>     // for std::size_t
 
 namespace djp {
 
 template <class EdgeData = void, class VertexData = void>
-class undirected_graph {
+class directed_graph {
 
   struct no_data {};
 
@@ -41,16 +40,17 @@ public: // Types
   struct vertex : public vertex_data {
     vertex() = default;
     vertex(const vertex &) = delete; // Prevent accidental copy.
-    std::vector<const edge *> adj_edges;
+    std::vector<const edge *> out_edges;
+    std::vector<const edge *> in_edges;
   };
 
 public: // Essential Member functions
-  undirected_graph(std::size_t num_vertices) : vertex_list(num_vertices) {}
+  directed_graph(std::size_t num_vertices) : vertex_list(num_vertices) {}
 
   edge_data &add_edge(vertex_id source, vertex_id target) {
     edge_list.emplace_back(source, target);
-    vertex_list[source].adj_edges.push_back(&edge_list.back());
-    vertex_list[target].adj_edges.push_back(&edge_list.back());
+    vertex_list[source].out_edges.push_back(&edge_list.back());
+    vertex_list[target].in_edges.push_back(&edge_list.back());
     return edge_list.back();
   }
 
@@ -64,19 +64,19 @@ public: // Essential Member functions
 
 public: // Helper functions
   const std::vector<const edge *> &out_edges(vertex_id v) const {
-    return vertex_list[v].adj_edges;
+    return vertex_list[v].out_edges;
   }
   const std::vector<const edge *> &in_edges(vertex_id v) const {
-    return out_edges(v);
+    return vertex_list[v].in_edges;
   }
   std::size_t out_degree(vertex_id v) const { return out_edges(v).size(); }
-  std::size_t in_degree(vertex_id v) const { return out_degree(v); }
+  std::size_t in_degree(vertex_id v) const { return in_edges(v).size(); }
 
 private:
   std::vector<vertex> vertex_list;
   std::deque<edge> edge_list;
 };
 
-} // end namespace djp
+} // namespace djp
 
 #endif // Header guard

@@ -6,20 +6,22 @@
 #include <djp/graph/bellman_ford_shortest_paths.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/adjacency_list.hpp>
-#include <vector> // for std::vector
+#include <djp/graph/directed_graph.hpp> // for djp::directed_graph
+#include <vector>                       // for std::vector
 using namespace djp;
 
+namespace {
 struct edge_data {
   long weight;
 };
+} // end anonymous namespace
 
-using graph_t = adjacency_list<edge_data>;
+using digraph_t = directed_graph<edge_data>;
 using dist_t = std::vector<long>;
 
 TEST(BellmanFordShortestPaths, WorksOnSingleVertexGraphs) {
   dist_t dist;
-  graph_t graph(1);
+  digraph_t graph(1);
 
   EXPECT_TRUE(bellman_ford_shortest_paths(graph, 0, dist));
 
@@ -33,29 +35,34 @@ TEST(BellmanFordShortestPaths, WorksOnSingleVertexGraphs) {
 }
 
 TEST(BellmanFordShortestPaths, WorksOnPositiveEdgeWeightGraphs) {
-  graph_t graph(11);
+  digraph_t graph(11);
 
-  graph.add_bidir_edge(0, 1, edge_data{3});
+  auto add_bidir_edge = [&graph](size_t u, size_t v, long weight) {
+    graph.add_edge(u, v).weight = weight;
+    graph.add_edge(v, u).weight = weight;
+  };
 
-  graph.add_bidir_edge(1, 2, edge_data{3});
-  graph.add_bidir_edge(1, 4, edge_data{2});
+  add_bidir_edge(0, 1, 3);
 
-  graph.add_bidir_edge(2, 3, edge_data{4});
-  graph.add_bidir_edge(2, 8, edge_data{5});
+  add_bidir_edge(1, 2, 3);
+  add_bidir_edge(1, 4, 2);
 
-  graph.add_bidir_edge(4, 5, edge_data{2});
-  graph.add_bidir_edge(4, 7, edge_data{4});
+  add_bidir_edge(2, 3, 4);
+  add_bidir_edge(2, 8, 5);
 
-  graph.add_bidir_edge(5, 10, edge_data{3});
+  add_bidir_edge(4, 5, 2);
+  add_bidir_edge(4, 7, 4);
 
-  graph.add_bidir_edge(6, 9, edge_data{5});
-  graph.add_bidir_edge(6, 10, edge_data{3});
+  add_bidir_edge(5, 10, 3);
 
-  graph.add_bidir_edge(7, 8, edge_data{2});
-  graph.add_bidir_edge(7, 9, edge_data{2});
+  add_bidir_edge(6, 9, 5);
+  add_bidir_edge(6, 10, 3);
 
-  graph.add_bidir_edge(8, 9, edge_data{2});
-  graph.add_bidir_edge(9, 10, edge_data{2});
+  add_bidir_edge(7, 8, 2);
+  add_bidir_edge(7, 9, 2);
+
+  add_bidir_edge(8, 9, 2);
+  add_bidir_edge(9, 10, 2);
 
   dist_t dist;
   EXPECT_TRUE(bellman_ford_shortest_paths(graph, 3, dist));
@@ -63,7 +70,7 @@ TEST(BellmanFordShortestPaths, WorksOnPositiveEdgeWeightGraphs) {
 }
 
 TEST(BellmanFordShortestPaths, DetectsNegativeCyclesOnTrivialCases) {
-  graph_t graph(5);
+  digraph_t graph(5);
   graph.add_edge(0, 1).weight = 2;
   graph.add_edge(1, 2).weight = 4;
   graph.add_edge(2, 3).weight = 3;
@@ -80,7 +87,7 @@ TEST(BellmanFordShortestPaths, DetectsNegativeCyclesOnTrivialCases) {
 }
 
 TEST(BellmanFordShortestPaths, DetectsNegativeCyclesOnComplexCases) {
-  graph_t graph(7);
+  digraph_t graph(7);
   graph.add_edge(0, 1).weight = 2;
   graph.add_edge(1, 2).weight = 4;
   graph.add_edge(2, 3).weight = 3;

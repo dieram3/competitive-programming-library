@@ -42,7 +42,7 @@ private:
         const size_t current = dfs_stack.top();
         dfs_stack.pop();
         for (const auto *edge : graph.out_edges(current)) {
-          const size_t neighbor = edge->target;
+          const size_t neighbor = edge->get_neighbor(current);
           if (color_of[neighbor] == 0) {
             color_of[neighbor] = -color_of[current];
             dfs_stack.push(neighbor);
@@ -77,7 +77,7 @@ private:
       if (dist[rv] >= dist[null_vertex])
         continue;
       for (const auto *edge : graph.out_edges(rv)) {
-        const size_t gv = edge->target;
+        const size_t gv = edge->get_neighbor(rv);
         if (dist[pair_of[gv]] != SIZE_MAX)
           continue;
         dist[pair_of[gv]] = dist[rv] + 1;
@@ -91,7 +91,7 @@ private:
     if (rv == null_vertex)
       return true;
     for (const auto *edge : graph.out_edges(rv)) {
-      const size_t gv = edge->target;
+      const size_t gv = edge->get_neighbor(rv);
       if (dist[pair_of[gv]] != dist[rv] + 1)
         continue;
       if (!dfs(pair_of[gv]))
