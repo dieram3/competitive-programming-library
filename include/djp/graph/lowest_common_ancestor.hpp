@@ -20,7 +20,7 @@
 
 namespace djp {
 
-/// \brief Function like class to compute the lowest common ancestor.
+/// \brief Query class to compute the lowest common ancestor.
 ///
 /// This class uses a range minimum query data structure to find the lowest
 /// common ancestor between two vertices given a predefined root.
@@ -38,13 +38,13 @@ class rmq_lca {
   };
 
 public:
-  /// \brief Constructs a rmq_lca object with the given tree in relation to the
-  /// given root.
+  /// \brief Constructs a \c rmq_lca object with the given tree in relation to
+  /// the given root.
   ///
   /// \param graph The target undirected graph.
   /// \param root Vertex descriptor of the root.
   ///
-  /// \pre \p graph must be connected and have no cycles i.e it must be a tree.
+  /// \pre \p graph must be a tree i.e it must be connected and have no cycles.
   /// \par Complexity
   /// <tt>O(N)</tt>, where <tt>N = graph.num_vertices()</tt>
   ///
@@ -95,7 +95,7 @@ public:
   /// \par Complexity
   /// <tt>O(log(N))</tt>, where \c N = number of vertices on the target graph.
   ///
-  size_t operator()(const size_t v1, const size_t v2) const {
+  size_t find_lca(const size_t v1, const size_t v2) const {
     const auto range = std::minmax(euler_pos[v1], euler_pos[v2]);
     return stree.accumulate(range.first, range.second + 1).node;
   }
@@ -110,9 +110,25 @@ public:
     return stree.elem(euler_pos[v]).depth;
   }
 
+  /// \brief Computes the distance between the given pair of vertices using the
+  /// stored data.
+  ///
+  /// The distance between two vertices \p v1 and \p v2 is defined as the number
+  /// of edges in the path from \p v1 to \p v2.
+  ///
+  /// \param v1 Descriptor of the first vertex.
+  /// \param v2 Descriptor of the second vertex.
+  ///
+  /// \par Complexity
+  /// <tt>O(log(N))</tt>, where \c N = number of vertices on the target graph.
+  ///
+  size_t distance(const size_t v1, const size_t v2) const {
+    return depth_of(v1) + depth_of(v2) - 2 * depth_of(find_lca(v1, v2));
+  }
+
 private:
-  segment_tree<euler_visit, shallower> stree;
-  std::vector<size_t> euler_pos; // Any valid euler pos of node i.
+  segment_tree<euler_visit, shallower> stree; // the RMQ
+  std::vector<size_t> euler_pos;              // Any valid euler pos for node i.
 };
 
 } // namespace djp
