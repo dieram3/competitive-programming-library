@@ -20,14 +20,11 @@ static void check_labels(const undigraph_t &graph,
           ? 0
           : *std::max_element(expected.begin(), expected.end()) + 1;
 
-  EXPECT_EQ(num_components, connected_components(graph));
+  std::vector<size_t> component_of;
 
-  std::vector<size_t> labels;
-  EXPECT_EQ(num_components, connected_components(graph, &labels));
-
-  ASSERT_EQ(expected.size(), labels.size());
-
-  EXPECT_EQ(expected, labels);
+  EXPECT_EQ(num_components, connected_components(graph, component_of));
+  EXPECT_EQ(expected.size(), component_of.size());
+  EXPECT_EQ(expected, component_of);
 }
 
 TEST(ConnectedComponents, WorksOnEmptyGraphs) {

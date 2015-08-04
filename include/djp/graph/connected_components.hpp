@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2015
+//          Copyright Diego Ramírez July-August 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,9 @@
 #ifndef DJP_GRAPH_CONNECTED_COMPONENTS_HPP
 #define DJP_GRAPH_CONNECTED_COMPONENTS_HPP
 
-#include <stack>   // for std::stack
 #include <vector>  // for std::vector
-#include <cassert> // for assert
 #include <cstddef> // for std::size_t
+#include <cstdint> // for SIZE_MAX
 
 namespace djp {
 
@@ -17,17 +16,20 @@ namespace djp {
 /// DFS-based approach.
 ///
 /// \param graph The target graph.
-/// \param[out] labels Optional parameter where the label of each vertex is put.
+/// \param[out] component_of Map vector where the component label of each vertex
+/// is recorded.
 ///
-/// If \p labels is not null a <tt>std::vector</tt> of size
-/// <tt>graph.num_vertices()</tt> will be asigned
-/// to it so labels[v] returns the label of the component which \c v belongs
-/// to. A label is a value in the range <tt>[0, N)</tt> where <tt>N =
-/// Total-number-of-components</tt>, which identifies a component in the graph.
+/// A label is defined as an integer value in the range <tt>[0, N)</tt> (where
+/// <tt>N = Total-number-of-components</tt>) which uniquely identifies one of
+/// the \c N components in the graph.
 ///
-/// The way in which labels are assigned is the incremental way i.e
-/// <tt>label[i]</tt> can have value L iff all labels in the range
-/// <tt>[0, L)</tt> have appeared in the range <tt>label[0 .. i - 1]</tt>.
+/// The \p component_of \c vector will be resized to the number of vertices in
+/// the graph and modified in such a way that \c component_of[v] maps to the
+/// label of the component which \c v belongs to.
+///
+/// Labels are assigned incrementally, i.e <tt>component_of[v]</tt> can have
+/// value L iff all labels in the range <tt>[0, L)</tt> have been used for
+/// preceding vertices (vertices indexed with values less than \c v).
 ///
 /// \returns The total number of components.
 ///
@@ -36,43 +38,34 @@ namespace djp {
 /// <tt>E = graph.num_edges()</tt>.
 ///
 template <typename Graph>
-std::size_t connected_components(const Graph &graph,
-                                 std::vector<size_t> *labels = nullptr) {
+size_t connected_components(const Graph &graph,
+                            std::vector<size_t> &component_of) {
   const size_t num_vertices = graph.num_vertices();
-  const size_t invalid_component = num_vertices;
+  component_of.assign(num_vertices, SIZE_MAX);
 
-  std::vector<size_t> component_of(num_vertices, invalid_component);
-  std::stack<size_t> dfs_stack;
-
-  size_t current_component = 0;
-  for (size_t source = 0; source != num_vertices; ++source) {
-    if (component_of[source] != invalid_component)
-      continue;
-
-    component_of[source] = current_component;
-    dfs_stack.push(source);
-    while (!dfs_stack.empty()) {
-      const size_t current = dfs_stack.top();
-      dfs_stack.pop();
-
+  std::vector<size_t> stack;
+  auto explore = [&](const size_t source, const size_t comp_label) {
+    component_of[source] = comp_label;
+    stack.push_back(source);
+    while (!stack.empty()) {
+      const size_t current = stack.back();
+      stack.pop_back();
       for (const auto *edge : graph.out_edges(current)) {
         const size_t neighbor = edge->get_neighbor(current);
-        if (component_of[neighbor] != invalid_component) {
-          assert(component_of[neighbor] == current_component);
-          continue;
-        }
-
-        component_of[neighbor] = current_component;
-        dfs_stack.push(neighbor);
+        if (component_of[neighbor] != SIZE_MAX)
+          continue; // It has been discovered before.
+        component_of[neighbor] = comp_label;
+        stack.push_back(neighbor);
       }
     }
-    ++current_component;
-  }
+  };
 
-  if (labels)
-    labels->swap(component_of);
+  size_t num_components = 0;
+  for (size_t v = 0; v != num_vertices; ++v)
+    if (component_of[v] == SIZE_MAX)
+      explore(v, num_components++);
 
-  return current_component;
+  return num_components;
 }
 
 } // end namespace djp
