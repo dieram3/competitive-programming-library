@@ -55,7 +55,7 @@ using digraph_t = djp::directed_graph<edge_data>;
 //  return graph;
 //}
 
-TEST(DijkstraShortestPaths, WorksOnDirectedGraphs) {
+TEST(DijkstraShortestPathsTest, WorksOnDirectedGraphs) {
   digraph_t graph(6);
 
   auto add_bidir_edge = [&graph](size_t u, size_t v, unsigned long weight) {

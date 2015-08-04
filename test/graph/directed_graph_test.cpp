@@ -13,7 +13,7 @@ using namespace djp;
 static_assert(directed_graph<>::null_vertex() + 1 == 0,
               "Null vertex has corrupt value");
 
-TEST(DirectedGraph, ConstructWell) {
+TEST(DirectedGraphTest, ConstructWell) {
   directed_graph<> graph(15);
   EXPECT_EQ(15u, graph.num_vertices());
   EXPECT_EQ(0u, graph.num_edges());
@@ -23,7 +23,7 @@ TEST(DirectedGraph, ConstructWell) {
   }
 }
 
-TEST(DirectedGraph, LinksWell) {
+TEST(DirectedGraphTest, LinksWell) {
   directed_graph<> graph(5);
 
   auto check_in = [&graph](std::size_t u, std::size_t v) {

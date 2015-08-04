@@ -44,8 +44,7 @@ bool bellman_ford_shortest_paths(const EdgeListGraph &graph,
                                  const size_t source,
                                  std::vector<DistT> &dist) {
   const auto infinity = std::numeric_limits<DistT>::max();
-  dist.clear();
-  dist.resize(graph.num_vertices(), infinity);
+  dist.assign(graph.num_vertices(), infinity);
   dist[source] = 0;
 
   for (size_t step = 0; step != dist.size(); ++step) {

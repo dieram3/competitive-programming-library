@@ -16,17 +16,17 @@ struct edge_data {
 /// \todo Use a real undirected graph.
 using undigraph_t = undirected_graph<edge_data>;
 
-TEST(KruskalMinimumSpanningTree, WorksOnEmptyGraph) {
+TEST(KruskalMinimumSpanningTreeTest, WorksOnEmptyGraph) {
   undigraph_t graph(0);
   EXPECT_EQ(0, kruskal_minimum_spanning_tree(graph).size());
 }
 
-TEST(KruskalMinimumSpanningTree, WorksOnSingleVertexGraph) {
+TEST(KruskalMinimumSpanningTreeTest, WorksOnSingleVertexGraph) {
   undigraph_t graph(1);
   EXPECT_EQ(0, kruskal_minimum_spanning_tree(graph).size());
 }
 
-TEST(KruskalMinimumSpanningTree, WorksOnTrees) {
+TEST(KruskalMinimumSpanningTreeTest, WorksOnTrees) {
   undigraph_t graph(6);
   graph.add_edge(0, 1).weight = -1; // 0
   graph.add_edge(3, 1).weight = 5;  // 1
@@ -59,7 +59,7 @@ TEST(KruskalMinimumSpanningTree, WorksOnTrees) {
   EXPECT_EQ(2, mst_edges[4]->target);
 }
 
-TEST(KruskalMinimumSpanningTree, WorksWell) {
+TEST(KruskalMinimumSpanningTreeTest, WorksWell) {
   undigraph_t graph(5);
   graph.add_edge(0, 2).weight = 8;
   graph.add_edge(2, 3).weight = 5;

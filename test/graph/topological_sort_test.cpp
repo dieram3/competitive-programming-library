@@ -35,7 +35,7 @@ static void check_toposort(const digraph_t &graph) {
             std::find(processed.begin(), processed.end(), false));
 }
 
-TEST(TopologicalSort, WorksOnMultipleSolution) {
+TEST(TopologicalSortTest, WorksOnMultipleSolution) {
   digraph_t graph(8);
   graph.add_edge(3, 7);
   graph.add_edge(3, 4);
@@ -49,7 +49,7 @@ TEST(TopologicalSort, WorksOnMultipleSolution) {
   check_toposort(graph);
 }
 
-TEST(TopologicalSort, WorksOnSeparatedComponents) {
+TEST(TopologicalSortTest, WorksOnSeparatedComponents) {
   digraph_t graph(7);
   graph.add_edge(4, 0);
   graph.add_edge(1, 0);
@@ -59,7 +59,7 @@ TEST(TopologicalSort, WorksOnSeparatedComponents) {
   check_toposort(graph);
 }
 
-TEST(TopologicalSort, WorksOnUniqueSolution) {
+TEST(TopologicalSortTest, WorksOnUniqueSolution) {
   digraph_t graph(4);
   graph.add_edge(3, 0);
   graph.add_edge(0, 2);
@@ -71,7 +71,7 @@ TEST(TopologicalSort, WorksOnUniqueSolution) {
   EXPECT_EQ(1, sorted_list[3]);
 }
 
-TEST(TopologicalSort, DetectsBidirectionalEdges) {
+TEST(TopologicalSortTest, DetectsBidirectionalEdges) {
   digraph_t graph(4);
   graph.add_edge(0, 1);
   graph.add_edge(1, 2);
@@ -81,7 +81,7 @@ TEST(TopologicalSort, DetectsBidirectionalEdges) {
   EXPECT_THROW(topological_sort(graph), std::logic_error);
 }
 
-TEST(TopologicalSort, ThrowsIfNotADag) {
+TEST(TopologicalSortTest, ThrowsIfNotADag) {
   digraph_t graph(4);
   graph.add_edge(3, 0);
   graph.add_edge(0, 1);

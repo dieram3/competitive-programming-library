@@ -27,22 +27,22 @@ static void check_labels(const undigraph_t &graph,
   EXPECT_EQ(expected, component_of);
 }
 
-TEST(ConnectedComponents, WorksOnEmptyGraphs) {
+TEST(ConnectedComponentsTest, WorksOnEmptyGraphs) {
   undigraph_t graph(0);
   check_labels(graph, {});
 }
 
-TEST(ConnectedComponents, WorksOnSingleVertexGraphs) {
+TEST(ConnectedComponentsTest, WorksOnSingleVertexGraphs) {
   undigraph_t graph(1);
   check_labels(graph, {0});
 }
 
-TEST(ConnectedComponents, WorksOnTotallyDisconnectedGraphs) {
+TEST(ConnectedComponentsTest, WorksOnTotallyDisconnectedGraphs) {
   undigraph_t graph(10);
   check_labels(graph, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 }
 
-TEST(ConnectedComponents, WorksOnSingleComponentGraphs) {
+TEST(ConnectedComponentsTest, WorksOnSingleComponentGraphs) {
   undigraph_t graph(6);
   graph.add_edge(0, 1);
   graph.add_edge(1, 2);
@@ -54,7 +54,7 @@ TEST(ConnectedComponents, WorksOnSingleComponentGraphs) {
   check_labels(graph, {0, 0, 0, 0, 0, 0});
 }
 
-TEST(ConnectedComponents, WorksOnMultilpleComponentGraphs) {
+TEST(ConnectedComponentsTest, WorksOnMultilpleComponentGraphs) {
   undigraph_t graph(14);
   // Component 0
   graph.add_edge(4, 0);

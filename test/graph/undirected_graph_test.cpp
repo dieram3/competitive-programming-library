@@ -14,7 +14,7 @@ using std::size_t;
 static_assert(undirected_graph<>::null_vertex() + 1 == 0,
               "Null vertex has corrupt value");
 
-TEST(UndirectedGraph, ConstructWell) {
+TEST(UndirectedGraphTest, ConstructWell) {
   undirected_graph<> graph(26);
   EXPECT_EQ(26, graph.num_vertices());
   EXPECT_EQ(0, graph.num_edges());
@@ -25,7 +25,7 @@ TEST(UndirectedGraph, ConstructWell) {
   }
 }
 
-TEST(UndirectedGraph, LinksWell) {
+TEST(UndirectedGraphTest, LinksWell) {
   struct edge_data {
     long weight = 5;
   };

@@ -19,7 +19,7 @@ struct edge_data {
 using digraph_t = directed_graph<edge_data>;
 using dist_t = std::vector<long>;
 
-TEST(BellmanFordShortestPaths, WorksOnSingleVertexGraphs) {
+TEST(BellmanFordShortestPathsTest, WorksOnSingleVertexGraphs) {
   dist_t dist;
   digraph_t graph(1);
 
@@ -34,7 +34,7 @@ TEST(BellmanFordShortestPaths, WorksOnSingleVertexGraphs) {
   EXPECT_FALSE(bellman_ford_shortest_paths(graph, 0, dist));
 }
 
-TEST(BellmanFordShortestPaths, WorksOnPositiveEdgeWeightGraphs) {
+TEST(BellmanFordShortestPathsTest, WorksOnPositiveEdgeWeightGraphs) {
   digraph_t graph(11);
 
   auto add_bidir_edge = [&graph](size_t u, size_t v, long weight) {
@@ -69,7 +69,7 @@ TEST(BellmanFordShortestPaths, WorksOnPositiveEdgeWeightGraphs) {
   EXPECT_EQ(dist_t({10, 7, 4, 0, 9, 11, 16, 11, 9, 11, 13}), dist);
 }
 
-TEST(BellmanFordShortestPaths, DetectsNegativeCyclesOnTrivialCases) {
+TEST(BellmanFordShortestPathsTest, DetectsNegativeCyclesOnTrivialCases) {
   digraph_t graph(5);
   graph.add_edge(0, 1).weight = 2;
   graph.add_edge(1, 2).weight = 4;
@@ -86,7 +86,7 @@ TEST(BellmanFordShortestPaths, DetectsNegativeCyclesOnTrivialCases) {
   EXPECT_EQ(dist_t({-2, 0, 4, 7, 8}), dist);
 }
 
-TEST(BellmanFordShortestPaths, DetectsNegativeCyclesOnComplexCases) {
+TEST(BellmanFordShortestPathsTest, DetectsNegativeCyclesOnComplexCases) {
   digraph_t graph(7);
   graph.add_edge(0, 1).weight = 2;
   graph.add_edge(1, 2).weight = 4;

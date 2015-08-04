@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DJP_GRAPH_HOPCROFT_KARP_MAX_MATCHING_HPP
-#define DJP_GRAPH_HOPCROFT_KARP_MAX_MATCHING_HPP
+#ifndef DJP_GRAPH_HOPCROFT_KARP_MAXIMUM_MATCHING_HPP
+#define DJP_GRAPH_HOPCROFT_KARP_MAXIMUM_MATCHING_HPP
 
 #include <queue>     // for std::queue
 #include <stack>     // for std::stack
@@ -142,7 +142,7 @@ public:
 /// <tt>E = graph.num_edges()</tt>.
 ///
 template <typename Graph>
-std::size_t hopcroft_karp_max_matching(const Graph &graph) {
+std::size_t hopcroft_karp_maximum_matching(const Graph &graph) {
   const hopcroft_karp<Graph> hk(graph);
   return hk.maximum_matching();
 }

@@ -34,7 +34,7 @@ static inline void add_edge(digraph_t &g, size_t v1, size_t v2, long c1,
   edge2.rev_edge = &edge1;
 }
 
-TEST(EdmondsKarpMaxFlow, WorksOnBasicCases) {
+TEST(EdmondsKarpMaxFlowTest, WorksOnBasicCases) {
   digraph_t g(4);
   add_edge(g, 0, 1, 20, 20);
   add_edge(g, 0, 2, 10);
@@ -59,7 +59,7 @@ TEST(EdmondsKarpMaxFlow, WorksOnBasicCases) {
   EXPECT_EQ(15, edmonds_karp_max_flow(g, 3, 2));
 }
 
-TEST(EdmondsKarpMaxFlow, WorksWhenNeedsUndoing) {
+TEST(EdmondsKarpMaxFlowTest, WorksWhenNeedsUndoing) {
   digraph_t g(12);
   add_edge(g, 0, 1, 1);
   add_edge(g, 0, 2, 1);
