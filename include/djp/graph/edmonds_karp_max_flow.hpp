@@ -29,7 +29,7 @@ namespace djp {
 /// existence of parallel edges, each edge <tt>(u, v)</tt> must have its own
 /// counterpart <tt>(v, u)</tt>.
 ///
-/// \tparam Graph The directed graph type. Must model a flow network.
+/// \tparam Graph The directed graph type. Must model a FlowNetwork.
 ///
 /// \param graph The target graph.
 /// \param source The source vertex.

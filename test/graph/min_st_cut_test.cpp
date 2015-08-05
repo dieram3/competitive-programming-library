@@ -20,12 +20,12 @@ using bool_vec = std::vector<bool>;
 using edge_tuple = std::tuple<size_t, size_t, long>;
 
 static std::vector<edge_tuple> get_cut_set(const digraph_t &graph,
-                                           bool_vec &reachable) {
+                                           bool_vec &source_side) {
   std::vector<edge_tuple> cut_set;
   for (const auto &edge : graph.edges()) {
     if (edge.capacity == 0)
       continue; // It is a reversed edge.
-    if (reachable[edge.source] && !reachable[edge.target])
+    if (source_side[edge.source] && !source_side[edge.target])
       cut_set.emplace_back(edge.source, edge.target, edge.capacity);
   }
   std::sort(cut_set.begin(), cut_set.end());
@@ -46,11 +46,11 @@ TEST(MinSTCutTest, WorksForSmallCases) {
   graph.add_edge(4, 3, 7); // cut 2
   graph.add_edge(4, 5, 4); // cut 3
 
-  bool_vec reachable;
-  EXPECT_EQ(23, min_st_cut(graph, 0, 5, reachable));
-  ASSERT_EQ(bool_vec({1, 1, 1, 0, 1, 0}), reachable);
+  bool_vec source_side;
+  EXPECT_EQ(23, min_st_cut(graph, 0, 5, source_side));
+  ASSERT_EQ(bool_vec({1, 1, 1, 0, 1, 0}), source_side);
 
-  const auto cut_set = get_cut_set(graph, reachable);
+  const auto cut_set = get_cut_set(graph, source_side);
 
   ASSERT_EQ(3, cut_set.size());
 
@@ -83,11 +83,11 @@ TEST(MinSTCutTest, BidirGraphTest) {
 
   ASSERT_EQ(18 * 2, graph.edges().size());
 
-  bool_vec reachable;
-  EXPECT_EQ(2, min_st_cut(graph, 0, 11, reachable));
-  EXPECT_EQ(bool_vec({1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0}), reachable);
+  bool_vec source_side;
+  EXPECT_EQ(2, min_st_cut(graph, 0, 11, source_side));
+  EXPECT_EQ(bool_vec({1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0}), source_side);
 
-  const auto cut_set = get_cut_set(graph, reachable);
+  const auto cut_set = get_cut_set(graph, source_side);
 
   ASSERT_EQ(2, cut_set.size());
   EXPECT_EQ(edge_tuple(4, 7, 1), cut_set[0]);

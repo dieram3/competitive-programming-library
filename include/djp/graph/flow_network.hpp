@@ -13,9 +13,9 @@
 
 namespace djp {
 
-/// \brief Convenience class to represents flow networks.
+/// \brief Convenience class to represent flow networks.
 ///
-/// This class is directed graph with the right methods to model a flow network.
+/// This class is directed graph with the right methods to model a FlowNetwork.
 ///
 template <typename Flow>
 class flow_network {
