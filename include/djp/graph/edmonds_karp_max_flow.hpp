@@ -44,7 +44,8 @@ namespace djp {
 /// \todo Add example.
 template <typename Graph, typename FlowType = decltype(
                               std::declval<typename Graph::edge>().flow)>
-FlowType edmonds_karp_max_flow(Graph &graph, size_t source, size_t target) {
+FlowType edmonds_karp_max_flow(const Graph &graph, const size_t source,
+                               const size_t target) {
   static_assert(std::is_signed<FlowType>::value ||
                     std::is_floating_point<FlowType>::value,
                 "The flow type must be signed or floating point.");
@@ -96,6 +97,19 @@ FlowType edmonds_karp_max_flow(Graph &graph, size_t source, size_t target) {
   }
 
   return max_flow;
+}
+
+/// \brief Convenience function to add an edge correctly in a graph so it is
+/// usable in the Edmonds-Karp algorithm.
+template <typename Graph, typename Flow>
+void edmonds_karp_add_edge(Graph &graph, size_t s, size_t t, Flow cap,
+                           Flow rev_cap = 0) {
+  auto &edge1 = graph.add_edge(s, t);
+  auto &edge2 = graph.add_edge(t, s);
+  edge1.capacity = cap;
+  edge2.capacity = rev_cap;
+  edge1.rev_edge = &edge2;
+  edge2.rev_edge = &edge1;
 }
 
 } // end namespace djp

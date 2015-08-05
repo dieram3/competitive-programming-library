@@ -25,13 +25,7 @@ using digraph_t = directed_graph<edge_data>;
 
 static inline void add_edge(digraph_t &g, size_t v1, size_t v2, long c1,
                             long c2 = 0) {
-  auto &edge1 = g.add_edge(v1, v2);
-  auto &edge2 = g.add_edge(v2, v1);
-  edge1.capacity = c1;
-  edge2.capacity = c2;
-
-  edge1.rev_edge = &edge2;
-  edge2.rev_edge = &edge1;
+  edmonds_karp_add_edge(g, v1, v2, c1, c2);
 }
 
 TEST(EdmondsKarpMaxFlowTest, WorksOnBasicCases) {
