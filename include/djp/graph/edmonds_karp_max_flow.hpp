@@ -18,7 +18,7 @@
 
 namespace djp {
 
-/// Solves the maximum flow problem using the Edmonds-Karp algorithm.
+/// \brief Solves the maximum flow problem using the Edmonds-Karp algorithm.
 ///
 /// The member type \c edge of \c Graph must contain the following fields:
 /// \li \c capacity: The maximum flow allowed through the edge.
@@ -31,61 +31,67 @@ namespace djp {
 /// counterpart <tt>(v, u)</tt>.
 ///
 /// \tparam Graph Must be a valid graph type.
-/// \tparam FlowType The type of the flow. It shall be either a signed integer
-/// or a floating point type.
+/// \tparam Flow The type of the flow. It shall be either a signed integer or a
+/// floating point type.
+///
 /// \param graph The directed graph that represents the flow network.
 /// \param source The source vertex.
 /// \param target The target vertex.
+///
 /// \returns The maximum possible flow from \p source to \p target.
-/// \pre \p source shall not be equal to \p target.
+/// Additionally, the flow of all edges in the graph will be recorded in their
+/// flow field.
+///
+/// \pre <tt>source != target</tt>
+///
 /// \par Complexity
 /// At most O(V * E^2) memory accesses, where <tt>V = graph.num_vertices()</tt>
 /// and <tt>E = graph.num_edges()</tt>.
-/// \todo Add example.
-template <typename Graph, typename FlowType = decltype(
-                              std::declval<typename Graph::edge>().flow)>
-FlowType edmonds_karp_max_flow(const Graph &graph, const size_t source,
-                               const size_t target) {
-  static_assert(std::is_signed<FlowType>::value ||
-                    std::is_floating_point<FlowType>::value,
+///
+template <typename Graph,
+          typename Flow = decltype(std::declval<typename Graph::edge>().flow)>
+Flow edmonds_karp_max_flow(const Graph &graph, const size_t source,
+                           const size_t target) {
+  static_assert(std::is_signed<Flow>::value ||
+                    std::is_floating_point<Flow>::value,
                 "The flow type must be signed or floating point.");
 
   for (auto &edge : graph.edges())
     edge.flow = 0;
 
-  // last_queue_ids[v] represents the the last BFS queue in which the vertex v
-  // was inserted. Note that the source vertex is present in all BFS queues.
-  std::vector<unsigned> last_queue_ids(graph.num_vertices());
+  // last_bfs[v] represents the the last BFS tree that vertex v was part of.
+  // Note that the source vertex is present in all BFS trees as it is the root.
+  std::vector<unsigned> last_bfs(graph.num_vertices());
   std::vector<const typename Graph::edge *> parents(graph.num_vertices());
 
-  auto find_path = [source, target, &parents, &last_queue_ids, &graph] {
+  auto find_path = [source, target, &parents, &last_bfs, &graph] {
     std::queue<size_t> queue;
     queue.push(source);
-    const auto current_queue_id = ++last_queue_ids[source];
+    const auto current_bfs = ++last_bfs[source];
 
     while (!queue.empty()) {
       const size_t curr = queue.front();
       queue.pop();
       for (auto *edge : graph.out_edges(curr)) {
         const size_t child = edge->target;
-        if (last_queue_ids[child] == current_queue_id)
-          continue;
-        if (edge->flow >= edge->capacity)
-          continue;
+        if (last_bfs[child] == current_bfs)
+          continue; // Already in the tree.
+        if (edge->flow == edge->capacity)
+          continue; // Can't navigate through saturated edges.
         parents[child] = edge;
         if (child == target)
           return true;
         queue.push(child);
-        last_queue_ids[child] = current_queue_id;
+        last_bfs[child] = current_bfs;
       }
     }
     return false;
   };
 
-  FlowType max_flow = 0;
-
+  Flow max_flow = 0;
+  
   while (find_path()) {
-    FlowType path_flow = std::numeric_limits<FlowType>::max();
+    Flow path_flow = std::numeric_limits<Flow>::max();
     for (auto *edge = parents[target]; edge; edge = parents[edge->source]) {
       path_flow = std::min(path_flow, edge->capacity - edge->flow);
     }

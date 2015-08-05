@@ -8,6 +8,7 @@ set(GRAPH_TEST_SOURCES
   "kruskal_minimum_spanning_tree_test.cpp"
 	"lowest_common_ancestor_test.cpp"
   "min_st_cut_test.cpp"
+  "flow_network_test.cpp"
   "topological_sort_test.cpp"
   "undirected_graph_test.cpp"
 	)
