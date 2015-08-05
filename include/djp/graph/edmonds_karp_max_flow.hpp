@@ -11,8 +11,7 @@
 #include <algorithm>   // For std::min
 #include <limits>      // For std::numeric_limits
 #include <queue>       // For std::queue
-#include <type_traits> // For std::is_signed and std::is_floating_point
-#include <utility>     // For std::declval
+#include <type_traits> // For std::is_signed, std::is_floating_point
 #include <vector>      // For std::vector
 #include <cstddef>     // For std::size_t
 
@@ -30,17 +29,14 @@ namespace djp {
 /// existence of parallel edges, each edge <tt>(u, v)</tt> must have its own
 /// counterpart <tt>(v, u)</tt>.
 ///
-/// \tparam Graph Must be a valid graph type.
-/// \tparam Flow The type of the flow. It shall be either a signed integer or a
-/// floating point type.
+/// \tparam Graph The directed graph type. Must model a flow network.
 ///
-/// \param graph The directed graph that represents the flow network.
+/// \param graph The target graph.
 /// \param source The source vertex.
 /// \param target The target vertex.
 ///
-/// \returns The maximum possible flow from \p source to \p target.
-/// Additionally, the flow of all edges in the graph will be recorded in their
-/// flow field.
+/// \returns The maximum possible flow from \p source to \p target. The final
+/// flow of each edge in the graph will be recorded in their flow field.
 ///
 /// \pre <tt>source != target</tt>
 ///
@@ -48,30 +44,32 @@ namespace djp {
 /// At most O(V * E^2) memory accesses, where <tt>V = graph.num_vertices()</tt>
 /// and <tt>E = graph.num_edges()</tt>.
 ///
-template <typename Graph,
-          typename Flow = decltype(std::declval<typename Graph::edge>().flow)>
-Flow edmonds_karp_max_flow(const Graph &graph, const size_t source,
-                           const size_t target) {
-  static_assert(std::is_signed<Flow>::value ||
-                    std::is_floating_point<Flow>::value,
+template <typename Graph>
+auto edmonds_karp_max_flow(Graph &graph, const size_t source,
+                           const size_t target)
+    -> decltype(graph.edges().begin()->flow) {
+
+  using flow_t = decltype(graph.edges().begin()->flow);
+  static_assert(std::is_signed<flow_t>::value ||
+                    std::is_floating_point<flow_t>::value,
                 "The flow type must be signed or floating point.");
 
   for (auto &edge : graph.edges())
     edge.flow = 0;
 
-  // last_bfs[v] represents the the last BFS tree that vertex v was part of.
-  // Note that the source vertex is present in all BFS trees as it is the root.
+  // last_bfs[v] stores the the last BFS tree that vertex v was part of.  Note
+  // that the source vertex is present in all BFS trees as it is the root.
   std::vector<unsigned> last_bfs(graph.num_vertices());
   std::vector<const typename Graph::edge *> parents(graph.num_vertices());
 
   auto find_path = [source, target, &parents, &last_bfs, &graph] {
-    std::queue<size_t> queue;
-    queue.push(source);
+    std::queue<size_t> bfs_queue;
+    bfs_queue.push(source);
     const auto current_bfs = ++last_bfs[source];
 
-    while (!queue.empty()) {
-      const size_t curr = queue.front();
-      queue.pop();
+    while (!bfs_queue.empty()) {
+      const size_t curr = bfs_queue.front();
+      bfs_queue.pop();
       for (auto *edge : graph.out_edges(curr)) {
         const size_t child = edge->target;
         if (last_bfs[child] == current_bfs)
@@ -81,17 +79,16 @@ Flow edmonds_karp_max_flow(const Graph &graph, const size_t source,
         parents[child] = edge;
         if (child == target)
           return true;
-        queue.push(child);
+        bfs_queue.push(child);
         last_bfs[child] = current_bfs;
       }
     }
     return false;
   };
 
-  Flow max_flow = 0;
-  
+  flow_t max_flow = 0;
   while (find_path()) {
-    Flow path_flow = std::numeric_limits<Flow>::max();
+    flow_t path_flow = std::numeric_limits<flow_t>::max();
     for (auto *edge = parents[target]; edge; edge = parents[edge->source]) {
       path_flow = std::min(path_flow, edge->capacity - edge->flow);
     }
@@ -101,21 +98,7 @@ Flow edmonds_karp_max_flow(const Graph &graph, const size_t source,
     }
     max_flow += path_flow;
   }
-
   return max_flow;
-}
-
-/// \brief Convenience function to add an edge correctly in a graph so it is
-/// usable in the Edmonds-Karp algorithm.
-template <typename Graph, typename Flow>
-void edmonds_karp_add_edge(Graph &graph, size_t s, size_t t, Flow cap,
-                           Flow rev_cap = 0) {
-  auto &edge1 = graph.add_edge(s, t);
-  auto &edge2 = graph.add_edge(t, s);
-  edge1.capacity = cap;
-  edge2.capacity = rev_cap;
-  edge1.rev_edge = &edge2;
-  edge2.rev_edge = &edge1;
 }
 
 } // end namespace djp

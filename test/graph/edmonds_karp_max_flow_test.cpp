@@ -6,35 +6,22 @@
 #include <djp/graph/edmonds_karp_max_flow.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/directed_graph.hpp>
+#include <djp/graph/flow_network.hpp>
 #include <functional>
 #include <cassert>
 #include <cstddef>
 
 using namespace djp;
 
-namespace {
-struct edge_data {
-  long capacity;
-  const edge_data *rev_edge;
-  mutable long flow;
-};
-} // end anonymous namespace
-
-using digraph_t = directed_graph<edge_data>;
-
-static inline void add_edge(digraph_t &g, size_t v1, size_t v2, long c1,
-                            long c2 = 0) {
-  edmonds_karp_add_edge(g, v1, v2, c1, c2);
-}
+using digraph_t = flow_network<long>;
 
 TEST(EdmondsKarpMaxFlowTest, WorksOnBasicCases) {
   digraph_t g(4);
-  add_edge(g, 0, 1, 20, 20);
-  add_edge(g, 0, 2, 10);
-  add_edge(g, 1, 2, 5);
-  add_edge(g, 1, 3, 10);
-  add_edge(g, 2, 3, 20, 15);
+  g.add_edge(0, 1, 20, 20);
+  g.add_edge(0, 2, 10);
+  g.add_edge(1, 2, 5);
+  g.add_edge(1, 3, 10);
+  g.add_edge(2, 3, 20, 15);
 
   EXPECT_EQ(20, edmonds_karp_max_flow(g, 0, 1));
   EXPECT_EQ(25, edmonds_karp_max_flow(g, 0, 2));
@@ -55,23 +42,23 @@ TEST(EdmondsKarpMaxFlowTest, WorksOnBasicCases) {
 
 TEST(EdmondsKarpMaxFlowTest, WorksWhenNeedsUndoing) {
   digraph_t g(12);
-  add_edge(g, 0, 1, 1);
-  add_edge(g, 0, 2, 1);
-  add_edge(g, 0, 3, 1);
-  add_edge(g, 1, 4, 1);
-  add_edge(g, 2, 5, 1);
-  add_edge(g, 2, 6, 1);
-  add_edge(g, 3, 7, 1);
-  add_edge(g, 4, 8, 1);
-  add_edge(g, 4, 9, 1);
-  add_edge(g, 5, 8, 1);
-  add_edge(g, 5, 10, 1);
-  add_edge(g, 6, 9, 1);
-  add_edge(g, 6, 10, 1);
-  add_edge(g, 7, 10, 1);
-  add_edge(g, 8, 11, 1);
-  add_edge(g, 9, 11, 1);
-  add_edge(g, 10, 11, 1);
+  g.add_edge(0, 1, 1);
+  g.add_edge(0, 2, 1);
+  g.add_edge(0, 3, 1);
+  g.add_edge(1, 4, 1);
+  g.add_edge(2, 5, 1);
+  g.add_edge(2, 6, 1);
+  g.add_edge(3, 7, 1);
+  g.add_edge(4, 8, 1);
+  g.add_edge(4, 9, 1);
+  g.add_edge(5, 8, 1);
+  g.add_edge(5, 10, 1);
+  g.add_edge(6, 9, 1);
+  g.add_edge(6, 10, 1);
+  g.add_edge(7, 10, 1);
+  g.add_edge(8, 11, 1);
+  g.add_edge(9, 11, 1);
+  g.add_edge(10, 11, 1);
 
   EXPECT_EQ(3, edmonds_karp_max_flow(g, 0, 11));
 }
