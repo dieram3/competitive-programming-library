@@ -18,13 +18,14 @@ namespace djp {
 /// \brief Computes all min-cut pairs for an undirected graph by constructing
 /// the Gomory-Hu tree.
 ///
-/// This function implements the Gusfield Algoritm. It constructs the Gomory-Hu
+/// This function implements the Gusfield Algorithm. It constructs the Gomory-Hu
 /// tree without any vertex contraction so it is very efficient in practice.
 ///
 /// The Gomory-Hu tree is a structure used to compute min-cut pairs in an
-/// undirected graph, but this implementation requires the input graph be a
-/// \c FlowNetwork with bidirectional edges, i.e the capacity of each edge must
-/// be equal to the capacity of its reverse edge.
+/// undirected graph, but for the sake of simplicity, this implementation
+/// requires the input graph be a bidirectional FlowNetwork. A bidirectional
+/// FlowNetwork is a FlowNetwork where the capacity of each edge is equal to the
+/// capacity of its reverse edge.
 ///
 /// \param graph The target graph.
 ///
