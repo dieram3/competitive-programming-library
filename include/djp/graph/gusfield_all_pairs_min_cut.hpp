@@ -10,6 +10,7 @@
 #include <djp/utility/matrix.hpp>
 
 #include <algorithm> // for std::min
+#include <limits>    // for std::numeric_limits
 #include <vector>    // for std::vector
 #include <cstddef>   // for std::size_t
 

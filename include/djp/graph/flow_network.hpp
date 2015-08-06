@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DJP_FLOW_NETWORK_HPP
-#define DJP_FLOW_NETWORK_HPP
+#ifndef DJP_GRAPH_FLOW_NETWORK_HPP
+#define DJP_GRAPH_FLOW_NETWORK_HPP
 
 #include <deque>       // for std::deque
 #include <type_traits> // for std::is_signed, std::is_floating_point
