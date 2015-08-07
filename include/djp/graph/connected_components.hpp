@@ -15,7 +15,7 @@ namespace djp {
 /// \brief Computes the connected components of an undirected graph using a
 /// DFS-based approach.
 ///
-/// \param graph The target graph.
+/// \param g The target graph.
 /// \param[out] component_of Map vector where the component label of each vertex
 /// is recorded.
 ///
@@ -38,9 +38,8 @@ namespace djp {
 /// <tt>E = graph.num_edges()</tt>.
 ///
 template <typename Graph>
-size_t connected_components(const Graph &graph,
-                            std::vector<size_t> &component_of) {
-  const size_t num_vertices = graph.num_vertices();
+size_t connected_components(const Graph &g, std::vector<size_t> &component_of) {
+  const size_t num_vertices = g.num_vertices();
   component_of.assign(num_vertices, SIZE_MAX);
 
   std::vector<size_t> stack;
@@ -48,14 +47,14 @@ size_t connected_components(const Graph &graph,
     component_of[source] = comp_label;
     stack.push_back(source);
     while (!stack.empty()) {
-      const size_t current = stack.back();
+      const auto u = stack.back();
       stack.pop_back();
-      for (const auto *edge : graph.out_edges(current)) {
-        const size_t neighbor = edge->get_neighbor(current);
-        if (component_of[neighbor] != SIZE_MAX)
+      for (const auto e : g.out_edges(u)) {
+        const auto v = (u == g.source(e)) ? g.target(e) : g.source(e);
+        if (component_of[v] != SIZE_MAX)
           continue; // It has been discovered before.
-        component_of[neighbor] = comp_label;
-        stack.push_back(neighbor);
+        component_of[v] = comp_label;
+        stack.push_back(v);
       }
     }
   };

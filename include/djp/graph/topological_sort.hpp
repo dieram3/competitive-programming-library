@@ -15,7 +15,7 @@ namespace djp {
 
 /// \brief Sorts the vertices of the given graph topologically.
 ///
-/// \param graph The target graph.
+/// \param g The target graph.
 ///
 /// \returns A <tt>std::vector</tt> which contains the vertex descriptors of
 /// \p graph in topological order.
@@ -27,16 +27,16 @@ namespace djp {
 /// <tt>E = graph.num_edges()</tt>
 ///
 template <typename Graph>
-std::vector<size_t> topological_sort(const Graph &graph) {
+std::vector<size_t> topological_sort(const Graph &g) {
 
-  const size_t num_vertices = graph.num_vertices();
+  const size_t num_vertices = g.num_vertices();
   std::vector<size_t> sorted_list;
   sorted_list.reserve(num_vertices);
 
   std::vector<size_t> in_degree(num_vertices);
 
   for (size_t v = 0; v != num_vertices; ++v) {
-    in_degree[v] = graph.in_degree(v);
+    in_degree[v] = g.in_degree(v);
     if (in_degree[v] == 0)
       sorted_list.push_back(v);
   }
@@ -48,8 +48,8 @@ std::vector<size_t> topological_sort(const Graph &graph) {
 
     const size_t root = sorted_list[num_processed++];
 
-    for (const auto *edge : graph.out_edges(root)) {
-      const size_t child = edge->target;
+    for (const auto edge : g.out_edges(root)) {
+      const size_t child = g.target(edge);
       --in_degree[child];
       if (in_degree[child] == 0)
         sorted_list.push_back(child);

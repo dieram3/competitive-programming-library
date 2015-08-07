@@ -11,9 +11,7 @@
 #include <vector>    // for std::vector
 using namespace djp;
 
-using undigraph_t = undirected_graph<>;
-
-static void check_labels(const undigraph_t &graph,
+static void check_labels(const undirected_graph &graph,
                          const std::vector<size_t> &expected) {
   const size_t num_components =
       expected.empty()
@@ -28,22 +26,22 @@ static void check_labels(const undigraph_t &graph,
 }
 
 TEST(ConnectedComponentsTest, WorksOnEmptyGraphs) {
-  undigraph_t graph(0);
+  undirected_graph graph(0);
   check_labels(graph, {});
 }
 
 TEST(ConnectedComponentsTest, WorksOnSingleVertexGraphs) {
-  undigraph_t graph(1);
+  undirected_graph graph(1);
   check_labels(graph, {0});
 }
 
 TEST(ConnectedComponentsTest, WorksOnTotallyDisconnectedGraphs) {
-  undigraph_t graph(10);
+  undirected_graph graph(10);
   check_labels(graph, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
 }
 
 TEST(ConnectedComponentsTest, WorksOnSingleComponentGraphs) {
-  undigraph_t graph(6);
+  undirected_graph graph(6);
   graph.add_edge(0, 1);
   graph.add_edge(1, 2);
   graph.add_edge(3, 4);
@@ -55,7 +53,7 @@ TEST(ConnectedComponentsTest, WorksOnSingleComponentGraphs) {
 }
 
 TEST(ConnectedComponentsTest, WorksOnMultilpleComponentGraphs) {
-  undigraph_t graph(14);
+  undirected_graph graph(14);
   // Component 0
   graph.add_edge(4, 0);
   graph.add_edge(4, 9);

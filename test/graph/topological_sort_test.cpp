@@ -14,21 +14,16 @@
 
 using namespace djp;
 
-using digraph_t = directed_graph<>;
-
-static void check_toposort(const digraph_t &graph) {
-  std::vector<bool> processed(graph.num_vertices());
-
-  const auto sorted_list = topological_sort(graph);
+static void check_toposort(const directed_graph &g) {
+  std::vector<bool> processed(g.num_vertices());
+  const auto sorted_list = topological_sort(g);
 
   for (const size_t v : sorted_list) {
     EXPECT_FALSE(processed[v]);
     processed[v] = true;
 
-    for (const auto *edge : graph.in_edges(v)) {
-      const auto source = edge->source;
-      EXPECT_TRUE(processed[source]);
-    }
+    for (const auto edge : g.in_edges(v))
+      EXPECT_TRUE(processed[g.source(edge)]) << v << ' ' << edge;
   }
 
   EXPECT_EQ(processed.end(),
@@ -36,7 +31,7 @@ static void check_toposort(const digraph_t &graph) {
 }
 
 TEST(TopologicalSortTest, WorksOnMultipleSolution) {
-  digraph_t graph(8);
+  directed_graph graph(8);
   graph.add_edge(3, 7);
   graph.add_edge(3, 4);
   graph.add_edge(2, 7);
@@ -50,7 +45,7 @@ TEST(TopologicalSortTest, WorksOnMultipleSolution) {
 }
 
 TEST(TopologicalSortTest, WorksOnSeparatedComponents) {
-  digraph_t graph(7);
+  directed_graph graph(7);
   graph.add_edge(4, 0);
   graph.add_edge(1, 0);
   graph.add_edge(6, 5);
@@ -60,7 +55,7 @@ TEST(TopologicalSortTest, WorksOnSeparatedComponents) {
 }
 
 TEST(TopologicalSortTest, WorksOnUniqueSolution) {
-  digraph_t graph(4);
+  directed_graph graph(4);
   graph.add_edge(3, 0);
   graph.add_edge(0, 2);
   graph.add_edge(2, 1);
@@ -72,7 +67,7 @@ TEST(TopologicalSortTest, WorksOnUniqueSolution) {
 }
 
 TEST(TopologicalSortTest, DetectsBidirectionalEdges) {
-  digraph_t graph(4);
+  directed_graph graph(4);
   graph.add_edge(0, 1);
   graph.add_edge(1, 2);
   graph.add_edge(2, 1);
@@ -82,7 +77,7 @@ TEST(TopologicalSortTest, DetectsBidirectionalEdges) {
 }
 
 TEST(TopologicalSortTest, ThrowsIfNotADag) {
-  digraph_t graph(4);
+  directed_graph graph(4);
   graph.add_edge(3, 0);
   graph.add_edge(0, 1);
   graph.add_edge(1, 2);

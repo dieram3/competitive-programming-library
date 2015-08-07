@@ -6,61 +6,89 @@
 #include <djp/graph/edmonds_karp_max_flow.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/flow_network.hpp>
+#include <djp/graph/directed_graph.hpp>
 #include <functional>
 #include <cassert>
 #include <cstddef>
 
 using namespace djp;
 
-using digraph_t = flow_network<long>;
+/// \todo Check flow output.
 
 TEST(EdmondsKarpMaxFlowTest, WorksOnBasicCases) {
-  digraph_t g(4);
-  g.add_edge(0, 1, 20, 20);
-  g.add_edge(0, 2, 10);
-  g.add_edge(1, 2, 5);
-  g.add_edge(1, 3, 10);
-  g.add_edge(2, 3, 20, 15);
+  directed_graph g(4);
+  std::vector<long> capacity;
+  std::vector<size_t> rev_edge;
+  auto add_edge = [&](size_t s, size_t t, long cap, long rev_cap = 0) {
+    const auto e1 = g.add_edge(s, t);
+    const auto e2 = g.add_edge(t, s);
+    capacity.push_back(cap);
+    capacity.push_back(rev_cap);
+    rev_edge.push_back(e2);
+    rev_edge.push_back(e1);
+  };
 
-  EXPECT_EQ(20, edmonds_karp_max_flow(g, 0, 1));
-  EXPECT_EQ(25, edmonds_karp_max_flow(g, 0, 2));
-  EXPECT_EQ(25, edmonds_karp_max_flow(g, 0, 3));
+  add_edge(0, 1, 20, 20);
+  add_edge(0, 2, 10);
+  add_edge(1, 2, 5);
+  add_edge(1, 3, 10);
+  add_edge(2, 3, 20, 15);
 
-  EXPECT_EQ(20, edmonds_karp_max_flow(g, 1, 0));
-  EXPECT_EQ(25, edmonds_karp_max_flow(g, 1, 2));
-  EXPECT_EQ(25, edmonds_karp_max_flow(g, 1, 3));
+  std::vector<long> flow;
 
-  EXPECT_EQ(0, edmonds_karp_max_flow(g, 2, 0));
-  EXPECT_EQ(0, edmonds_karp_max_flow(g, 2, 1));
-  EXPECT_EQ(20, edmonds_karp_max_flow(g, 2, 3));
+  auto calc_max_flow = [&](size_t src, size_t tgt) {
+    return edmonds_karp_max_flow2(g, src, tgt, rev_edge, capacity, flow);
+  };
 
-  EXPECT_EQ(0, edmonds_karp_max_flow(g, 3, 0));
-  EXPECT_EQ(0, edmonds_karp_max_flow(g, 3, 1));
-  EXPECT_EQ(15, edmonds_karp_max_flow(g, 3, 2));
+  EXPECT_EQ(20, calc_max_flow(0, 1));
+  EXPECT_EQ(25, calc_max_flow(0, 2));
+  EXPECT_EQ(25, calc_max_flow(0, 3));
+
+  EXPECT_EQ(20, calc_max_flow(1, 0));
+  EXPECT_EQ(25, calc_max_flow(1, 2));
+  EXPECT_EQ(25, calc_max_flow(1, 3));
+
+  EXPECT_EQ(0, calc_max_flow(2, 0));
+  EXPECT_EQ(0, calc_max_flow(2, 1));
+  EXPECT_EQ(20, calc_max_flow(2, 3));
+
+  EXPECT_EQ(0, calc_max_flow(3, 0));
+  EXPECT_EQ(0, calc_max_flow(3, 1));
+  EXPECT_EQ(15, calc_max_flow(3, 2));
 }
 
 TEST(EdmondsKarpMaxFlowTest, WorksWhenNeedsUndoing) {
-  digraph_t g(12);
-  g.add_edge(0, 1, 1);
-  g.add_edge(0, 2, 1);
-  g.add_edge(0, 3, 1);
-  g.add_edge(1, 4, 1);
-  g.add_edge(2, 5, 1);
-  g.add_edge(2, 6, 1);
-  g.add_edge(3, 7, 1);
-  g.add_edge(4, 8, 1);
-  g.add_edge(4, 9, 1);
-  g.add_edge(5, 8, 1);
-  g.add_edge(5, 10, 1);
-  g.add_edge(6, 9, 1);
-  g.add_edge(6, 10, 1);
-  g.add_edge(7, 10, 1);
-  g.add_edge(8, 11, 1);
-  g.add_edge(9, 11, 1);
-  g.add_edge(10, 11, 1);
+  directed_graph g(12);
+  std::vector<long> capacity;
+  std::vector<size_t> rev_edge;
+  auto add_edge = [&](size_t s, size_t t) {
+    const auto e1 = g.add_edge(s, t);
+    const auto e2 = g.add_edge(t, s);
+    capacity.push_back(1);
+    capacity.push_back(0);
+    rev_edge.push_back(e2);
+    rev_edge.push_back(e1);
+  };
+  add_edge(0, 1);
+  add_edge(0, 2);
+  add_edge(0, 3);
+  add_edge(1, 4);
+  add_edge(2, 5);
+  add_edge(2, 6);
+  add_edge(3, 7);
+  add_edge(4, 8);
+  add_edge(4, 9);
+  add_edge(5, 8);
+  add_edge(5, 10);
+  add_edge(6, 9);
+  add_edge(6, 10);
+  add_edge(7, 10);
+  add_edge(8, 11);
+  add_edge(9, 11);
+  add_edge(10, 11);
 
-  EXPECT_EQ(3, edmonds_karp_max_flow(g, 0, 11));
+  std::vector<long> flow;
+  EXPECT_EQ(3, edmonds_karp_max_flow2(g, 0, 11, rev_edge, capacity, flow));
 }
 
 //#include <random>

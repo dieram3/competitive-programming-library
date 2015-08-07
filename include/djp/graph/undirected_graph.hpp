@@ -6,75 +6,40 @@
 #ifndef DJP_GRAPH_UNDIRECTED_GRAPH_HPP
 #define DJP_GRAPH_UNDIRECTED_GRAPH_HPP
 
-#include <deque>       // for std::deque
-#include <type_traits> // for std::conditional, std::is_clas
-#include <vector>      // for std::vector
-#include <cstddef>     // for std::size_t
+#include <utility> // for std::pair
+#include <vector>  // for std::vector
+#include <cstddef> // for std::size_t
 
 namespace djp {
 
-template <class EdgeData = void, class VertexData = void>
+/// \brief Adjacency list which represents undirected graphs.
 class undirected_graph {
+  std::vector<std::vector<size_t>> adj_edges;
+  std::vector<std::pair<size_t, size_t>> edge_list;
 
-  struct no_data {};
+public:
+  undirected_graph(size_t num_vertices) : adj_edges(num_vertices) {}
 
-  template <typename T>
-  using class_or_nothing =
-      typename std::conditional<std::is_class<T>::value, T, no_data>::type;
-
-public: // Types
-  using vertex_id = std::size_t;
-  using edge_data = class_or_nothing<EdgeData>;
-  using vertex_data = class_or_nothing<VertexData>;
-
-  struct edge : public edge_data {
-    edge(const edge &) = delete; // Prevent accidental copy.
-    edge(vertex_id src, vertex_id tgt) : source{src}, target{tgt} {}
-    vertex_id source;
-    vertex_id target;
-
-    vertex_id get_neighbor(vertex_id my_endpoint) const {
-      return my_endpoint == source ? target : source;
-    }
-  };
-
-  struct vertex : public vertex_data {
-    vertex() = default;
-    vertex(const vertex &) = delete; // Prevent accidental copy.
-    std::vector<const edge *> adj_edges;
-  };
-
-public: // Essential Member functions
-  undirected_graph(std::size_t num_vertices) : vertex_list(num_vertices) {}
-
-  edge_data &add_edge(vertex_id source, vertex_id target) {
-    edge_list.emplace_back(source, target);
-    vertex_list[source].adj_edges.push_back(&edge_list.back());
-    vertex_list[target].adj_edges.push_back(&edge_list.back());
-    return edge_list.back();
+  size_t add_edge(size_t u, size_t v) {
+    edge_list.emplace_back(u, v);
+    const size_t edge_id = edge_list.size() - 1;
+    adj_edges[u].emplace_back(edge_id);
+    adj_edges[v].emplace_back(edge_id);
+    return edge_id;
   }
 
-  std::size_t num_vertices() const { return vertex_list.size(); }
-  std::size_t num_edges() const { return edge_list.size(); }
+  size_t num_vertices() const { return adj_edges.size(); }
+  size_t num_edges() const { return edge_list.size(); }
 
-  const std::vector<vertex> &vertices() const { return vertex_list; }
-  const std::deque<edge> &edges() const { return edge_list; }
+  size_t source(size_t e) const { return edge_list[e].first; }
+  size_t target(size_t e) const { return edge_list[e].second; }
 
-  static constexpr vertex_id null_vertex() noexcept { return -1; }
+  const std::vector<size_t> &out_edges(size_t v) const { return adj_edges[v]; }
+  const std::vector<size_t> &in_edges(size_t v) const { return adj_edges[v]; }
 
-public: // Helper functions
-  const std::vector<const edge *> &out_edges(vertex_id v) const {
-    return vertex_list[v].adj_edges;
-  }
-  const std::vector<const edge *> &in_edges(vertex_id v) const {
-    return out_edges(v);
-  }
-  std::size_t out_degree(vertex_id v) const { return out_edges(v).size(); }
-  std::size_t in_degree(vertex_id v) const { return out_degree(v); }
-
-private:
-  std::vector<vertex> vertex_list;
-  std::deque<edge> edge_list;
+  size_t degree(size_t v) const { return adj_edges[v].size(); }
+  size_t out_degree(size_t v) const { return degree(v); }
+  size_t in_degree(size_t v) const { return degree(v); }
 };
 
 } // end namespace djp

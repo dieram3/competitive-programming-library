@@ -7,6 +7,7 @@
 #define DJP_GRAPH_KRUSKAL_MINIMUM_SPANNING_TREE_HPP
 
 #include <algorithm>                           // for std::sort
+#include <numeric>                             // for std::iota
 #include <vector>                              // for std::vector
 #include <djp/data_structure/disjoint_set.hpp> // for djp::disjoint_set
 
@@ -15,7 +16,8 @@ namespace djp {
 /// \brief Finds a minimum spanning tree (MST) in an undirected graph with
 /// weighted edges.
 ///
-/// \param graph The target undirected graph.
+/// \param g The target graph.
+/// \param weight The weight map of edges.
 ///
 /// \returns A <tt>std::vector</tt> containing the edge descriptors of the MST
 /// sorted by weight.
@@ -23,35 +25,29 @@ namespace djp {
 /// \par Complexity
 /// <tt>O(E * log(E))</tt>, where <tt>E = graph.num_edges()</tt>.
 ///
-template <typename Graph>
-std::vector<const typename Graph::edge *>
-kruskal_minimum_spanning_tree(const Graph &graph) {
-  using edge_pointer = const typename Graph::edge *;
-
-  if (graph.num_vertices() == 0)
+template <typename Graph, typename Weight>
+std::vector<size_t>
+kruskal_minimum_spanning_tree(const Graph &g,
+                              const std::vector<Weight> &weight) {
+  if (g.num_vertices() == 0)
     return {};
 
-  std::vector<edge_pointer> sorted_edges;
-  sorted_edges.reserve(graph.num_edges());
-
-  for (const auto &edge : graph.edges())
-    sorted_edges.push_back(&edge);
+  std::vector<size_t> sorted_edges(g.num_edges());
+  std::iota(sorted_edges.begin(), sorted_edges.end(), size_t{0});
 
   std::sort(sorted_edges.begin(), sorted_edges.end(),
-            [](edge_pointer lhs, edge_pointer rhs) {
-              return lhs->weight < rhs->weight;
-            });
+            [&](size_t lhs, size_t rhs) { return weight[lhs] < weight[rhs]; });
 
-  disjoint_set dset(graph.num_vertices());
+  disjoint_set dset(g.num_vertices());
 
-  const size_t num_tree_edges = graph.num_vertices() - 1;
-  std::vector<edge_pointer> tree_edges;
-  tree_edges.reserve(num_tree_edges);
+  const size_t max_tree_edges = g.num_vertices() - 1;
+  std::vector<size_t> tree_edges;
+  tree_edges.reserve(max_tree_edges);
 
-  for (edge_pointer edge : sorted_edges) {
-    if (dset.make_union(edge->source, edge->target)) {
-      tree_edges.push_back(edge);
-      if (tree_edges.size() == num_tree_edges)
+  for (const auto e : sorted_edges) {
+    if (dset.make_union(g.source(e), g.target(e))) {
+      tree_edges.push_back(e);
+      if (tree_edges.size() == max_tree_edges)
         break;
     }
   }

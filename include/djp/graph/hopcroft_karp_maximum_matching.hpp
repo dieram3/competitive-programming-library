@@ -17,7 +17,7 @@ namespace djp {
 
 template <typename Graph>
 class hopcroft_karp {
-  const Graph &graph;
+  const Graph &g;
   const size_t num_vertices;
   const size_t null_vertex;
   std::vector<size_t> pair_of; // This can be used to query the selected pairs.
@@ -39,24 +39,24 @@ private:
       color_of[source] = 1;
       dfs_stack.push(source);
       while (!dfs_stack.empty()) {
-        const size_t current = dfs_stack.top();
+        const size_t u = dfs_stack.top();
         dfs_stack.pop();
-        for (const auto *edge : graph.out_edges(current)) {
-          const size_t neighbor = edge->get_neighbor(current);
-          if (color_of[neighbor] == 0) {
-            color_of[neighbor] = -color_of[current];
-            dfs_stack.push(neighbor);
-          } else if (color_of[neighbor] == color_of[current])
+        for (const auto e : g.out_edges(u)) {
+          const size_t v = (u == g.source(e)) ? g.target(e) : g.source(e);
+          if (color_of[v] == 0) {
+            color_of[v] = -color_of[u];
+            dfs_stack.push(v);
+          } else if (color_of[v] == color_of[u])
             throw std::logic_error("Non bipartite graph");
         }
       }
     };
 
-    for (size_t source = 0; source != num_vertices; ++source) {
-      if (color_of[source] == 0)
-        coloring_component(source);
-      color_of[source] == 1 ? red_vertices.push_back(source)
-                            : green_vertices.push_back(source);
+    for (size_t v = 0; v != num_vertices; ++v) {
+      if (color_of[v] == 0)
+        coloring_component(v);
+      color_of[v] == 1 ? red_vertices.push_back(v)
+                       : green_vertices.push_back(v);
     }
   }
 
@@ -76,8 +76,8 @@ private:
       bfs_queue.pop();
       if (dist[rv] >= dist[null_vertex])
         continue;
-      for (const auto *edge : graph.out_edges(rv)) {
-        const size_t gv = edge->get_neighbor(rv);
+      for (const auto e : g.out_edges(rv)) {
+        const size_t gv = (rv == g.source(e)) ? g.target(e) : g.source(e);
         if (dist[pair_of[gv]] != SIZE_MAX)
           continue;
         dist[pair_of[gv]] = dist[rv] + 1;
@@ -90,8 +90,8 @@ private:
   bool dfs(const size_t rv) {
     if (rv == null_vertex)
       return true;
-    for (const auto *edge : graph.out_edges(rv)) {
-      const size_t gv = edge->get_neighbor(rv);
+    for (const auto e : g.out_edges(rv)) {
+      const auto gv = (rv == g.source(e)) ? g.target(e) : g.source(e);
       if (dist[pair_of[gv]] != dist[rv] + 1)
         continue;
       if (!dfs(pair_of[gv]))
@@ -105,8 +105,8 @@ private:
   }
 
 public:
-  hopcroft_karp(const Graph &g)
-      : graph{g}, num_vertices{g.num_vertices()}, null_vertex{num_vertices} {
+  hopcroft_karp(const Graph &graph)
+      : g{graph}, num_vertices{g.num_vertices()}, null_vertex{num_vertices} {
 
     pair_of.resize(num_vertices, null_vertex);
     dist.resize(num_vertices + 1);

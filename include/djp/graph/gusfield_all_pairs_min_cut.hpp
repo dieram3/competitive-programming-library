@@ -24,11 +24,13 @@ namespace djp {
 ///
 /// The Gomory-Hu tree is a structure used to compute min-cut pairs in an
 /// undirected graph, but for the sake of simplicity, this implementation
-/// requires the input graph be a bidirectional FlowNetwork. A bidirectional
-/// FlowNetwork is a FlowNetwork where the capacity of each edge is equal to the
-/// capacity of its reverse edge.
+/// requires the input graph be a bidirectional Flow Network. A Flow Network is
+/// bidirectional iff the capacity of each edge is equal to the capacity of its
+/// reversed edge.
 ///
-/// \param graph The target graph.
+/// \param g The target graph.
+/// \param rev_edge The reverse edge map.
+/// \param capacity The capacity (or weight) map.
 ///
 /// \returns A matrix of flows \c cut where <tt>cut[{s, t}]</tt> evaluates to
 /// the min s-t cut between the vertices \c s and \c t (being \c s != \c t).
@@ -40,19 +42,20 @@ namespace djp {
 /// complexity O(V * E^2) so the overall complexity of this function in the
 /// worst case is <tt>O(V^2 * E^2)</tt>
 ///
-template <typename Graph>
-auto gusfield_all_pairs_min_cut(const Graph &graph)
-    -> matrix<decltype(graph.edges().begin()->flow)> {
+template <typename Graph, typename Flow>
+matrix<Flow> gusfield_all_pairs_min_cut(const Graph &g,
+                                        const std::vector<size_t> &rev_edge,
+                                        const std::vector<Flow> &capacity) {
 
-  using flow_t = decltype(graph.edges().begin()->flow);
-  const size_t num_vertices = graph.num_vertices();
+  const size_t num_vertices = g.num_vertices();
   std::vector<size_t> parent(num_vertices);
-  matrix<flow_t> cut({num_vertices, num_vertices},
-                     std::numeric_limits<flow_t>::max());
+  matrix<Flow> cut({num_vertices, num_vertices},
+                   std::numeric_limits<Flow>::max());
 
   std::vector<bool> source_side;
   for (size_t i = 1; i != num_vertices; ++i) {
-    const flow_t min_cut = min_st_cut(graph, i, parent[i], source_side);
+    const Flow min_cut =
+        min_st_cut(g, i, parent[i], rev_edge, capacity, source_side);
     for (size_t j = i + 1; j != num_vertices; ++j)
       if (source_side[j] && parent[j] == parent[i])
         parent[j] = i;

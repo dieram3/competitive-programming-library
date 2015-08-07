@@ -32,7 +32,7 @@ public:
   }
 
 protected:
-  undirected_graph<> tree;
+  undirected_graph tree;
 };
 
 } // End anonymous namespace

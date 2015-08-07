@@ -11,11 +11,8 @@
 using namespace djp;
 using std::size_t;
 
-static_assert(undirected_graph<>::null_vertex() + 1 == 0,
-              "Null vertex has corrupt value");
-
 TEST(UndirectedGraphTest, ConstructWell) {
-  undirected_graph<> graph(26);
+  undirected_graph graph(26);
   EXPECT_EQ(26, graph.num_vertices());
   EXPECT_EQ(0, graph.num_edges());
 
@@ -26,38 +23,34 @@ TEST(UndirectedGraphTest, ConstructWell) {
 }
 
 TEST(UndirectedGraphTest, LinksWell) {
-  struct edge_data {
-    long weight = 5;
-  };
 
-  undirected_graph<edge_data> graph(5);
-  using edge_pointer = const decltype(graph)::edge *;
+  undirected_graph g(5);
 
-  auto connects_to = [&graph](size_t u, size_t v, long w) {
-    auto &u_edges = graph.out_edges(u);
-    return std::any_of(begin(u_edges), end(u_edges), [u, v, w](edge_pointer e) {
-      return e->get_neighbor(u) == v && e->weight == w;
+  auto connects_to = [&g](size_t u, size_t v) {
+    auto &u_edges = g.out_edges(u);
+    return std::any_of(begin(u_edges), end(u_edges), [&g, v](size_t e) {
+      return g.source(e) == v || g.target(e) == v;
     });
   };
 
-  graph.add_edge(3, 4);
-  graph.add_edge(2, 1).weight = -1;
-  graph.add_edge(0, 1).weight = 2;
-  graph.add_edge(4, 3).weight = 0;
-  graph.add_edge(0, 2).weight = 4;
+  g.add_edge(3, 4);
+  g.add_edge(2, 1);
+  g.add_edge(0, 1);
+  g.add_edge(4, 3);
+  g.add_edge(0, 2);
 
-  EXPECT_TRUE(connects_to(3, 4, 5L));
-  EXPECT_TRUE(connects_to(4, 3, 5L));
+  EXPECT_TRUE(connects_to(3, 4));
+  EXPECT_TRUE(connects_to(4, 3));
 
-  EXPECT_TRUE(connects_to(2, 1, -1L));
-  EXPECT_TRUE(connects_to(1, 2, -1L));
+  EXPECT_TRUE(connects_to(2, 1));
+  EXPECT_TRUE(connects_to(1, 2));
 
-  EXPECT_TRUE(connects_to(0, 1, 2L));
-  EXPECT_TRUE(connects_to(1, 0, 2L));
+  EXPECT_TRUE(connects_to(0, 1));
+  EXPECT_TRUE(connects_to(1, 0));
 
-  EXPECT_TRUE(connects_to(4, 3, 0L));
-  EXPECT_TRUE(connects_to(3, 4, 0L));
+  EXPECT_TRUE(connects_to(4, 3));
+  EXPECT_TRUE(connects_to(3, 4));
 
-  EXPECT_TRUE(connects_to(2, 0, 4L));
-  EXPECT_TRUE(connects_to(0, 2, 4L));
+  EXPECT_TRUE(connects_to(2, 0));
+  EXPECT_TRUE(connects_to(0, 2));
 }

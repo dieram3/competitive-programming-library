@@ -10,11 +10,8 @@
 
 using namespace djp;
 
-static_assert(directed_graph<>::null_vertex() + 1 == 0,
-              "Null vertex has corrupt value");
-
 TEST(DirectedGraphTest, ConstructWell) {
-  directed_graph<> graph(15);
+  directed_graph graph(15);
   EXPECT_EQ(15u, graph.num_vertices());
   EXPECT_EQ(0u, graph.num_edges());
 
@@ -24,19 +21,19 @@ TEST(DirectedGraphTest, ConstructWell) {
 }
 
 TEST(DirectedGraphTest, LinksWell) {
-  directed_graph<> graph(5);
+  directed_graph graph(5);
 
   auto check_in = [&graph](std::size_t u, std::size_t v) {
-    for (const auto &edge : graph.in_edges(v)) {
-      if (edge->source == u)
+    for (const auto edge : graph.in_edges(v)) {
+      if (graph.source(edge) == u)
         return true;
     }
     return false;
   };
 
   auto check_out = [&graph](std::size_t u, std::size_t v) {
-    for (const auto &edge : graph.out_edges(u)) {
-      if (edge->target == v)
+    for (const auto edge : graph.out_edges(u)) {
+      if (graph.target(edge) == v)
         return true;
     }
     return false;

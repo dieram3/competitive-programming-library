@@ -9,15 +9,13 @@
 #include <djp/graph/undirected_graph.hpp>
 using namespace djp;
 
-using undigraph_t = undirected_graph<>;
-
 TEST(HopcroftKarpMaximumMatchingTest, WorksOnDisconnectedGraphs) {
-  undigraph_t graph(20);
+  undirected_graph graph(20);
   EXPECT_EQ(0, hopcroft_karp_maximum_matching(graph));
 }
 
 TEST(HopcroftKarpMaximumMatchingTest, WorksOnTrivialCases) {
-  undigraph_t graph(15);
+  undirected_graph graph(15);
   graph.add_edge(0, 7);
   graph.add_edge(1, 5);
   graph.add_edge(2, 8);
@@ -28,7 +26,7 @@ TEST(HopcroftKarpMaximumMatchingTest, WorksOnTrivialCases) {
 }
 
 TEST(HopcroftKarpMaximumMatchingTest, ThrowsIfNotBipartite) {
-  undigraph_t graph(6);
+  undirected_graph graph(6);
 
   graph.add_edge(0, 4);
   graph.add_edge(1, 3);
@@ -40,7 +38,7 @@ TEST(HopcroftKarpMaximumMatchingTest, ThrowsIfNotBipartite) {
 }
 
 TEST(HopcroftKarpMaximumMatchingTest, WorksOnEasyCases) {
-  undigraph_t graph(9);
+  undirected_graph graph(9);
   // Component 1
   graph.add_edge(0, 5);
   graph.add_edge(1, 5);
@@ -57,7 +55,7 @@ TEST(HopcroftKarpMaximumMatchingTest, WorksOnEasyCases) {
 }
 
 TEST(HopcroftKarpMaximumMatchingTest, WorksOnComplexCases) {
-  undigraph_t graph(10);
+  undirected_graph graph(10);
 
   graph.add_edge(0, 5);
   graph.add_edge(0, 6);
@@ -74,7 +72,7 @@ TEST(HopcroftKarpMaximumMatchingTest, WorksOnComplexCases) {
 }
 
 TEST(HopcroftKarpMaximumMatchingTest, WorksOnLinearGraphs) {
-  undigraph_t graph(9);
+  undirected_graph graph(9);
   graph.add_edge(0, 1);
   graph.add_edge(1, 2);
   graph.add_edge(2, 3);

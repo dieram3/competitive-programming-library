@@ -27,36 +27,39 @@ namespace djp {
 /// Algorithm for efficiency. If further, all edges have same weight prefer
 /// using The BFS Shortest Reach Algorithm since it has linear complexity.
 ///
-/// \param graph The target graph.
+/// \param g The target graph.
 /// \param source The source vertex.
+/// \param weight Weight map of edges.
 /// \param[out] dist The sequence in which the distance from \p source to each
 /// other vertex will be stored.
 ///
 /// \returns \c true if all distances were minimized i.e if \p graph had no
-/// negative cycle. Otherwise returns \c false.
+/// negative cycle reachable from \p source. Otherwise returns \c false.
 ///
 /// \par Complexity
 /// At most <tt>O(V * E)</tt> memory accesses, where
 /// <tt>V = graph.num_vertices()</tt> and <tt>E = graph.num_edges()</tt>.
 ///
-template <typename EdgeListGraph, typename DistT>
-bool bellman_ford_shortest_paths(const EdgeListGraph &graph,
-                                 const size_t source,
-                                 std::vector<DistT> &dist) {
-  const auto infinity = std::numeric_limits<DistT>::max();
-  dist.assign(graph.num_vertices(), infinity);
+template <typename Graph, typename Distance>
+bool bellman_ford_shortest_paths(const Graph &g, const size_t source,
+                                 const std::vector<Distance> &weight,
+                                 std::vector<Distance> &dist) {
+  const auto infinity = std::numeric_limits<Distance>::max();
+  const size_t num_edges = g.num_edges();
+
+  dist.assign(g.num_vertices(), infinity);
   dist[source] = 0;
 
   for (size_t step = 0; step != dist.size(); ++step) {
     bool updated = false;
 
-    for (const auto &edge : graph.edges()) {
-      if (dist[edge.source] == infinity)
+    for (size_t e = 0; e != num_edges; ++e) {
+      if (dist[g.source(e)] == infinity)
         continue;
-      if (dist[edge.source] + edge.weight >= dist[edge.target])
+      if (dist[g.source(e)] + weight[e] >= dist[g.target(e)])
         continue;
-      // pred[edge.target] = edge.source;
-      dist[edge.target] = dist[edge.source] + edge.weight;
+      // pred[g.target(e)] = g.source(e);
+      dist[g.target(e)] = dist[g.source(e)] + weight[e];
       updated = true;
     }
     if (!updated)

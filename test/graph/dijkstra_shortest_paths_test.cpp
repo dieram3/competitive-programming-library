@@ -15,14 +15,6 @@
 
 using namespace djp;
 
-namespace {
-struct edge_data {
-  unsigned long weight;
-};
-} // end anonymous namesapce
-
-using digraph_t = djp::directed_graph<edge_data>;
-
 // Complexity: O(V*avg_degree)
 // It might generate parallel edges.
 // You can visualize the generated graph on http://g.ivank.net/
@@ -56,11 +48,13 @@ using digraph_t = djp::directed_graph<edge_data>;
 //}
 
 TEST(DijkstraShortestPathsTest, WorksOnDirectedGraphs) {
-  digraph_t graph(6);
-
-  auto add_bidir_edge = [&graph](size_t u, size_t v, unsigned long weight) {
-    graph.add_edge(u, v).weight = weight;
-    graph.add_edge(v, u).weight = weight;
+  directed_graph graph(6);
+  std::vector<unsigned> weight_of;
+  auto add_bidir_edge = [&](size_t u, size_t v, unsigned weight) {
+    graph.add_edge(u, v);
+    weight_of.push_back(weight);
+    graph.add_edge(v, u);
+    weight_of.push_back(weight);
   };
 
   add_bidir_edge(0, 1, 7);
@@ -73,8 +67,8 @@ TEST(DijkstraShortestPathsTest, WorksOnDirectedGraphs) {
   add_bidir_edge(3, 4, 6);
   add_bidir_edge(4, 5, 9);
 
-  const auto spaths = djp::dijkstra_shortest_paths(graph, 0);
-  const std::vector<size_t> expected = {0, 7, 9, 20, 20, 11};
+  const auto spaths = djp::dijkstra_shortest_paths(graph, 0, weight_of);
+  const std::vector<unsigned> expected = {0, 7, 9, 20, 20, 11};
 
   EXPECT_EQ(expected, spaths);
 }

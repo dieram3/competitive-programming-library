@@ -8,84 +8,57 @@
 
 #include <djp/graph/undirected_graph.hpp>
 using namespace djp;
-
-struct edge_data {
-  int weight;
-};
-
-/// \todo Use a real undirected graph.
-using undigraph_t = undirected_graph<edge_data>;
+using std::vector;
 
 TEST(KruskalMinimumSpanningTreeTest, WorksOnEmptyGraph) {
-  undigraph_t graph(0);
-  EXPECT_EQ(0, kruskal_minimum_spanning_tree(graph).size());
+  undirected_graph graph(0);
+  vector<unsigned> weight;
+  EXPECT_EQ(0, kruskal_minimum_spanning_tree(graph, weight).size());
 }
 
 TEST(KruskalMinimumSpanningTreeTest, WorksOnSingleVertexGraph) {
-  undigraph_t graph(1);
-  EXPECT_EQ(0, kruskal_minimum_spanning_tree(graph).size());
+  undirected_graph graph(1);
+  vector<unsigned> weight;
+  EXPECT_EQ(0, kruskal_minimum_spanning_tree(graph, weight).size());
 }
 
 TEST(KruskalMinimumSpanningTreeTest, WorksOnTrees) {
-  undigraph_t graph(6);
-  graph.add_edge(0, 1).weight = -1; // 0
-  graph.add_edge(3, 1).weight = 5;  // 1
-  graph.add_edge(1, 2).weight = 10; // 2
-  graph.add_edge(5, 4).weight = -4; // 3
-  graph.add_edge(4, 2).weight = 0;  // 4
+  undirected_graph graph(6);
+  vector<int> weight_of;
+  auto add_edge = [&](size_t u, size_t v, int weight) {
+    graph.add_edge(u, v);
+    weight_of.push_back(weight);
+  };
+  add_edge(0, 1, -1); // 0
+  add_edge(3, 1, 5);  // 1
+  add_edge(1, 2, 10); // 2
+  add_edge(5, 4, -4); // 3
+  add_edge(4, 2, 0);  // 4
 
-  const auto mst_edges = kruskal_minimum_spanning_tree(graph);
+  const auto mst_edges = kruskal_minimum_spanning_tree(graph, weight_of);
 
-  ASSERT_EQ(5, mst_edges.size());
-
-  EXPECT_EQ(-4, mst_edges[0]->weight);
-  EXPECT_EQ(5, mst_edges[0]->source);
-  EXPECT_EQ(4, mst_edges[0]->target);
-
-  EXPECT_EQ(-1, mst_edges[1]->weight);
-  EXPECT_EQ(0, mst_edges[1]->source);
-  EXPECT_EQ(1, mst_edges[1]->target);
-
-  EXPECT_EQ(0, mst_edges[2]->weight);
-  EXPECT_EQ(4, mst_edges[2]->source);
-  EXPECT_EQ(2, mst_edges[2]->target);
-
-  EXPECT_EQ(5, mst_edges[3]->weight);
-  EXPECT_EQ(3, mst_edges[3]->source);
-  EXPECT_EQ(1, mst_edges[3]->target);
-
-  EXPECT_EQ(10, mst_edges[4]->weight);
-  EXPECT_EQ(1, mst_edges[4]->source);
-  EXPECT_EQ(2, mst_edges[4]->target);
+  EXPECT_EQ(5, mst_edges.size());
+  EXPECT_EQ(vector<size_t>({3, 0, 4, 1, 2}), mst_edges);
 }
 
-TEST(KruskalMinimumSpanningTreeTest, WorksWell) {
-  undigraph_t graph(5);
-  graph.add_edge(0, 2).weight = 8;
-  graph.add_edge(2, 3).weight = 5;
-  graph.add_edge(3, 0).weight = 6;
-  graph.add_edge(1, 3).weight = 3;
-  graph.add_edge(1, 2).weight = 2;
-  graph.add_edge(2, 4).weight = 7;
-  graph.add_edge(1, 4).weight = 4;
+TEST(KruskalMinimumSpanningTreeTest, WorksOnCyclicGraphs) {
+  undirected_graph graph(5);
+  vector<int> weight_of;
+  auto add_edge = [&](size_t u, size_t v, int weight) {
+    graph.add_edge(u, v);
+    weight_of.push_back(weight);
+  };
+  add_edge(0, 2, 8); // 0
+  add_edge(2, 3, 5); // 1
+  add_edge(3, 0, 6); // 2
+  add_edge(1, 3, 3); // 3
+  add_edge(1, 2, 2); // 4
+  add_edge(2, 4, 7); // 5
+  add_edge(1, 4, 4); // 6
 
-  const auto mst_edges = kruskal_minimum_spanning_tree(graph);
+  const auto mst_edges = kruskal_minimum_spanning_tree(graph, weight_of);
 
   ASSERT_EQ(4, mst_edges.size());
 
-  EXPECT_EQ(2, mst_edges[0]->weight);
-  EXPECT_EQ(1, mst_edges[0]->source);
-  EXPECT_EQ(2, mst_edges[0]->target);
-
-  EXPECT_EQ(3, mst_edges[1]->weight);
-  EXPECT_EQ(1, mst_edges[1]->source);
-  EXPECT_EQ(3, mst_edges[1]->target);
-
-  EXPECT_EQ(4, mst_edges[2]->weight);
-  EXPECT_EQ(1, mst_edges[2]->source);
-  EXPECT_EQ(4, mst_edges[2]->target);
-
-  EXPECT_EQ(6, mst_edges[3]->weight);
-  EXPECT_EQ(3, mst_edges[3]->source);
-  EXPECT_EQ(0, mst_edges[3]->target);
+  EXPECT_EQ(vector<size_t>({4, 3, 6, 2}), mst_edges);
 }

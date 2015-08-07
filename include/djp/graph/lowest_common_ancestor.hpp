@@ -41,7 +41,7 @@ public:
   /// \brief Constructs a \c rmq_lca object with the given tree in relation to
   /// the given root.
   ///
-  /// \param graph The target undirected graph.
+  /// \param g The target undirected graph.
   /// \param root Vertex descriptor of the root.
   ///
   /// \pre \p graph must be a tree i.e it must be connected and have no cycles.
@@ -49,8 +49,8 @@ public:
   /// <tt>O(N)</tt>, where <tt>N = graph.num_vertices()</tt>
   ///
   template <typename Graph>
-  rmq_lca(const Graph &graph, const size_t root) {
-    const size_t num_vertices = graph.num_vertices();
+  rmq_lca(const Graph &g, const size_t root) {
+    const size_t num_vertices = g.num_vertices();
 
     euler_pos.resize(num_vertices);
     std::vector<bool> visited(num_vertices);
@@ -64,25 +64,25 @@ public:
     dfs_stack.push(root);
 
     while (!dfs_stack.empty()) {
-      const size_t current = dfs_stack.top();
+      const size_t curr = dfs_stack.top();
       dfs_stack.pop();
 
-      euler_tour.push_back({current, depth_of[current]});
+      euler_tour.push_back({curr, depth_of[curr]});
 
-      if (visited[current])
+      if (visited[curr])
         continue;
 
-      for (const auto *edge : graph.out_edges(current)) {
-        const size_t child = edge->get_neighbor(current);
+      for (const auto e : g.out_edges(curr)) {
+        const size_t child = (curr == g.source(e)) ? g.target(e) : g.source(e);
         if (visited[child])
           continue; // It is the parent.
-        depth_of[child] = depth_of[current] + 1;
-        dfs_stack.push(current);
+        depth_of[child] = depth_of[curr] + 1;
+        dfs_stack.push(curr);
         dfs_stack.push(child);
       }
 
-      euler_pos[current] = euler_tour.size() - 1;
-      visited[current] = true;
+      euler_pos[curr] = euler_tour.size() - 1;
+      visited[curr] = true;
     }
 
     // Initialize the Segment Tree for Range Minimum Query.
