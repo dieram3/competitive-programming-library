@@ -128,7 +128,7 @@ public:
 /// \brief Finds the maximum cardinality matching in an undirected bipartite
 /// graph.
 ///
-/// \param graph The target graph.
+/// \param g The target graph.
 ///
 /// Finds the maximum cardinality matching in the given graph i.e the maximum
 /// number of edges in a set such that no two edges share a common endpoint.
@@ -138,12 +138,11 @@ public:
 /// \throws std::logic_error if \p graph is not bipartite.
 ///
 /// \par Complexity
-/// <tt>O(E * sqrt(V))</tt>, where <tt>V = graph.num_vertices()</tt> and
-/// <tt>E = graph.num_edges()</tt>.
+/// <tt>O(E * sqrt(V))</tt>.
 ///
 template <typename Graph>
-std::size_t hopcroft_karp_maximum_matching(const Graph &graph) {
-  const hopcroft_karp<Graph> hk(graph);
+std::size_t hopcroft_karp_maximum_matching(const Graph &g) {
+  const hopcroft_karp<Graph> hk(g);
   return hk.maximum_matching();
 }
 

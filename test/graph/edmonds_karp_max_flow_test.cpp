@@ -37,7 +37,7 @@ TEST(EdmondsKarpMaxFlowTest, WorksOnBasicCases) {
   std::vector<long> flow;
 
   auto calc_max_flow = [&](size_t src, size_t tgt) {
-    return edmonds_karp_max_flow2(g, src, tgt, rev_edge, capacity, flow);
+    return edmonds_karp_max_flow(g, src, tgt, rev_edge, capacity, flow);
   };
 
   EXPECT_EQ(20, calc_max_flow(0, 1));
@@ -88,7 +88,7 @@ TEST(EdmondsKarpMaxFlowTest, WorksWhenNeedsUndoing) {
   add_edge(10, 11);
 
   std::vector<long> flow;
-  EXPECT_EQ(3, edmonds_karp_max_flow2(g, 0, 11, rev_edge, capacity, flow));
+  EXPECT_EQ(3, edmonds_karp_max_flow(g, 0, 11, rev_edge, capacity, flow));
 }
 
 //#include <random>

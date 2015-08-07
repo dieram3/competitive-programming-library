@@ -36,11 +36,11 @@ namespace djp {
 /// the min s-t cut between the vertices \c s and \c t (being \c s != \c t).
 ///
 /// \par Complexity
-/// Exactly <tt>V - 1</tt> min s-t cut operations, where
-/// <tt>V = graph.num_vertices()</tt>. In the current implementation, the
-/// underlying min s-t cut uses the Edmonds-Karp max flow algorithm whichs has
-/// complexity O(V * E^2) so the overall complexity of this function in the
-/// worst case is <tt>O(V^2 * E^2)</tt>
+/// Exactly <tt>V - 1</tt> min s-t cut operations.
+/// In the current implementation, the underlying min s-t cut uses the
+/// Edmonds-Karp max flow algorithm whichs has complexity <tt>O(V * E^2)</tt> so
+/// the overall complexity of this function in the  worst case is
+/// <tt>O(V^2 * E^2)</tt>.
 ///
 template <typename Graph, typename Flow>
 matrix<Flow> gusfield_all_pairs_min_cut(const Graph &g,

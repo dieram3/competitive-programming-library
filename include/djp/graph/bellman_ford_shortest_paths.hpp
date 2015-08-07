@@ -37,8 +37,7 @@ namespace djp {
 /// negative cycle reachable from \p source. Otherwise returns \c false.
 ///
 /// \par Complexity
-/// At most <tt>O(V * E)</tt> memory accesses, where
-/// <tt>V = graph.num_vertices()</tt> and <tt>E = graph.num_edges()</tt>.
+/// At most <tt>O(V * E)</tt> memory accesses.
 ///
 template <typename Graph, typename Distance>
 bool bellman_ford_shortest_paths(const Graph &g, const size_t source,

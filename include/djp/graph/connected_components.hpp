@@ -34,8 +34,7 @@ namespace djp {
 /// \returns The total number of components.
 ///
 /// \par Complexity
-/// <tt>O(V + E)</tt>, where <tt>V = graph.num_vertices()</tt> and
-/// <tt>E = graph.num_edges()</tt>.
+/// <tt>O(V + E)</tt>.
 ///
 template <typename Graph>
 size_t connected_components(const Graph &g, std::vector<size_t> &component_of) {

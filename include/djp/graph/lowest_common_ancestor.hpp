@@ -44,9 +44,9 @@ public:
   /// \param g The target undirected graph.
   /// \param root Vertex descriptor of the root.
   ///
-  /// \pre \p graph must be a tree i.e it must be connected and have no cycles.
+  /// \pre \p g must be a tree i.e it must be connected and have no cycles.
   /// \par Complexity
-  /// <tt>O(N)</tt>, where <tt>N = graph.num_vertices()</tt>
+  /// <tt>O(N)</tt>, where <tt>N = g.num_vertices()</tt>
   ///
   template <typename Graph>
   rmq_lca(const Graph &g, const size_t root) {

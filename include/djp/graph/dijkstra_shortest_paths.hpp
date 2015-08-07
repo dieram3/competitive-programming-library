@@ -29,8 +29,7 @@ namespace djp {
 /// <tt>dist[source] == 0</tt>.
 ///
 /// \par Complexity
-/// O(V * log(V) + E), where <tt>V = g.num_vertices()</tt> and
-/// <tt>E = g.num_edges()</tt>
+/// <tt>O(E * log(V))</tt> (uses a binary heap).
 ///
 template <class Graph, class Distance>
 std::vector<Distance>

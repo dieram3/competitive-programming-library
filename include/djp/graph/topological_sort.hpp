@@ -23,8 +23,7 @@ namespace djp {
 /// \throws std::logic_error if \p graph is not a DAG.
 ///
 /// \par Complexity
-/// <tt>O(V + E)</tt>, where <tt>V = graph.num_vertices()</tt> and
-/// <tt>E = graph.num_edges()</tt>
+/// <tt>O(V + E)</tt>
 ///
 template <typename Graph>
 std::vector<size_t> topological_sort(const Graph &g) {

@@ -57,7 +57,7 @@ Flow min_st_cut(const Graph &g, const size_t source, const size_t target,
 
   std::vector<Flow> flow;
   const auto max_flow =
-      edmonds_karp_max_flow2(g, source, target, rev_edge, capacity, flow);
+      edmonds_karp_max_flow(g, source, target, rev_edge, capacity, flow);
 
   source_side.assign(g.num_vertices(), false);
   std::stack<size_t> stack;

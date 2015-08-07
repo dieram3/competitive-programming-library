@@ -20,93 +20,35 @@ namespace djp {
 
 /// \brief Solves the maximum flow problem using the Edmonds-Karp algorithm.
 ///
-/// The member type \c edge of \c Graph must contain the following fields:
-/// \li \c capacity: The maximum flow allowed through the edge.
-/// \li \c flow: Output field where the final flow of each edge will be put on.
-/// This field should be mutable.
-/// \li \c rev_edge: A pointer to the reverse edge. Note that a reverse edge
-/// must exist even though it was not intended to be part of the modeled graph.
-/// In such a case, the reverse edge should have a capacity of 0. In case of
-/// existence of parallel edges, each edge <tt>(u, v)</tt> must have its own
-/// counterpart <tt>(v, u)</tt>.
+/// This algorithm requires that G has a reversed edge for each edge in the
+/// graph. A reverse edge must exist even though it was not intended to be part
+/// of the modeled graph, in such a case, the reverse edge should have a
+/// capacity of 0. In case of existence of parallel edges, each edge <tt>(u,
+/// v)</tt> must have its own counterpart <tt>(v, u)</tt>.
 ///
 /// \tparam Graph The directed graph type. Must model a FlowNetwork.
 ///
-/// \param graph The target graph.
+/// \param g The target graph.
 /// \param source The source vertex.
 /// \param target The target vertex.
+/// \param rev_edge The reverse edge map.
+/// \param capacity The capacity map
+/// \param[out] flow The final flow of each edge. It is guaranteed that
+/// <tt>flow[e] <= capacity[e]</tt> for each edge \c e in the graph.
 ///
-/// \returns The maximum possible flow from \p source to \p target. The final
-/// flow of each edge in the graph will be recorded in their flow field.
+/// \returns The maximum possible flow from \p source to \p target.
 ///
 /// \pre <tt>source != target</tt>
 ///
 /// \par Complexity
-/// At most O(V * E^2) memory accesses, where <tt>V = graph.num_vertices()</tt>
-/// and <tt>E = graph.num_edges()</tt>.
+/// At most O(V * E^2) memory accesses.
 ///
-template <typename Graph>
-auto edmonds_karp_max_flow(Graph &graph, const size_t source,
-                           const size_t target)
-    -> decltype(graph.edges().begin()->flow) {
-
-  using flow_t = decltype(graph.edges().begin()->flow);
-  static_assert(std::is_signed<flow_t>::value ||
-                    std::is_floating_point<flow_t>::value,
-                "The flow type must be signed or floating point.");
-
-  for (auto &edge : graph.edges())
-    edge.flow = 0;
-
-  // last_bfs[v] stores the the last BFS tree that vertex v was part of.  Note
-  // that the source vertex is present in all BFS trees as it is the root.
-  std::vector<unsigned> last_bfs(graph.num_vertices());
-  std::vector<const typename Graph::edge *> parents(graph.num_vertices());
-
-  auto find_path = [source, target, &parents, &last_bfs, &graph] {
-    std::queue<size_t> bfs_queue;
-    bfs_queue.push(source);
-    const auto current_bfs = ++last_bfs[source];
-
-    while (!bfs_queue.empty()) {
-      const size_t curr = bfs_queue.front();
-      bfs_queue.pop();
-      for (auto *edge : graph.out_edges(curr)) {
-        const size_t child = edge->target;
-        if (last_bfs[child] == current_bfs)
-          continue; // Already in the tree.
-        if (edge->flow == edge->capacity)
-          continue; // Can't navigate through saturated edges.
-        parents[child] = edge;
-        if (child == target)
-          return true;
-        bfs_queue.push(child);
-        last_bfs[child] = current_bfs;
-      }
-    }
-    return false;
-  };
-
-  flow_t max_flow = 0;
-  while (find_path()) {
-    flow_t path_flow = std::numeric_limits<flow_t>::max();
-    for (auto *edge = parents[target]; edge; edge = parents[edge->source]) {
-      path_flow = std::min(path_flow, edge->capacity - edge->flow);
-    }
-    for (auto *edge = parents[target]; edge; edge = parents[edge->source]) {
-      edge->flow += path_flow;
-      edge->rev_edge->flow -= path_flow;
-    }
-    max_flow += path_flow;
-  }
-  return max_flow;
-}
-
 template <typename Graph, typename Flow>
-Flow edmonds_karp_max_flow2(Graph &g, const size_t source, const size_t target,
-                            const std::vector<size_t> &rev_edge,
-                            const std::vector<Flow> &capacity,
-                            std::vector<Flow> &flow) {
+Flow edmonds_karp_max_flow(const Graph &g, const size_t source,
+                           const size_t target,
+                           const std::vector<size_t> &rev_edge,
+                           const std::vector<Flow> &capacity,
+                           std::vector<Flow> &flow) {
 
   static_assert(std::is_signed<Flow>::value ||
                     std::is_floating_point<Flow>::value,

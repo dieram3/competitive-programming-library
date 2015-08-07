@@ -23,7 +23,7 @@ namespace djp {
 /// sorted by weight.
 ///
 /// \par Complexity
-/// <tt>O(E * log(E))</tt>, where <tt>E = graph.num_edges()</tt>.
+/// <tt>O(E * log(E))</tt>.
 ///
 template <typename Graph, typename Weight>
 std::vector<size_t>
