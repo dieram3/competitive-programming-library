@@ -13,13 +13,13 @@
 
 using namespace djp;
 
-/// \todo Check flow output.
+/// \todo Check residual capacity output.
 
 TEST(EdmondsKarpMaxFlowTest, WorksOnBasicCases) {
   directed_graph g(4);
-  std::vector<long> capacity;
+  std::vector<unsigned> capacity;
   std::vector<size_t> rev_edge;
-  auto add_edge = [&](size_t s, size_t t, long cap, long rev_cap = 0) {
+  auto add_edge = [&](size_t s, size_t t, unsigned cap, unsigned rev_cap = 0) {
     const auto e1 = g.add_edge(s, t);
     const auto e2 = g.add_edge(t, s);
     capacity.push_back(cap);
@@ -34,10 +34,9 @@ TEST(EdmondsKarpMaxFlowTest, WorksOnBasicCases) {
   add_edge(1, 3, 10);
   add_edge(2, 3, 20, 15);
 
-  std::vector<long> flow;
-
+  std::vector<unsigned> residual;
   auto calc_max_flow = [&](size_t src, size_t tgt) {
-    return edmonds_karp_max_flow(g, src, tgt, rev_edge, capacity, flow);
+    return edmonds_karp_max_flow(g, src, tgt, rev_edge, capacity, residual);
   };
 
   EXPECT_EQ(20, calc_max_flow(0, 1));
@@ -59,7 +58,7 @@ TEST(EdmondsKarpMaxFlowTest, WorksOnBasicCases) {
 
 TEST(EdmondsKarpMaxFlowTest, WorksWhenNeedsUndoing) {
   directed_graph g(12);
-  std::vector<long> capacity;
+  std::vector<unsigned> capacity;
   std::vector<size_t> rev_edge;
   auto add_edge = [&](size_t s, size_t t) {
     const auto e1 = g.add_edge(s, t);
@@ -87,7 +86,7 @@ TEST(EdmondsKarpMaxFlowTest, WorksWhenNeedsUndoing) {
   add_edge(9, 11);
   add_edge(10, 11);
 
-  std::vector<long> flow;
+  std::vector<unsigned> flow;
   EXPECT_EQ(3, edmonds_karp_max_flow(g, 0, 11, rev_edge, capacity, flow));
 }
 

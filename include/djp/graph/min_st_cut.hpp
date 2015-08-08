@@ -55,9 +55,9 @@ Flow min_st_cut(const Graph &g, const size_t source, const size_t target,
                 const std::vector<Flow> &capacity,
                 std::vector<bool> &source_side) {
 
-  std::vector<Flow> flow;
+  std::vector<Flow> residual;
   const auto max_flow =
-      edmonds_karp_max_flow(g, source, target, rev_edge, capacity, flow);
+      edmonds_karp_max_flow(g, source, target, rev_edge, capacity, residual);
 
   source_side.assign(g.num_vertices(), false);
   std::stack<size_t> stack;
@@ -71,7 +71,7 @@ Flow min_st_cut(const Graph &g, const size_t source, const size_t target,
       const size_t neighbor = g.target(edge);
       if (source_side[neighbor])
         continue; // Already discovered.
-      if (flow[edge] == capacity[edge])
+      if (!residual[edge])
         continue; // Can't navigate through saturated edges.
       source_side[neighbor] = true;
       stack.push(neighbor);
