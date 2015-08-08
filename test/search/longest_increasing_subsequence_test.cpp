@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/miscellaneous/longest_increasing_subsequence.hpp>
+#include <djp/search/longest_increasing_subsequence.hpp>
 #include <gtest/gtest.h>
 #include <vector>
 #include <numeric>
