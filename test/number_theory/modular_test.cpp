@@ -6,8 +6,7 @@
 #include <djp/number_theory/modular.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/number_theory/primes.hpp> // for djp::is_prime_mr
-#include <djp/utility/basics.hpp>       // for djp::repeat
+#include <djp/utility/basics.hpp> // for djp::repeat
 
 #include <random>  // for mt19937, uniform_int_distribution
 #include <cstdint> // for uint32_t, SIZE_MAX
@@ -51,39 +50,34 @@ TEST(ModMulTest, WorksWell) {
 }
 
 TEST(ModPowTest, WorksWhenOverflowDoesNotNeedControl) {
-  EXPECT_EQ(90, mod_pow<uint32_t>(2342, 14233, 2011));
-  EXPECT_EQ(10817, mod_pow<uint32_t>(2017, 1238912398, 65536));
-  EXPECT_EQ(12, mod_pow<uint32_t>(22342, 1238912398, 13));
-  EXPECT_EQ(8001, mod_pow<uint32_t>(25237, 131312, 65536));
-  EXPECT_EQ(370, mod_pow<uint32_t>(292, SIZE_MAX, 41202));
+  EXPECT_EQ(90, mod_pow(2342, 14233, 2011));
+  EXPECT_EQ(10817, mod_pow(2017, 1238912398, 65536));
+  EXPECT_EQ(12, mod_pow(22342, 1238912398, 13));
+  EXPECT_EQ(8001, mod_pow(25237, 131312, 65536));
+  EXPECT_EQ(370, mod_pow(292, SIZE_MAX, 41202));
 }
 
 TEST(ModInverseTest, WorksWithPrimeModules) {
-  auto m_inverse = [](uint32_t a, uint32_t m) {
-    EXPECT_TRUE(a < m);
-    EXPECT_TRUE(is_prime_mr(m));
-    return mod_inverse(a, m);
-  };
 
-  EXPECT_EQ(1, m_inverse(1, 2));
+  EXPECT_EQ(1, mod_inverse(1, 2));
 
-  EXPECT_EQ(2, m_inverse(2, 3));
+  EXPECT_EQ(2, mod_inverse(2, 3));
 
-  EXPECT_EQ(2, m_inverse(4, 7));
-  EXPECT_EQ(4, m_inverse(2, 7));
+  EXPECT_EQ(2, mod_inverse(4, 7));
+  EXPECT_EQ(4, mod_inverse(2, 7));
 
-  EXPECT_EQ(8, m_inverse(6, 47));
-  EXPECT_EQ(6, m_inverse(8, 47));
+  EXPECT_EQ(8, mod_inverse(6, 47));
+  EXPECT_EQ(6, mod_inverse(8, 47));
 
-  EXPECT_EQ(22, m_inverse(17, 373));
-  EXPECT_EQ(17, m_inverse(22, 373));
+  EXPECT_EQ(22, mod_inverse(17, 373));
+  EXPECT_EQ(17, mod_inverse(22, 373));
 
-  EXPECT_EQ(144, m_inverse(55, 7919));
-  EXPECT_EQ(55, m_inverse(144, 7919));
+  EXPECT_EQ(144, mod_inverse(55, 7919));
+  EXPECT_EQ(55, mod_inverse(144, 7919));
 
-  EXPECT_EQ(1984127, m_inverse(504, 1000000007));
-  EXPECT_EQ(504, m_inverse(1984127, 1000000007));
+  EXPECT_EQ(1984127, mod_inverse(504, 1000000007));
+  EXPECT_EQ(504, mod_inverse(1984127, 1000000007));
 
-  EXPECT_EQ(32768, m_inverse(65536, 2147483647));
-  EXPECT_EQ(65536, m_inverse(32768, 2147483647));
+  EXPECT_EQ(32768, mod_inverse(65536, 2147483647));
+  EXPECT_EQ(65536, mod_inverse(32768, 2147483647));
 }
