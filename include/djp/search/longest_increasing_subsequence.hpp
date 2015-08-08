@@ -1,18 +1,19 @@
-//          Copyright Diego Ramírez March 2015
+//          Copyright Diego Ramírez March 2015, August 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 /// \file
 /// \brief Defines functions related to the longest increasing subsequence.
 
-#ifndef DJP_MISCELLANEOUS_LONGEST_INCREASING_SUBSEQUENCE_HPP
-#define DJP_MISCELLANEOUS_LONGEST_INCREASING_SUBSEQUENCE_HPP
+#ifndef DJP_SEARCH_LONGEST_INCREASING_SUBSEQUENCE_HPP
+#define DJP_SEARCH_LONGEST_INCREASING_SUBSEQUENCE_HPP
 
 #include <vector>     // for std::vector
 #include <algorithm>  // for std::for_each, std::lower_bound, std::is_sorted
 #include <iterator>   // for std::iterator_traits
 #include <functional> // for std::less
 #include <cassert>    // for assert
+#include <cstddef>    // for std::size_t
 #include <cstdint>    // for SIZE_MAX
 
 namespace djp {
@@ -59,6 +60,24 @@ std::size_t calc_lis_size(InputIt first, InputIt last) {
   return calc_lis_size(first, last, std::less<T>());
 }
 
+/// \brief Finds a subsequence whose size is equal to the size of the longest
+/// increasing subsequence (LIS).
+///
+/// Finds the longest possible subsequence \c L in \p seq, such that
+/// <tt>comp(seq[l], seq[r])</tt> evaluates to \c true for any consecutive
+/// pair of elements <tt>(l, r)</tt> in \c L. If there are multiple subsequences
+/// with the longest size, any of them is returned.
+///
+/// \param seq The sequence to be examined.
+/// \param comp The order comparator. Uses \c less or \c greater for strict
+/// ordering and \c less_equal or \c greater_equal for non-strict ordering.
+///
+/// \returns A sorted vector containing the indices of elements in the chosen
+/// subsequence.
+///
+/// \par Complexity
+/// <tt>O(N * log(N))</tt> comparisons, where <tt>N = seq.size()</tt>.
+///
 template <class T, class Compare>
 std::vector<size_t> longest_increasing_subsequence(const std::vector<T> &seq,
                                                    Compare comp) {

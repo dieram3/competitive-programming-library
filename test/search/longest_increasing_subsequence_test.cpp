@@ -1,13 +1,16 @@
-//          Copyright Diego Ramírez March 2015
+//          Copyright Diego Ramírez March 2015, August 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <djp/search/longest_increasing_subsequence.hpp>
 #include <gtest/gtest.h>
-#include <vector>
-#include <numeric>
-#include <iterator>
+
+#include <functional> // for less, greater, less_equal, greater_equal
+#include <iterator>   // for begin, end
+#include <numeric>    // for iota
+#include <vector>     // for vector
+#include <cstddef>    // for size_t
 
 using djp::longest_increasing_subsequence;
 using std::vector;
@@ -23,13 +26,13 @@ static std::size_t calc_lis_size(const InputRange &range, Compare comp) {
 
 TEST(CalcLisSizeTest, HandlesSmallRanges) {
   const int seq[] = {0, 8, 4, 12, 2, 10, 6, 14, 1, 9, 5, 13, 3, 11, 7, 15};
-  EXPECT_EQ(6u, calc_lis_size(seq, std::less<int>{}));
+  EXPECT_EQ(6u, calc_lis_size(seq, less<int>{}));
 }
 
 TEST(CalcLisSizeTest, HandlesLongRanges) {
   vector<int> seq(4096);
   std::iota(seq.begin(), seq.end(), 0);
-  EXPECT_EQ(seq.size(), calc_lis_size(seq, std::less<int>{}));
+  EXPECT_EQ(seq.size(), calc_lis_size(seq, less<int>{}));
   EXPECT_EQ(1u, calc_lis_size(seq, greater<int>{}));
 }
 
