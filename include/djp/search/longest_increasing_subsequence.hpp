@@ -8,14 +8,17 @@
 #ifndef DJP_MISCELLANEOUS_LONGEST_INCREASING_SUBSEQUENCE_HPP
 #define DJP_MISCELLANEOUS_LONGEST_INCREASING_SUBSEQUENCE_HPP
 
-#include <vector>
-#include <algorithm>
-#include <iterator>
-#include <functional>
+#include <vector>     // for std::vector
+#include <algorithm>  // for std::for_each, std::lower_bound, std::is_sorted
+#include <iterator>   // for std::iterator_traits
+#include <functional> // for std::less
+#include <cassert>    // for assert
+#include <cstdint>    // for SIZE_MAX
 
 namespace djp {
 
-/// \brief Calculates size of the Longest monotonically Increasing Subsequence.
+/// \brief Calculates the size of the Longest monotonically Increasing
+/// Subsequence.
 ///
 /// The \e LIS is defined as the longest subsequence of <tt>[first, last)</tt>
 /// such that <tt>comp(LIS[i], LIS[i + 1])</tt> evaluates to \c true for all
@@ -25,9 +28,11 @@ namespace djp {
 /// \param last Iterator to the end of the target range.
 /// \param comp Comparison function object which returns \c true if the first
 /// argument is \em less than the second.
+///
 /// \par Complexity
-/// <tt>O(N * log(N))</tt> comparisons, where <tt>N = std::distance(first,
-/// last)</tt>.
+/// <tt>O(N * log(N))</tt> comparisons, where
+/// <tt>N = std::distance(first, last)</tt>.
+///
 template <class InputIt, class Compare>
 std::size_t calc_lis_size(InputIt first, InputIt last, Compare comp) {
   using T = typename std::iterator_traits<InputIt>::value_type;
@@ -43,13 +48,43 @@ std::size_t calc_lis_size(InputIt first, InputIt last, Compare comp) {
   return tail.size();
 }
 
-/// \brief Calculates size of the Longest Monotonically Increasing Subsequence.
+/// \brief Calculates the size of the Longest Monotonically Increasing
+/// Subsequence.
 ///
 /// Calls <tt>calc_lis_size(first, last, std::less<>())</tt>.
+///
 template <class InputIt>
 std::size_t calc_lis_size(InputIt first, InputIt last) {
   using T = typename std::iterator_traits<InputIt>::value_type;
   return calc_lis_size(first, last, std::less<T>());
+}
+
+template <class T, class Compare>
+std::vector<size_t> longest_increasing_subsequence(const std::vector<T> &seq,
+                                                   Compare comp) {
+  if (seq.empty())
+    return {};
+
+  std::vector<size_t> tail;
+  std::vector<size_t> parent(seq.size(), SIZE_MAX);
+  auto value_comp = [&](size_t l, size_t r) { return comp(seq[l], seq[r]); };
+
+  for (size_t i = 0; i != seq.size(); ++i) {
+    auto it = std::lower_bound(tail.begin(), tail.end(), i, value_comp);
+    parent[i] = (it == tail.begin()) ? SIZE_MAX : *(it - 1);
+    if (it == tail.end())
+      tail.push_back(i);
+    else
+      *it = i;
+  }
+
+  std::vector<size_t> lis(tail.size());
+  auto rit = lis.rbegin();
+  for (size_t i = tail.back(); i != SIZE_MAX; i = parent[i])
+    *rit++ = i;
+
+  assert(rit == lis.rend());
+  return lis;
 }
 
 } // end namespace djp
