@@ -6,7 +6,8 @@
 #include <djp/search/binary_search.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/number_theory/basics.hpp>
+#include <djp/number_theory/basics.hpp> // for multiply_less, multiply_greater.
+
 #include <climits> // for INT_MAX
 #include <cstdint> // for uint32_t
 

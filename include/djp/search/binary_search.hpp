@@ -6,8 +6,6 @@
 #ifndef DJP_SEARCH_BINARY_SEARCH_HPP
 #define DJP_SEARCH_BINARY_SEARCH_HPP
 
-#include <algorithm>
-
 namespace djp {
 
 /// \brief Binary searches for the first integer that does not satisfy the
