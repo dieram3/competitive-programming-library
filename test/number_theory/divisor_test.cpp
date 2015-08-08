@@ -41,7 +41,7 @@ TEST(count_divisors, WorksWell) {
   using djp::count_divisors;
 
   auto sieve = djp::sieve_of_eratosthenes<std::uint32_t>(66000);
-  for (uint32_t n = 1; n < 10000; ++n) {
+  for (uint32_t n = 1; n < 1000; ++n) {
     const auto count0 = naive_count_divisors(n);
     const auto count1 = count_divisors(n);
     const auto count2 = count_divisors(n, sieve);
@@ -49,8 +49,7 @@ TEST(count_divisors, WorksWell) {
     EXPECT_EQ(count0, count2) << "n=" << n;
   }
 
-  std::random_device rd;
-  std::mt19937 gen(rd());
+  std::mt19937 gen;
   djp::repeat(1000, [&gen, &sieve] {
     std::uniform_int_distribution<std::uint32_t> dist;
     const auto n = dist(gen);

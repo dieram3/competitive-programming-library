@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez November 2014
+//          Copyright Diego Ramírez November 2014, August 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -9,26 +9,94 @@
 #define DJP_NUMBER_THEORY_MODULAR_HPP
 
 #include <limits>      // for std::numeric_limits
-#include <stdexcept>   // for std::domain_error
 #include <type_traits> // for std::is_unsigned
 #include <cstddef>     // for std::size_t
-#include <cstdint>     // for std::uint64_t
+#include <cstdint>     // for std::uint32_t, std::uint64_t
 
 namespace djp {
+
+/// \brief Safely computes <tt>(a * b) % m</tt>.
+///
+/// \param a The first operand.
+/// \param b The second operand.
+/// \param m The modulo.
+///
+/// \pre <tt>a < m</tt>
+/// \pre <tt>b < m</tt>
+///
+/// \par Complexity
+/// Constant.
+///
+template <typename T>
+T mod_mul(T a, T b, T m) {
+  static_assert(std::is_unsigned<T>::value, "T must be unsigned");
+  static_assert(sizeof(T) <= sizeof(uint32_t), "Can't multiply safely");
+  return uint64_t(a) * b % m;
+}
+
+/// \brief Computes <tt>pow(a, b) % m</tt>
+///
+/// \param base The base.
+/// \param exp The exponent.
+/// \param m The modulo.
+///
+/// \pre <tt>base < m</tt>
+///
+/// \par Complexity
+/// <tt>O(log(exp))</tt>
+///
+template <typename T>
+T mod_pow(T base, size_t exp, T m) {
+  T result = 1;
+  while (exp) {
+    if (exp & 1)
+      result = mod_mul(result, base, m);
+    base = mod_mul(base, base, m);
+    exp >>= 1;
+  }
+  return result;
+}
+
+/// \brief Computes the modular multiplicative inverse of the given number
+/// modulo \c m.
+///
+/// Finds a value \c x such that  <tt>a * x == 1 (mod m)</tt>. It requires that
+/// <tt>gcd(a, m) == 1</tt>, otherwise \p a will not be invertible.
+///
+/// The current implementation uses the Euler's theorem for computing the
+/// inverse of \p a given that \p m is a prime number. Therefore, this function
+/// can be used iff \p m is prime.
+///
+/// \param a The number to be inverted.
+/// \param m The modulo.
+///
+/// \returns The modular inverse of <tt>b (mod m)</tt>.
+///
+/// \pre \p m is prime.
+/// \pre <tt>b < m</tt>
+///
+/// \par Complexity
+/// <tt>O(log(m))</tt>
+///
+template <typename T>
+T mod_inverse(T a, T m) {
+  return mod_pow(a, m - 2, m);
+}
 
 /// \brief Integer like class used for doing modular arithmetics.
 ///
 /// A modular object always is normalized, i.e each time a value \c x is
-/// assigned to the object. It is stored as <tt>x % Mod</tt>.
-template <typename T, T Mod>
+/// assigned to the object. It is stored as <tt>x % M</tt>.
+///
+template <typename T, T M>
 class modular {
   static_assert(std::is_unsigned<T>::value, "T must be unsigned");
-  static_assert(Mod >= 2, "Mod must be greater than or equal to 2");
-  static_assert((Mod - 1) <= std::numeric_limits<T>::max() / (Mod - 1),
+  static_assert(M >= 2, "Mod must be greater than or equal to 2");
+  static_assert((M - 1) <= std::numeric_limits<T>::max() / (M - 1),
                 "The MOD value may produce overflow");
 
 public:
-  constexpr modular(T value = 0) : value_{value % Mod} {}
+  constexpr modular(T value = 0) : value_{value % M} {}
 
   modular &operator+=(modular other) { return *this = (*this) + other; }
   modular &operator-=(modular other) { return *this = (*this) - other; }
@@ -36,7 +104,7 @@ public:
   modular &operator/=(modular other) { return *this = (*this) / other; }
 
   friend modular operator+(modular a, modular b) { return T(a) + T(b); }
-  friend modular operator-(modular a, modular b) { return T(a) + Mod - T(b); }
+  friend modular operator-(modular a, modular b) { return T(a) + M - T(b); }
   friend modular operator*(modular a, modular b) { return T(a) * T(b); }
   friend modular operator/(modular a, modular b) { return a * inverse(b); }
 
@@ -50,12 +118,10 @@ public:
     }
     return result;
   }
-  friend modular inverse(modular b) {
-    const auto inv_b = pow(b, Mod - 2);
-    if (T(inv_b) == 0)
-      throw std::domain_error("Modular number has no inverse");
-    return inv_b;
-  }
+
+  /// \pre \c M is prime.
+  friend modular inverse(modular a) { return pow(a, M - 2); }
+
   friend bool congruent(modular a, modular b) { return T(a) == T(b); }
 
   template <class Integer>
@@ -66,31 +132,6 @@ public:
 private:
   T value_;
 };
-
-/// \brief Safely computes <tt>a * b % mod</tt>
-template <typename T>
-T mod_mul(T a, T b, T mod) {
-  static_assert(std::is_unsigned<T>::value, "Mod mul: T must be unsigned");
-  static_assert(sizeof(T) <= sizeof(std::uint32_t), "Cannot do safe mod mul");
-  return std::uint64_t(a) * b % mod;
-}
-
-/// \brief Computes <tt>pow(a, b) % mod</tt>
-/// \pre <tt>mod > 1</tt>
-/// \par Complexity
-/// If <tt>(mod - 1)^2 <= std::numeric_limits<T>::max()</tt>
-/// <tt>O(log(exp))</tt>. Otherwise <tt>O(log^2(exp))</tt>
-template <typename T>
-T mod_pow(T base, std::size_t exp, T mod) {
-  T result = 1;
-  while (exp) {
-    if (exp & 1)
-      result = mod_mul(result, base, mod);
-    base = mod_mul(base, base, mod);
-    exp >>= 1;
-  }
-  return result;
-}
 
 } // end namespace djp
 
