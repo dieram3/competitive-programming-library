@@ -78,7 +78,7 @@ TEST(BinarySearchTest, AllFalseTest) {
   EXPECT_EQ(-150, int_binary_search(-150, 150, [](int) { return false; }));
 }
 
-TEST(BinarySearchTest, ExtremalTest) {
+TEST(BinarySearchTest, LimitsTest) {
   auto less_than_20 = [](int x) { return x < 20; };
   auto all_true = [](int) { return true; };
   auto all_false = [](int) { return false; };
