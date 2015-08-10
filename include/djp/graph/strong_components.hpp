@@ -19,7 +19,7 @@ namespace djp {
 /// \brief Finds the strongly connected components (SCC) of a directed graph.
 ///
 /// Uses an iterative version of Tarjan's algorithm based on DFS to find the SCC
-/// of the input graph. The component labels are recored in the \p comp map.
+/// of the input graph. The component labels are recorded in the \p comp map.
 /// Label values will be bounded into the range <tt>[0, C)</tt>, being \c C the
 /// total number of strongly connected components.
 ///
@@ -69,18 +69,17 @@ size_t strong_components(const Graph &g, std::vector<size_t> &comp) {
     dfs_stack.emplace(start, false);
     while (!dfs_stack.empty()) {
       const size_t u = dfs_stack.top().first;
-      const bool finish_it = dfs_stack.top().second;
+      const bool backtrack = dfs_stack.top().second;
       dfs_stack.pop();
-      if (finish_it) {
+      if (!backtrack) {
+        if (dfs_time[u])
+          continue; // Non-tree edge.
+        discover(u);
+        dfs_stack.emplace(u, true);
+        for (const auto edge : g.out_edges(u))
+          dfs_stack.emplace(g.target(edge), false);
+      } else
         finish(u);
-        continue;
-      }
-      if (dfs_time[u])
-        continue; // Already discovered.
-      discover(u);
-      dfs_stack.emplace(u, true);
-      for (const auto edge : g.out_edges(u))
-        dfs_stack.emplace(g.target(edge), false);
     }
   };
 

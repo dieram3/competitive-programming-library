@@ -118,7 +118,7 @@ TEST(StrongComponentsTest, DirectedAcyclicGraphTest) {
   check_scc(g, 14, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13});
 }
 
-TEST(StrongComponentsTest, PyramidalTest) {
+TEST(StrongComponentsTest, PyramidalGraphTest) {
   directed_graph g(7);
   g.add_edge(0, 1);
   g.add_edge(0, 6);
