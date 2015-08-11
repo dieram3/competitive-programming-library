@@ -1,5 +1,6 @@
 set(GRAPH_TEST_SOURCES
   "bellman_ford_shortest_paths_test.cpp"
+  "biconnected_components_test.cpp"
   "connected_components_test.cpp"
 	"dijkstra_shortest_paths_test.cpp"
   "directed_graph_test.cpp"
