@@ -93,9 +93,9 @@ public:
   /// \param v1 Descriptor of the first vertex.
   /// \param v2 Descriptor of the second vertex.
   /// \par Complexity
-  /// <tt>O(log(N))</tt>, where \c N = number of vertices on the target graph.
+  /// <tt>O(log(N))</tt>, where \c N = number of vertices in the target graph.
   ///
-  size_t find_lca(const size_t v1, const size_t v2) const {
+  size_t lca(const size_t v1, const size_t v2) const {
     const auto range = std::minmax(euler_pos[v1], euler_pos[v2]);
     return stree.accumulate(range.first, range.second + 1).node;
   }
@@ -120,10 +120,30 @@ public:
   /// \param v2 Descriptor of the second vertex.
   ///
   /// \par Complexity
-  /// <tt>O(log(N))</tt>, where \c N = number of vertices on the target graph.
+  /// <tt>O(log(N))</tt>, where \c N = number of vertices in the target graph.
   ///
   size_t distance(const size_t v1, const size_t v2) const {
-    return depth_of(v1) + depth_of(v2) - 2 * depth_of(find_lca(v1, v2));
+    return depth_of(v1) + depth_of(v2) - 2 * depth_of(lca(v1, v2));
+  }
+
+  /// \brief Checks whether a vertice is visited in a path.
+  ///
+  /// Relies on LCA properties to verify if the vertice \p m is visited in the
+  /// path going from \p a to \p b (inclusive).
+  ///
+  /// \param a The start of the path.
+  /// \param b The end of the path.
+  /// \param m The vertice to be checked.
+  ///
+  /// \returns \c true if the vertice \p m is visited. Otherwise \c false.
+  ///
+  /// \par Complexity
+  /// <tt>O(log(N))</tt>, where \c N = number of vertices in the target graph.
+  ///
+  bool visits(size_t a, size_t b, size_t m) const {
+    const size_t lca_ab = lca(a, b), lca_am = lca(a, m), lca_bm = lca(b, m);
+    return (lca_am == m && lca_ab == lca_bm) ||
+           (lca_bm == m && lca_ab == lca_am);
   }
 
 private:
