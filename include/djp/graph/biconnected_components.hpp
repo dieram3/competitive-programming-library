@@ -12,6 +12,7 @@
 #include <vector>     // for std::vector
 #include <utility>    // for std::pair
 #include <cstddef>    // for std::size_t
+#include <cstdint>    // for SIZE_MAX
 
 namespace djp {
 
@@ -54,50 +55,47 @@ std::size_t biconnected_components(const Graph &g, std::vector<size_t> &comp,
   size_t children_of_root = 0;
   size_t comp_cnt = 0;
   std::stack<std::pair<size_t, size_t>> s; // edge, source of edge
-  std::vector<size_t> pred(num_vertices);
+  std::vector<size_t> pred(num_vertices, SIZE_MAX);
   std::vector<size_t> dtm(num_vertices);
   std::vector<size_t> low(num_vertices);
   std::vector<colors> color(num_vertices, white);
-  is_cut.resize(num_vertices);
+  is_cut.assign(num_vertices, false);
   comp.resize(g.num_edges());
 
   std::function<void(size_t)> dfs_visit;
   dfs_visit = [&](const size_t src) {
     color[src] = gray;
     low[src] = dtm[src] = ++time;
+    const auto parent = pred[src];
 
     for (const auto e : g.out_edges(src)) {
       const size_t tgt = (src == g.source(e)) ? g.target(e) : g.source(e);
+      if (tgt == parent)
+        continue;
       if (color[tgt] == white) {
         s.emplace(e, src);
         pred[tgt] = src;
-        if (pred[src] == src)
+        if (parent == SIZE_MAX)
           ++children_of_root;
         dfs_visit(tgt);
       } else if (color[tgt] == gray) {
-        if (tgt != pred[src]) {
-          s.emplace(e, src);
-          low[src] = std::min(low[src], dtm[tgt]);
-        }
+        s.emplace(e, src);
+        low[src] = std::min(low[src], dtm[tgt]);
       }
     }
     color[src] = black;
-    const auto parent = pred[src];
-    if (parent == src) {
+    if (parent == SIZE_MAX) {
       is_cut[src] = children_of_root > 1;
-    } else {
-      low[parent] = std::min(low[parent], low[src]);
-      if (low[src] >= dtm[parent]) {
-        is_cut[parent] = true;
-        while (dtm[s.top().second] >= dtm[src])
-          comp[s.top().first] = comp_cnt, s.pop();
-        comp[s.top().first] = comp_cnt++, s.pop();
-      }
+      return;
     }
+    low[parent] = std::min(low[parent], low[src]);
+    if (low[src] < dtm[parent])
+      return;
+    is_cut[parent] = true;
+    while (dtm[s.top().second] >= dtm[src])
+      comp[s.top().first] = comp_cnt, s.pop();
+    comp[s.top().first] = comp_cnt++, s.pop();
   };
-
-  for (size_t v = 0; v != num_vertices; ++v)
-    pred[v] = v;
 
   for (size_t v = 0; v != num_vertices; ++v)
     if (color[v] == white) {
