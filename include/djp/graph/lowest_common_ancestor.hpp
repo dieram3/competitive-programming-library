@@ -10,13 +10,10 @@
 
 #include <djp/data_structure/segment_tree.hpp> // Used for Range Minimum Query
 
-#include <algorithm> // for std::swap
-#include <iterator>  // for std::begin, std::end
+#include <algorithm> // for std::minmax
 #include <stack>     // for std::stack
 #include <vector>    // for std::vector
-
-#include <cassert> // for assert
-#include <cstddef> // for std::size_t
+#include <cstddef>   // for std::size_t
 
 namespace djp {
 
@@ -26,8 +23,8 @@ namespace djp {
 /// common ancestor between two vertices given a predefined root.
 class rmq_lca {
   struct euler_visit {
-    std::size_t node;
-    std::size_t depth;
+    size_t node;
+    size_t depth;
   };
 
   struct shallower {
