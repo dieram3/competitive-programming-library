@@ -25,18 +25,6 @@ TEST(HopcroftKarpMaximumMatchingTest, WorksOnTrivialCases) {
   EXPECT_EQ(6, hopcroft_karp_maximum_matching(graph));
 }
 
-TEST(HopcroftKarpMaximumMatchingTest, ThrowsIfNotBipartite) {
-  undirected_graph graph(6);
-
-  graph.add_edge(0, 4);
-  graph.add_edge(1, 3);
-  graph.add_edge(2, 5);
-  graph.add_edge(4, 5);
-  graph.add_edge(2, 4);
-
-  EXPECT_THROW(hopcroft_karp_maximum_matching(graph), std::logic_error);
-}
-
 TEST(HopcroftKarpMaximumMatchingTest, WorksOnEasyCases) {
   undirected_graph graph(9);
   // Component 1
