@@ -29,23 +29,26 @@ template <typename Graph, typename Weight>
 std::vector<size_t>
 kruskal_minimum_spanning_tree(const Graph &g,
                               const std::vector<Weight> &weight) {
-  if (g.num_vertices() == 0)
+  const size_t num_vertices = g.num_vertices();
+  if (num_vertices == 0)
     return {};
 
-  std::vector<size_t> sorted_edges(g.num_edges());
-  std::iota(sorted_edges.begin(), sorted_edges.end(), size_t{0});
+  std::vector<size_t> edges(g.num_edges());
+  std::iota(edges.begin(), edges.end(), size_t{0});
 
-  std::sort(sorted_edges.begin(), sorted_edges.end(),
+  std::sort(edges.begin(), edges.end(),
             [&](size_t lhs, size_t rhs) { return weight[lhs] < weight[rhs]; });
 
-  disjoint_set dset(g.num_vertices());
+  disjoint_set dset(num_vertices);
+  for (size_t v = 0; v != num_vertices; ++v)
+    dset.make_set(v);
 
-  const size_t max_tree_edges = g.num_vertices() - 1;
+  const size_t max_tree_edges = num_vertices - 1;
   std::vector<size_t> tree_edges;
   tree_edges.reserve(max_tree_edges);
 
-  for (const auto e : sorted_edges) {
-    if (dset.make_union(g.source(e), g.target(e))) {
+  for (const auto e : edges) {
+    if (dset.union_set(g.source(e), g.target(e))) {
       tree_edges.push_back(e);
       if (tree_edges.size() == max_tree_edges)
         break;
