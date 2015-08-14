@@ -40,8 +40,6 @@ kruskal_minimum_spanning_tree(const Graph &g,
             [&](size_t lhs, size_t rhs) { return weight[lhs] < weight[rhs]; });
 
   disjoint_set dset(num_vertices);
-  for (size_t v = 0; v != num_vertices; ++v)
-    dset.make_set(v);
 
   const size_t max_tree_edges = num_vertices - 1;
   std::vector<size_t> tree_edges;

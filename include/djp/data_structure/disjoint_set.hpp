@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez May 2015
+//          Copyright Diego Ramírez May 2015, August 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,8 @@
 #ifndef DJP_DATA_STRUCTURE_DISJOINT_SET_HPP
 #define DJP_DATA_STRUCTURE_DISJOINT_SET_HPP
 
-#include <algorithm> // for std::max
-#include <memory>    // for std::unique_ptr
-#include <utility>   // for std::swap
-#include <cstddef>   // for std::size_t
+#include <memory>  // for std::unique_ptr
+#include <cstddef> // for std::size_t
 
 namespace djp {
 
@@ -19,38 +17,28 @@ class disjoint_set {
 public:
   /// \brief Constructs a disjoint-set object.
   ///
-  /// It reserves enough storage to maintain \p n different elements. The
-  /// elements will be indexed with integers from \c 0 to <tt>n - 1</tt>.
-  ///
-  /// The state of each element is initially undefined so \p make_set must be
-  /// called for it before being queried or merged. Using an uinitialized
-  /// element invokes undefined behaviour.
+  /// Creates \p n elements indexed with integers from \c 0 to <tt>n - 1</tt>.
+  /// Initially, each element belongs to a singleton set (make-set is done for
+  /// each of them).
   ///
   /// \param n The number of elements to be used.
   ///
   /// \par Complexity
-  /// Constant.
+  /// Linear in the number of elements.
   ///
-  disjoint_set(size_t n) : parent(new size_t[n]), rank(new size_t[n]) {}
-
-  /// \brief Removes the given element to a singleton set.
-  ///
-  /// \param x The element to be removed.
-  ///
-  /// \par Complexity
-  /// Constant.
-  ///
-  void make_set(size_t x) {
-    parent[x] = x;
-    rank[x] = 0;
+  disjoint_set(size_t n) : parent(new size_t[n]), rank(new size_t[n]) {
+    for (size_t x = 0; x != n; ++x)
+      parent[x] = x, rank[x] = 0;
   }
 
-  /// \brief Finds the standard representative of the set containing \p x.
+  /// \brief Finds the representative element of the set containing \p x.
   ///
   /// \param x Member of the set to be searched.
   ///
+  /// \returns The index of the representative element of the searched set.
+  ///
   /// \par Complexity
-  /// It uses path compression so the amortized complexity is constant.
+  /// The amortized complexity is constant.
   ///
   size_t find_set(size_t x) {
     if (parent[x] != x)
@@ -64,7 +52,7 @@ public:
   /// \param y Member of the second set.
   ///
   /// \returns \c true if \p x and \p y were part of different sets so an union
-  /// was made. Otherwise returns \c false.
+  /// was made. Otherwise \c false.
   ///
   /// \par Complexity
   /// The amortized complexity is constant.
