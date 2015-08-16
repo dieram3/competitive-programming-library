@@ -8,6 +8,7 @@
 
 #include <djp/graph/directed_graph.hpp>
 
+#include <numeric>       // for std::iota
 #include <unordered_map> // for std::unordered_map
 #include <vector>        // for std::vector
 #include <cstddef>       // for std::size_t
@@ -15,12 +16,43 @@
 using namespace djp;
 using std::vector;
 
-static void normalize(vector<size_t> &vec) {
+static std::vector<size_t> normalize(const vector<size_t> &vec) {
   std::unordered_map<size_t, size_t> id_map;
   for (const size_t elem : vec)
     id_map.emplace(elem, id_map.size());
-  for (size_t &elem : vec)
-    elem = id_map.at(elem);
+
+  std::vector<size_t> norm(vec.size());
+  for (size_t i = 0; i != norm.size(); ++i)
+    norm[i] = id_map.at(vec[i]);
+  return norm;
+}
+
+static directed_graph make_condensate(const directed_graph &g,
+                                      const size_t num_comps,
+                                      const vector<size_t> &comp) {
+  directed_graph cg(num_comps);
+  const size_t num_e = g.num_edges();
+  for (size_t e = 0; e != num_e; ++e) {
+    const auto src = comp[g.source(e)];
+    const auto tgt = comp[g.target(e)];
+    if (src == tgt)
+      continue;
+    cg.add_edge(src, tgt);
+  }
+  return cg;
+}
+
+static bool check_cg_toposort(const directed_graph &cg) {
+  const size_t num_v = cg.num_vertices();
+  vector<bool> ready(num_v);
+  // The toposort should be num_v - 1, num_v - 2, ..., 2, 1, 0
+  for (size_t v = num_v - 1; v + 1 != 0; --v) {
+    for (const auto e : cg.in_edges(v))
+      if (!ready[cg.source(e)])
+        return false;
+    ready[v] = true;
+  }
+  return true;
 }
 
 // Requires: expected.size() >= 1
@@ -31,8 +63,10 @@ static void check_scc(const directed_graph &g, const size_t total_scc,
   for (const size_t label : comp)
     EXPECT_LT(label, total_scc) << " weird label: " << label;
 
-  normalize(comp);
-  EXPECT_EQ(expected, comp);
+  EXPECT_EQ(expected, normalize(comp));
+
+  const auto cg = make_condensate(g, total_scc, comp);
+  EXPECT_TRUE(check_cg_toposort(cg));
 }
 
 TEST(StrongComponentsTest, EmptyGraphTest) {
