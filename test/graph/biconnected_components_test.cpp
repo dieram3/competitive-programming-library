@@ -8,11 +8,13 @@
 
 #include <djp/graph/undirected_graph.hpp>
 
+#include <algorithm>     // for std::sort, std::max_element
 #include <vector>        // for std::vector
 #include <unordered_map> // for std::unordered_map
 #include <cstddef>       // for std::size_t
 
 using namespace djp;
+using std::max_element;
 using std::size_t;
 using std::vector;
 using std::unordered_map;
@@ -25,27 +27,72 @@ static void normalize(vector<size_t> &vec) {
     elem = id_map.at(elem);
 }
 
-static void bi_comps_check(const undirected_graph &g, const size_t exp_comp_cnt,
-                           const vector<size_t> &exp_bi_comps,
-                           const vector<size_t> &exp_cut_set) {
-  vector<size_t> bi_comp;
-  vector<bool> is_cut;
-  EXPECT_EQ(exp_comp_cnt, biconnected_components(g, bi_comp, is_cut));
-
-  EXPECT_EQ(g.num_edges(), bi_comp.size());
-  EXPECT_EQ(g.num_vertices(), is_cut.size());
-
-  normalize(bi_comp);
-  EXPECT_EQ(exp_bi_comps, bi_comp);
-
-  const size_t num_vertices = g.num_vertices();
-  std::vector<size_t> cut_set;
-  for (size_t v = 0; v != num_vertices; ++v)
-    if (is_cut[v])
-      cut_set.push_back(v);
-
-  EXPECT_EQ(exp_cut_set, cut_set);
+static std::vector<size_t>
+get_articulation_points(const vector<bool> &is_articulation) {
+  const size_t num_v = is_articulation.size();
+  std::vector<size_t> articulation_points;
+  for (size_t v = 0; v != num_v; ++v)
+    if (is_articulation[v])
+      articulation_points.push_back(v);
+  return articulation_points;
 }
+
+// Finds bridges from biconnected components map in sorted order.
+static std::vector<size_t> find_bridges(const vector<size_t> &bicomp) {
+  const size_t num_edges = bicomp.size();
+  const size_t num_bicomps =
+      bicomp.empty() ? 0 : *max_element(bicomp.begin(), bicomp.end()) + 1;
+
+  std::vector<size_t> bicomp_size(num_bicomps);
+  for (size_t e = 0; e != num_edges; ++e)
+    ++bicomp_size[bicomp[e]];
+
+  std::vector<size_t> bridges;
+  for (size_t e = 0; e != num_edges; ++e)
+    if (bicomp_size[bicomp[e]] == 1)
+      bridges.push_back(e);
+  return bridges;
+}
+
+static void
+check_ap_and_bridges(const undirected_graph &g,
+                     const vector<size_t> &expected_articulation_points,
+                     const vector<size_t> &expected_bridges) {
+  vector<size_t> articulation_points;
+  vector<size_t> bridges;
+  auto put_ap = [&](size_t v) { articulation_points.push_back(v); };
+  auto put_bridge = [&](size_t e) { bridges.push_back(e); };
+
+  articulation_points_and_bridges(g, put_ap, put_bridge);
+  std::sort(bridges.begin(), bridges.end());
+
+  EXPECT_EQ(expected_articulation_points, articulation_points);
+  EXPECT_EQ(expected_bridges, bridges);
+}
+
+static void bi_comps_check(const undirected_graph &g, const size_t num_bicomps,
+                           const vector<size_t> &expected_bicomp,
+                           const vector<size_t> &expected_articulation_points) {
+  vector<size_t> bicomp;
+  vector<bool> is_articulation;
+  EXPECT_EQ(num_bicomps, biconnected_components(g, bicomp, is_articulation));
+
+  EXPECT_EQ(g.num_edges(), bicomp.size());
+  EXPECT_EQ(g.num_vertices(), is_articulation.size());
+
+  normalize(bicomp);
+  EXPECT_EQ(expected_bicomp, bicomp);
+
+  EXPECT_EQ(expected_articulation_points,
+            get_articulation_points(is_articulation));
+
+  check_ap_and_bridges(g, expected_articulation_points,
+                       find_bridges(expected_bicomp));
+}
+
+// =========================================
+// Tests section
+// =========================================
 
 TEST(BiconnectedComponentsTest, EmptyGraphTest) {
   undirected_graph g(0);
@@ -131,4 +178,30 @@ TEST(BiconnectedComponentsTest, SevenComponentsTest) {
   ASSERT_EQ(16, g.num_edges());
   bi_comps_check(g, 7, {0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 3, 4, 5, 0, 0, 6},
                  {6, 7, 8, 10, 12});
+}
+
+TEST(BiconnectedComponentsTest, RootWithTwoChildrenTest) {
+  undirected_graph g(9);
+  g.add_edge(0, 1); // comp 0
+  g.add_edge(0, 5); // comp 1
+  g.add_edge(1, 2); // comp 2
+  g.add_edge(1, 4); // comp 2
+  g.add_edge(2, 3); // comp 2
+  g.add_edge(3, 4); // comp 2
+  g.add_edge(5, 6); // comp 3
+  g.add_edge(5, 8); // comp 3
+  g.add_edge(6, 7); // comp 3
+  g.add_edge(7, 8); // comp 3
+  ASSERT_EQ(10, g.num_edges());
+  bi_comps_check(g, 4, {0, 1, 2, 2, 2, 2, 3, 3, 3, 3}, {0, 1, 5});
+}
+
+TEST(BiconnectedComponentsTest, RootWithOneChildTest) {
+  undirected_graph g(5);
+  g.add_edge(0, 1); // comp 0
+  g.add_edge(1, 2); // comp 1
+  g.add_edge(1, 4); // comp 1
+  g.add_edge(2, 3); // comp 1
+  g.add_edge(3, 4); // comp 1
+  bi_comps_check(g, 2, {0, 1, 1, 1, 1}, {1});
 }

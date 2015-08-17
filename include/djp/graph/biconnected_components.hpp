@@ -31,8 +31,8 @@ namespace djp {
 /// point (or cut vertex).
 ///
 /// \param g The input graph.
-/// \param[out] comp The map used to record the component label of each edge.
-/// \param[out] is_cut The map used to record whether a vertex is an
+/// \param[out] bicomp The map used to record the component label of each edge.
+/// \param[out] is_articulation The map used to record whether a vertex is an
 /// articulation point or not.
 ///
 /// \returns The total number of biconnected components.
@@ -46,55 +46,54 @@ namespace djp {
 /// the unique member of its biconnected component, then \c e is a bridge.
 ///
 template <typename Graph>
-std::size_t biconnected_components(const Graph &g, std::vector<size_t> &comp,
-                                   std::vector<bool> &is_cut) {
+std::size_t biconnected_components(const Graph &g, std::vector<size_t> &bicomp,
+                                   std::vector<bool> &is_articulation) {
 
   enum colors { white, gray, black };
   const size_t num_vertices = g.num_vertices();
   size_t time = 0;
   size_t children_of_root = 0;
   size_t comp_cnt = 0;
-  std::stack<std::pair<size_t, size_t>> s; // edge, source of edge
+  std::stack<std::pair<size_t, size_t>> S; // edge, source of edge
   std::vector<size_t> pred(num_vertices, SIZE_MAX);
   std::vector<size_t> dtm(num_vertices);
   std::vector<size_t> low(num_vertices);
   std::vector<colors> color(num_vertices, white);
-  is_cut.assign(num_vertices, false);
-  comp.resize(g.num_edges());
+  is_articulation.assign(num_vertices, false);
+  bicomp.resize(g.num_edges());
 
   std::function<void(size_t)> dfs_visit;
   dfs_visit = [&](const size_t src) {
     color[src] = gray;
     low[src] = dtm[src] = ++time;
-    const auto parent = pred[src];
-
     for (const auto e : g.out_edges(src)) {
       const size_t tgt = (src == g.source(e)) ? g.target(e) : g.source(e);
-      if (tgt == parent)
+      if (tgt == pred[src])
         continue;
       if (color[tgt] == white) {
-        s.emplace(e, src);
+        S.emplace(e, src);
         pred[tgt] = src;
-        if (parent == SIZE_MAX)
+        if (pred[src] == SIZE_MAX)
           ++children_of_root;
         dfs_visit(tgt);
+        low[src] = std::min(low[src], low[tgt]);
       } else if (color[tgt] == gray) {
-        s.emplace(e, src);
+        S.emplace(e, src);
         low[src] = std::min(low[src], dtm[tgt]);
       }
     }
     color[src] = black;
+    const auto parent = pred[src];
     if (parent == SIZE_MAX) {
-      is_cut[src] = children_of_root > 1;
+      is_articulation[src] = children_of_root > 1;
       return;
     }
-    low[parent] = std::min(low[parent], low[src]);
     if (low[src] < dtm[parent])
       return;
-    is_cut[parent] = true;
-    while (dtm[s.top().second] >= dtm[src])
-      comp[s.top().first] = comp_cnt, s.pop();
-    comp[s.top().first] = comp_cnt++, s.pop();
+    is_articulation[parent] = true;
+    while (dtm[S.top().second] >= dtm[src])
+      bicomp[S.top().first] = comp_cnt, S.pop();
+    bicomp[S.top().first] = comp_cnt++, S.pop();
   };
 
   for (size_t v = 0; v != num_vertices; ++v)
@@ -103,6 +102,71 @@ std::size_t biconnected_components(const Graph &g, std::vector<size_t> &comp,
       dfs_visit(v);
     }
   return comp_cnt;
+}
+
+/// \brief Uses the Tarjan's algorithm to find the articulation points and
+/// bridges of a simple graph.
+///
+/// \param g The target graph.
+///
+/// \param output_articulation_point Unary function. Each time an articulation
+/// point \c v is found, it will be notified by invoking
+/// <tt>output_articulation_point(v)</tt>. Articulation points are notified in
+/// increasing order.
+///
+/// \param output_bridge Unary function. Each time a bridge \c e is found, it
+/// will be notified by invoking <tt>output_bridge(e)</tt>. The order in which
+/// bridges are notified is undetermined.
+///
+/// \pre
+/// The graph \p g must be a simple graph i.e it must be undirected, have no
+/// loops and have no parallel edges.
+///
+/// \par Complexity
+/// <tt>O(V + E)</tt>
+///
+template <typename Graph, typename Out1, typename Out2>
+void articulation_points_and_bridges(const Graph &g,
+                                     Out1 output_articulation_point,
+                                     Out2 output_bridge) {
+
+  const size_t num_v = g.num_vertices();
+  size_t children_of_root = 0;
+  size_t time = 0;
+  std::vector<size_t> pred(num_v, SIZE_MAX);
+  std::vector<size_t> dtm(num_v);
+  std::vector<size_t> low(num_v);
+  std::vector<bool> is_articulation(num_v);
+
+  std::function<void(size_t)> dfs_visit;
+  dfs_visit = [&](const size_t src) {
+    low[src] = dtm[src] = ++time;
+    for (const auto e : g.out_edges(src)) {
+      const size_t tgt = (src == g.source(e)) ? g.target(e) : g.source(e);
+      if (!dtm[tgt]) {
+        pred[tgt] = src;
+        if (pred[src] == SIZE_MAX)
+          ++children_of_root;
+        dfs_visit(tgt);
+        if (low[tgt] >= dtm[src])
+          is_articulation[src] = true;
+        if (low[tgt] > dtm[src])
+          output_bridge(e);
+        low[src] = std::min(low[src], low[tgt]);
+      } else if (tgt != pred[src])
+        low[src] = std::min(low[src], dtm[tgt]);
+    }
+  };
+
+  for (size_t v = 0; v != num_v; ++v) {
+    if (!dtm[v]) {
+      children_of_root = 0;
+      dfs_visit(v);
+      is_articulation[v] = children_of_root > 1; // Fix root flag.
+    }
+    if (is_articulation[v])
+      output_articulation_point(v);
+  }
 }
 
 } // end namespace djp
