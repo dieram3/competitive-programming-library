@@ -101,6 +101,19 @@ TEST(PrioritizedTopologicalSortTest, EmptyGraphTest) {
   EXPECT_EQ(vector<size_t>(), smallest_numbered_first_toposort(g));
 }
 
+TEST(PrioritizedTopologicalSortTest, UniqueSolutionTest) {
+  directed_graph g(4);
+  g.add_edge(3, 2);
+  g.add_edge(2, 1);
+  g.add_edge(1, 0);
+  EXPECT_EQ(vector<size_t>({3, 2, 1, 0}), smallest_numbered_first_toposort(g));
+}
+
+TEST(PrioritizedTopologicalSortTest, AloneVerticesTest) {
+  directed_graph g(4);
+  EXPECT_EQ(vector<size_t>({0, 1, 2, 3}), smallest_numbered_first_toposort(g));
+}
+
 TEST(PrioritizedTopologicalSortTest, ConnectedDAGTest) {
   directed_graph g(8);
   g.add_edge(1, 4);

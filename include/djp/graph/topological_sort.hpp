@@ -17,7 +17,7 @@ namespace djp {
 /// \brief Sorts the vertices of the given graph topologically.
 ///
 /// Uses a DFS-based approach to find a topological sort of the given graph. If
-/// multiple topological sorts exist, any of them is chosen.
+/// multiple topological sorts exist, any of them is found.
 ///
 /// \param g The target graph.
 ///
@@ -64,16 +64,17 @@ std::vector<size_t> topological_sort(const Graph &g) {
 /// candidate vertices according to the given comparator.
 ///
 /// Sorts the vertices of the graph \p g topologically. If multiple vertices can
-/// be chosen in a given moment, the one with the highest priority will be
+/// be chosen at a given moment, the one with the highest priority will be
 /// outputted first.
 ///
 /// \param g The target graph.
 ///
-/// \param comp The priority comparator, given two vertices \c u and \c v,
-/// <tt>comp(u, v)</tt> must return \c true if \c u has less priority than \c v.
+/// \param comp The comparator used to prioritize vertices. Given two vertices
+/// \c u and \c v, <tt>comp(u, v)</tt> must return \c true if \c u has lower
+/// priority than \c v.
 ///
 /// \param[out] output_vertex Each time a new vertex \c v is added to the
-/// topological sort, it will be notified via this paramater by calling
+/// topological sort, it will be notified via this parameter by calling
 /// <tt>output_vertex(v)</tt>. This unary function shall be called exactly once
 /// for each vertex in the graph in their respective topological order. If the
 /// number of calls is less than <tt>g.num_vertices()</tt>, it means that \p g
