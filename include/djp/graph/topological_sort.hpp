@@ -81,7 +81,7 @@ std::vector<size_t> topological_sort(const Graph &g) {
 /// is not a DAG.
 ///
 /// \par Complexity
-/// <tt>O(E + V * log(V))</tt>
+/// <tt>O(E + C*V*log(V))</tt> where \c C is the cost of \p comp.
 ///
 /// \sa topological_sort
 ///
