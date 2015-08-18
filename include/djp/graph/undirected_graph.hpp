@@ -13,6 +13,7 @@
 namespace djp {
 
 /// \brief Adjacency list which represents undirected graphs.
+///
 class undirected_graph {
   std::vector<std::vector<size_t>> adj_edges;
   std::vector<std::pair<size_t, size_t>> edge_list;
@@ -23,8 +24,8 @@ public:
   size_t add_edge(size_t u, size_t v) {
     edge_list.emplace_back(u, v);
     const size_t edge_id = edge_list.size() - 1;
-    adj_edges[u].emplace_back(edge_id);
-    adj_edges[v].emplace_back(edge_id);
+    adj_edges[u].push_back(edge_id);
+    adj_edges[v].push_back(edge_id);
     return edge_id;
   }
 

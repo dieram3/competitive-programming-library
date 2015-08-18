@@ -13,6 +13,7 @@
 namespace djp {
 
 /// \brief Adjacency list which represents directed graphs.
+///
 class directed_graph {
   std::vector<std::vector<size_t>> outedges, inedges;
   std::vector<std::pair<size_t, size_t>> edge_list;
@@ -23,8 +24,8 @@ public:
   size_t add_edge(size_t src, size_t tgt) {
     edge_list.emplace_back(src, tgt);
     const size_t edge_id = edge_list.size() - 1;
-    outedges[src].emplace_back(edge_id);
-    inedges[tgt].emplace_back(edge_id);
+    outedges[src].push_back(edge_id);
+    inedges[tgt].push_back(edge_id);
     return edge_id;
   }
 
