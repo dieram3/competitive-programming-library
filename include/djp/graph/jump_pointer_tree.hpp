@@ -6,11 +6,11 @@
 #ifndef DJP_GRAPH_JUMP_POINTER_TREE_HPP
 #define DJP_GRAPH_JUMP_POINTER_TREE_HPP
 
-#include <functional> // For std::function
-#include <vector>     // For std::vector
-#include <cassert>    // For assert
-#include <cstddef>    // For std::size_t
-#include <cstdint>    // For SIZE_MAX
+#include <stack>   // For std::stack
+#include <vector>  // For std::vector
+#include <cassert> // For assert
+#include <cstddef> // For std::size_t
+#include <cstdint> // For SIZE_MAX
 
 namespace djp {
 
@@ -24,13 +24,19 @@ class jump_pointer_tree {
   std::vector<size_t> depth;
 
 private:
+  static size_t parents_size(size_t depth) {
+    size_t result = 0;
+    while (depth)
+      ++result, depth >>= 1;
+    return result;
+  }
   void add_leaf(size_t leaf, size_t parent) {
     depth[leaf] = depth[parent] + 1;
-    parents[leaf].push_back(parent);
-    for (size_t i = 1; (size_t{1} << i) <= depth[leaf]; ++i) {
-      const size_t new_parent = parents[parents[leaf][i - 1]][i - 1];
-      parents[leaf].push_back(new_parent);
-    }
+    parents[leaf].resize(parents_size(depth[leaf]));
+    parents[leaf][0] = parent;
+    for (size_t i = 0; i + 1 < parents[leaf].size(); ++i)
+      parents[leaf][i + 1] = parents[parents[leaf][i]][i];
+
     assert((size_t{1} << parents[leaf].size()) > depth[leaf]);
     assert((size_t{1} << (parents[leaf].size() - 1)) <= depth[leaf]);
   }
@@ -50,18 +56,20 @@ public:
   template <typename Graph>
   jump_pointer_tree(const Graph &g, const size_t root)
       : parents(g.num_vertices()), depth(parents.size(), SIZE_MAX) {
-    std::function<void(size_t)> dfs;
-    dfs = [&](const size_t curr) {
+    depth[root] = 0;
+    std::stack<size_t> S;
+    S.push(root);
+    while (!S.empty()) {
+      const size_t curr = S.top();
+      S.pop();
       for (const size_t e : g.out_edges(curr)) {
         const size_t child = (curr == g.source(e) ? g.target(e) : g.source(e));
         if (depth[child] != SIZE_MAX)
           continue;
         add_leaf(child, curr);
-        dfs(child);
+        S.push(child);
       }
-    };
-    depth[root] = 0;
-    dfs(root);
+    } // end while
   }
 
   /// \brief Returns the depth of \p v according to the used root.
