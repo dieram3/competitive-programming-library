@@ -9,6 +9,7 @@
 #include <utility>
 #include <iostream>
 #include <cmath>
+#include <tuple>
 #include <algorithm>
 
 namespace djp {
