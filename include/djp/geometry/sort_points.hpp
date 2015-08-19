@@ -26,9 +26,12 @@ void clockwise_sort(const Point &center, const Point &start, RandomIt first,
     const auto u = lhs - center;
     const auto v = rhs - center;
 
-    if ((from ^ u) < 0 && (from ^ v) > 0)
+    const auto lhs_rotation = (from ^ u);
+    const auto rhs_rotation = (from ^ v);
+
+    if (lhs_rotation < 0 && rhs_rotation > 0)
       return true;
-    if ((from ^ u) > 0 && (from ^ v) < 0)
+    if (lhs_rotation > 0 && rhs_rotation < 0)
       return false;
 
     const auto det = (u ^ v);
@@ -52,9 +55,12 @@ void counter_clockwise_sort(const Point &center, const Point &start,
     const auto u = lhs - center;
     const auto v = rhs - center;
 
-    if ((from ^ u) > 0 && (from ^ v) < 0)
+    const auto lhs_rotation = (from ^ u);
+    const auto rhs_rotation = (from ^ v);
+
+    if (lhs_rotation > 0 && rhs_rotation < 0)
       return true;
-    if ((from ^ u) < 0 && (from ^ v) > 0)
+    if (lhs_rotation < 0 && rhs_rotation > 0)
       return false;
 
     const auto det = (u ^ v);
