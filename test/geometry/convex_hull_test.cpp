@@ -5,6 +5,7 @@
 
 #include <djp/geometry/convex_hull.hpp>
 #include <djp/geometry/point_2d.hpp>
+#include <djp/geometry/sort_points.hpp>
 #include <gtest/gtest.h>
 #include <tuple>
 #include <algorithm>
@@ -21,7 +22,7 @@ TEST(convex_hull, SortsPointsInCounterclockwiseOrder) {
   std::sort(begin(points), end(points));
 
   auto hull = djp::convex_hull(begin(points), end(points), true);
-  EXPECT_TRUE(is_ccw_sorted(*begin(hull), begin(hull), end(hull)));
+  EXPECT_TRUE(djp::is_ccw_sorted(*begin(hull), begin(hull), end(hull)));
 
   points.erase(begin(points),
                djp::convex_hull_partition(begin(points), end(points), true));
@@ -33,7 +34,7 @@ TEST(convex_hull, SortsPointsInCounterclockwiseOrder) {
     EXPECT_EQ(hull[i].y, points[i].y);
   }
 
-  EXPECT_TRUE(is_ccw_sorted(*begin(hull), begin(points), end(points)));
+  EXPECT_TRUE(djp::is_ccw_sorted(*begin(hull), begin(points), end(points)));
 }
 
 TEST(convex_hull, WithCollinearPoints) {
@@ -70,8 +71,8 @@ TEST(convex_hull, WithCollinearPoints) {
   EXPECT_EQ(expected_len, hull.size());
   EXPECT_EQ(expected_len, points.size());
 
-  vector_t result = {{0, 0}, {2, 0}, {5, 0}, {5, 2},
-                     {5, 5}, {2, 5}, {0, 5}, {0, 2}};
+  vector_t result = {
+      {0, 0}, {2, 0}, {5, 0}, {5, 2}, {5, 5}, {2, 5}, {0, 5}, {0, 2}};
 
   for (size_t i = 0; i < expected_len; ++i) {
     EXPECT_EQ(result[i].x, points[i].x);

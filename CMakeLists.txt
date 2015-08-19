@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1.3 FATAL_ERROR)
 project("CP-utils" CXX C) # C is needed for FindThreads
 
 # ---------------------------------------
-# Initial config                        
+# Initial config
 # ---------------------------------------
 
 if (NOT CMAKE_BUILD_TYPE)
@@ -17,12 +17,15 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+# For YouCompleteMe Vim's plugin
+set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
+
 # Integrate utilities
 
 add_subdirectory("utils")
 
 # ---------------------------------------
-# Add the CP-utils header-only library  
+# Add the CP-utils header-only library
 # ---------------------------------------
 
 add_library(CP_utils INTERFACE)
@@ -34,10 +37,10 @@ target_compile_features(CP_utils INTERFACE
 	cxx_auto_type
 	cxx_lambdas
 	cxx_nullptr
-	) 
+	)
 
 # ---------------------------------------
-# Add the unit tests  
+# Add the unit tests
 # ---------------------------------------
 
 enable_testing()

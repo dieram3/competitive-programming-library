@@ -6,38 +6,72 @@
 #include <djp/geometry/point_2d.hpp>
 #include <gtest/gtest.h>
 
-#include <iostream>
+#include <cmath>
+#include <cstdint>
 #include <algorithm>
 
-namespace {
-// typedefs
-using point_i = djp::point<int32_t>;
-using point_d = djp::point<double>;
-} // unnamed
+using namespace djp;
+using point_i = point<int32_t>;
 
-TEST(point_2d, SortPointsInCounterClockWiseOrder) {
-  std::vector<point_i> points = {{1, 2}, {5, 4}, {2, 1}, {2, 3},
-                                 {4, 6}, {1, 5}, {4, 1}, {6, 2},
-                                 {5, 5}, {3, 2}, {3, 1}, {4, 4}};
-  point_i center = {3, 3};
-  counter_clockwise_sort(center, points.begin(), points.end());
-  std::vector<point_i> expected = {{1, 5}, {2, 3}, {1, 2}, {2, 1},
-                                   {3, 2}, {3, 1}, {4, 1}, {6, 2},
-                                   {5, 4}, {4, 4}, {5, 5}, {4, 6}};
-  EXPECT_TRUE(std::equal(points.begin(), points.end(), expected.begin()));
+TEST(Point2D, BasicOperations) {
+  point_i lhs = {1, 2};
+  point_i rhs = {5, 4};
+  point_i expected = {6, 6};
+  EXPECT_EQ(lhs + rhs, expected);
 
-  EXPECT_TRUE(is_ccw_sorted(center, points.begin(), points.end()));
+  expected = {-4, -2};
+  EXPECT_EQ(lhs - rhs, expected);
+
+  int32_t k = 2;
+  expected = {2, 4};
+  EXPECT_EQ(k * lhs, expected);
+  EXPECT_EQ(lhs * k, expected);
+
+  expected = {0, 1};
+  EXPECT_EQ(lhs/k, expected);
 }
 
-TEST(point_2d, SortPointsInClockWiseOrder) {
-  std::vector<point_i> points = {{1, 2}, {5, 4}, {2, 1}, {2, 3},
-                                 {4, 6}, {1, 5}, {4, 1}, {6, 2},
-                                 {5, 5}, {3, 2}, {3, 1}, {4, 4}};
-  point_i center = {3, 3};
-  clockwise_sort(center, points.begin(), points.end());
-  std::vector<point_i> expected = {{4, 6}, {4, 4}, {5, 5}, {5, 4},
-                                   {6, 2}, {4, 1}, {3, 2}, {3, 1},
-                                   {2, 1}, {1, 2}, {2, 3}, {1, 5}};
-  EXPECT_TRUE(std::equal(points.begin(), points.end(), expected.begin()));
-  EXPECT_TRUE(is_clockwise_sorted(center, points.begin(), points.end()));
+TEST(Point2D, DotProduct) {
+  point_i lhs = {3, 4};
+  point_i rhs = {2, 1};
+  int32_t expected = 3 * 2 + 4 * 1;
+  EXPECT_EQ(lhs * rhs, expected);
+  EXPECT_EQ(rhs * lhs, expected);
+}
+
+TEST(Point2D, WedgeProduct) {
+  point_i lhs = {3, 4};
+  point_i rhs = {2, 1};
+  int32_t expected =  3 * 1 - 4 * 2;
+  EXPECT_EQ(lhs ^ rhs, expected);
+  expected = 2 * 4 - 3 * 1;
+  EXPECT_EQ(rhs ^ lhs, expected);
+}
+
+TEST(Point2D, LexicographicalComparison) {
+  point_i lhs = {3, 4};
+  point_i rhs = {2, 1};
+  EXPECT_TRUE(lhs > rhs);
+  EXPECT_TRUE(lhs != rhs);
+  EXPECT_TRUE(lhs >= rhs);
+  lhs = rhs;
+  EXPECT_EQ(lhs, rhs);
+}
+
+TEST(Point2D, SquareNormAndSquaredDistance) {
+  point_i q = {3, 4};
+  point_i p = {2, 1};
+  int32_t expected = 3 * 3 + 4 * 4;
+  EXPECT_EQ(norm2(q), expected);
+  expected = (3 - 2) * (3 - 2) + (4 - 1) * (4 - 1);
+  EXPECT_EQ(distance2(p, q), expected);
+}
+
+TEST(Point2D, NormAdnDistance) {
+  point_i q = {3, 4};
+  point_i p = {2, 1};
+  auto expected = std::sqrt(3 * 3 + 4 * 4);
+  EXPECT_EQ(norm(q), expected);
+  expected = std::sqrt((3 - 2) * (3 - 2) + (4 - 1) * (4 - 1));
+  EXPECT_EQ(distance(p, q), expected);
 }
