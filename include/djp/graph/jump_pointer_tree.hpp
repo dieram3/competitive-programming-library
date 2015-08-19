@@ -83,17 +83,17 @@ public:
   ///
   size_t depth_of(const size_t v) const { return depth[v]; }
 
-  /// \brief Finds the kth-ancestor of \p v according to the used root.
+  /// \brief Finds the k-th ancestor of \p v according to the used root.
   ///
   /// \param v The vertex to be queried.
   /// \param k Distance of ancestor to be searched.
   ///
-  /// \returns The kth ancestor
+  /// \returns The k-th ancestor
   ///
   /// \pre <tt>k <= depth_of(v)</tt>
   ///
   /// \par Complexity
-  /// Logarithmic in the number of vertices of the underlying tree.
+  /// Logarithmic in \c k.
   ///
   size_t kth_ancestor(size_t v, size_t k) const {
     for (size_t i = 0; k; k >>= 1, ++i)
@@ -102,21 +102,20 @@ public:
     return v;
   }
 
-  /// \brief Finds the level ancestor of a vertex, that is, the ancestor at
-  /// a certain depth.
+  /// \brief Finds the ancestor of vertex \p v at depth \p d.
   ///
   /// \param v The vertex to be queried.
-  /// \param level Depth of the ancestor to be searched.
+  /// \param d Depth of the ancestor to be searched.
   ///
-  /// \return The ancestor in the required level (or depth).
+  /// \return The ancestor in the required depth (or level).
   ///
-  /// \pre <tt>level <= depth_of(v)</tt>
+  /// \pre <tt>d <= depth_of(v)</tt>
   ///
   /// \par Complexity
-  /// Logarithmic in the number of vertices of the underlying tree.
+  /// Logarithmic in <tt>(depth_of(v) - d)</tt>.
   ///
-  size_t level_ancestor(const size_t v, const size_t level) const {
-    return kth_ancestor(v, depth[v] - level);
+  size_t level_ancestor(const size_t v, const size_t d) const {
+    return kth_ancestor(v, depth[v] - d);
   }
 };
 
