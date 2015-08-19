@@ -8,17 +8,11 @@
 
 #include <djp/geometry/point_2d.hpp>
 
-#include <utility> // For std::move
 #include <vector>  // For std::vector
 #include <cstdint> // For std::int32_t
 
 using namespace djp;
 using point_i = point<std::int32_t>;
-using vec_t = std::vector<point_i>;
-
-// Points at same angle should be considered equal i.e no one is less than
-// other.
-//
 
 namespace {
 
@@ -32,7 +26,7 @@ const point_i p7_30 = {-1, -1};
 const point_i p9_00 = {-1, 0};
 const point_i p10_30 = {-1, 1};
 
-} // unnamed namespace
+} // end anonymous namespace
 
 static bool cw_sorted(const point_i &center,
                       const std::vector<point_i> &points) {
