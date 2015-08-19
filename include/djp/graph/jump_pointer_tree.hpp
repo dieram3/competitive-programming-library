@@ -30,7 +30,7 @@ private:
       ++result, depth >>= 1;
     return result;
   }
-  void add_leaf(size_t leaf, size_t parent) {
+  void add_leaf(const size_t leaf, const size_t parent) {
     depth[leaf] = depth[parent] + 1;
     parents[leaf].resize(parents_size(depth[leaf]));
     parents[leaf][0] = parent;
