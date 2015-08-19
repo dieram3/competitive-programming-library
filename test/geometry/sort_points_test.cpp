@@ -1,19 +1,21 @@
-//          Copyright Jorge Aguirre July 2015
+//          Copyright Jorge Aguirre July 2015, August 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/geometry/point_2d.hpp>
 #include <djp/geometry/sort_points.hpp>
 #include <gtest/gtest.h>
 
-#include <vector>
+#include <djp/geometry/point_2d.hpp>
+
+#include <vector>  // For std::vector
+#include <cstdint> // For std::int32_t
 
 using namespace djp;
 
-using point_i = point<int32_t>;
+using point_i = point<std::int32_t>;
 
-TEST(Point2DTest, SortPointsInCounterClockWiseOrder) {
+TEST(SortPointsTest, SortPointsInCounterClockWiseOrder) {
   std::vector<point_i> points = {{1, 2},
                                  {5, 4},
                                  {2, 1},
@@ -45,7 +47,7 @@ TEST(Point2DTest, SortPointsInCounterClockWiseOrder) {
   EXPECT_TRUE(is_ccw_sorted(center, points.begin(), points.end()));
 }
 
-TEST(Point2DTest, SortPointsInClockWiseOrder) {
+TEST(SortPointsTest, SortPointsInClockWiseOrder) {
   std::vector<point_i> points = {{1, 2},
                                  {5, 4},
                                  {2, 1},

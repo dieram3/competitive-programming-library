@@ -1,4 +1,4 @@
-//          Copyright Jorge Aguirre July 2015
+//          Copyright Jorge Aguirre July, August 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,18 +6,22 @@
 #ifndef DJP_GEOMETRY_SORT_POINTS_HPP
 #define DJP_GEOMETRY_SORT_POINTS_HPP
 
-#include <algorithm>
+#include <algorithm> // For std::sort, std::is_sorted
 
 namespace djp {
-/// \brief Sorts a range of points in clockwise order according to a center and an
-/// angle of beginning.
-/// \param center The center used as a reference for sorting.
-/// \param start Point used to specify the 0 angle, formed by the vector
-/// (start - center).
+
+/// \brief Sorts a range of points in clockwise order according to a center and
+/// a start point.
+///
+/// \param center The reference point used as a center.
+/// \param start Point used to specify the zero angle which is formed by the
+/// vector <tt>(start - center)</tt>.
 /// \param first The beginning of the range to be sorted.
 /// \param last The end of the range to be sorted.
+///
 /// \par Complexity
-/// O(N log N) where <tt>N = std::distance(first, last)</tt>
+/// Linearithmic in <tt>std::distance(first, last)</tt>.
+///
 template <class RandomIt, class Point>
 void clockwise_sort(const Point &center, const Point &start, RandomIt first,
                     RandomIt last) {
@@ -39,14 +43,17 @@ void clockwise_sort(const Point &center, const Point &start, RandomIt first,
   });
 }
 /// \brief Sorts a range of points in counter clockwise order according to a
-/// center and an angle of beginning.
-/// \param center The center used as a reference for sorting.
-/// \param start Point used to specify the 0 angle, formed by the vector
-/// (start - center).
+/// center and a start angle.
+///
+/// \param center The reference point used as a center.
+/// \param start Point used to specify the zero angle which is formed by the
+/// vector <tt>(start - center)</tt>.
 /// \param first The beginning of the range to be sorted.
 /// \param last The end of the range to be sorted.
+///
 /// \par Complexity
-/// O(N log N) where <tt>N = std::distance(first, last)</tt>
+/// Linearithmic in <tt>std::distance(first, last)</tt>.
+///
 template <class RandomIt, class Point>
 void counter_clockwise_sort(const Point &center, const Point &start,
                             RandomIt first, RandomIt last) {
@@ -67,12 +74,17 @@ void counter_clockwise_sort(const Point &center, const Point &start,
     return det == 0 ? norm2(u) < norm2(v) : det > 0;
   });
 }
-/// \brief Checks if the points in range [first, last) are sorted in clokwise order
-/// according to a center.
+
+/// \brief Checks whether a range of points is sorted in clockwise order
+/// according to a given center.
+///
+/// \param center The reference point used as a center.
 /// \param first The beginning of the range to be examined.
 /// \param last The end of the range to be examined.
+///
 /// \par Complexity
-/// O(N) where <tt>N = std::distance(first, last) </tt>
+/// Linear in <tt>std::distance(first, last)</tt>.
+///
 template <class ForwardIt, class Point>
 bool is_clockwise_sorted(const Point &center, ForwardIt first, ForwardIt last) {
   return std::is_sorted(first, last,
@@ -84,12 +96,17 @@ bool is_clockwise_sorted(const Point &center, ForwardIt first, ForwardIt last) {
                           return det == 0 ? norm2(u) < norm2(v) : det < 0;
                         });
 }
-/// \brief Checks if the points in range [first, last) are sorted in counter clokwise
-/// order according to a center.
+
+/// \brief Checks whether a range of points is sorted in counter clockwise order
+/// according to a given center.
+///
+/// \param center The reference point used as a center.
 /// \param first The beginning of the range to be examined.
 /// \param last The end of the range to be examined.
+///
 /// \par Complexity
-/// O(N) where <tt>N = std::distance(first, last) </tt>
+/// Linear in <tt>std::distance(first, last)</tt>.
+///
 template <class ForwardIt, class Point>
 bool is_ccw_sorted(const Point &center, ForwardIt first, ForwardIt last) {
   return std::is_sorted(first, last,
@@ -102,6 +119,6 @@ bool is_ccw_sorted(const Point &center, ForwardIt first, ForwardIt last) {
                         });
 }
 
-} // djp
+} // end namespace djp
 
-#endif // HEADER GUARD
+#endif // Header guard

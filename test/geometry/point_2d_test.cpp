@@ -6,14 +6,14 @@
 #include <djp/geometry/point_2d.hpp>
 #include <gtest/gtest.h>
 
-#include <cmath>
-#include <cstdint>
-#include <algorithm>
+#include <cmath>   // For std::sqrt
+#include <cstdint> // For std::int32_t
 
 using namespace djp;
+using std::int32_t;
 using point_i = point<int32_t>;
 
-TEST(Point2D, BasicOperations) {
+TEST(Point2DTest, BasicOperations) {
   point_i lhs = {1, 2};
   point_i rhs = {5, 4};
   point_i expected = {6, 6};
@@ -28,10 +28,10 @@ TEST(Point2D, BasicOperations) {
   EXPECT_EQ(lhs * k, expected);
 
   expected = {0, 1};
-  EXPECT_EQ(lhs/k, expected);
+  EXPECT_EQ(lhs / k, expected);
 }
 
-TEST(Point2D, DotProduct) {
+TEST(Point2DTest, DotProduct) {
   point_i lhs = {3, 4};
   point_i rhs = {2, 1};
   int32_t expected = 3 * 2 + 4 * 1;
@@ -39,16 +39,16 @@ TEST(Point2D, DotProduct) {
   EXPECT_EQ(rhs * lhs, expected);
 }
 
-TEST(Point2D, WedgeProduct) {
+TEST(Point2DTest, WedgeProduct) {
   point_i lhs = {3, 4};
   point_i rhs = {2, 1};
-  int32_t expected =  3 * 1 - 4 * 2;
+  int32_t expected = 3 * 1 - 4 * 2;
   EXPECT_EQ(lhs ^ rhs, expected);
   expected = 2 * 4 - 3 * 1;
   EXPECT_EQ(rhs ^ lhs, expected);
 }
 
-TEST(Point2D, LexicographicalComparison) {
+TEST(Point2DTest, LexicographicalComparison) {
   point_i lhs = {3, 4};
   point_i rhs = {2, 1};
   EXPECT_TRUE(lhs > rhs);
@@ -58,7 +58,7 @@ TEST(Point2D, LexicographicalComparison) {
   EXPECT_EQ(lhs, rhs);
 }
 
-TEST(Point2D, SquareNormAndSquaredDistance) {
+TEST(Point2DTest, SquareNormAndSquaredDistance) {
   point_i q = {3, 4};
   point_i p = {2, 1};
   int32_t expected = 3 * 3 + 4 * 4;
@@ -67,7 +67,7 @@ TEST(Point2D, SquareNormAndSquaredDistance) {
   EXPECT_EQ(distance2(p, q), expected);
 }
 
-TEST(Point2D, NormAdnDistance) {
+TEST(Point2DTest, NormAndDistance) {
   point_i q = {3, 4};
   point_i p = {2, 1};
   auto expected = std::sqrt(3 * 3 + 4 * 4);

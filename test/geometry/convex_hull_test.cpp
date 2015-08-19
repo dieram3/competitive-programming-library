@@ -4,17 +4,20 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <djp/geometry/convex_hull.hpp>
+#include <gtest/gtest.h>
+
 #include <djp/geometry/point_2d.hpp>
 #include <djp/geometry/sort_points.hpp>
-#include <gtest/gtest.h>
-#include <tuple>
-#include <algorithm>
-#include <iterator>
-#include <cstdint>
+
+#include <algorithm> // For std::sort
+#include <iterator>  // For std::begin, std::end
+#include <cstddef>   // For std::size_t
+#include <cstdint>   // For std::int32_t
 
 using namespace djp;
+using std::int32_t;
 
-TEST(convex_hull, SortsPointsInCounterclockwiseOrder) {
+TEST(ConvexHullTest, SortsPointsInCounterClockwiseOrder) {
   using scalar_t = int32_t;
   using point_t = point<scalar_t>;
   using vector_t = std::vector<point_t>;
@@ -39,7 +42,7 @@ TEST(convex_hull, SortsPointsInCounterclockwiseOrder) {
   EXPECT_TRUE(is_ccw_sorted(*begin(hull), begin(points), end(points)));
 }
 
-TEST(convex_hull, WithCollinearPoints) {
+TEST(ConvexHullTest, WithCollinearPoints) {
   using scalar_t = int32_t;
   using point_t = point<scalar_t>;
   using vector_t = std::vector<point_t>;
@@ -84,7 +87,7 @@ TEST(convex_hull, WithCollinearPoints) {
   }
 }
 
-TEST(convex_hull, WithoutCollinearPoints) {
+TEST(ConvexHullTest, WithoutCollinearPoints) {
   using scalar_t = int32_t;
   using point_t = point<scalar_t>;
   using vector_t = std::vector<point_t>;
