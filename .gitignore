@@ -1,7 +1,9 @@
 # Created by https://www.gitignore.io
 ### YouCompleteMe ###
 .ycm_extra_conf.py
-.ycm_extra_conf.pyc
+
+### Python ###
+*.pyc
 
 ### OSX ###
 .DS_Store
