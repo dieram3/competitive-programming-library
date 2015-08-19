@@ -5,7 +5,8 @@
 
 #include <djp/graph/dijkstra_shortest_paths.hpp>
 #include <gtest/gtest.h>
-#include <djp/graph/adjacency_list.hpp>
+
+#include <djp/graph/directed_graph.hpp>
 #include <vector>
 #include <random>
 #include <numeric>
@@ -13,16 +14,6 @@
 #include <cassert>
 
 using namespace djp;
-
-namespace {
-
-struct edge_data {
-  unsigned long weight;
-};
-
-} // end anonymous namesapce
-
-using graph_t = djp::adjacency_list<edge_data>;
 
 // Complexity: O(V*avg_degree)
 // It might generate parallel edges.
@@ -56,22 +47,28 @@ using graph_t = djp::adjacency_list<edge_data>;
 //  return graph;
 //}
 
-TEST(dijkstra_shortest_paths, WorksWithAdjacencyList) {
-  graph_t graph(6);
+TEST(DijkstraShortestPathsTest, WorksOnDirectedGraphs) {
+  directed_graph graph(6);
+  std::vector<unsigned> weight_of;
+  auto add_bidir_edge = [&](size_t u, size_t v, unsigned weight) {
+    graph.add_edge(u, v);
+    weight_of.push_back(weight);
+    graph.add_edge(v, u);
+    weight_of.push_back(weight);
+  };
 
-  graph.add_bidir_edge(0, 1, edge_data{7});
-  graph.add_bidir_edge(0, 2, edge_data{9});
-  graph.add_bidir_edge(0, 5, edge_data{14});
-  graph.add_bidir_edge(1, 2, edge_data{10});
-  graph.add_bidir_edge(1, 3, edge_data{15});
-  graph.add_bidir_edge(2, 3, edge_data{11});
-  graph.add_bidir_edge(2, 5, edge_data{2});
-  graph.add_bidir_edge(3, 4, edge_data{6});
-  graph.add_bidir_edge(4, 5, edge_data{9});
+  add_bidir_edge(0, 1, 7);
+  add_bidir_edge(0, 2, 9);
+  add_bidir_edge(0, 5, 14);
+  add_bidir_edge(1, 2, 10);
+  add_bidir_edge(1, 3, 15);
+  add_bidir_edge(2, 3, 11);
+  add_bidir_edge(2, 5, 2);
+  add_bidir_edge(3, 4, 6);
+  add_bidir_edge(4, 5, 9);
 
-  auto spaths = djp::dijkstra_shortest_paths(graph, 0);
-
-  std::vector<size_t> expected = {0, 7, 9, 20, 20, 11};
+  const auto spaths = djp::dijkstra_shortest_paths(graph, 0, weight_of);
+  const std::vector<unsigned> expected = {0, 7, 9, 20, 20, 11};
 
   EXPECT_EQ(expected, spaths);
 }

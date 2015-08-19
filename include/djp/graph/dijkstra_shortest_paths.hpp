@@ -16,27 +16,35 @@
 namespace djp {
 
 /// \brief Solves the single-source shortest paths problem.
+///
+/// \tparam Graph Directed graph type.
+/// \tparam Distance Distance type.
+///
 /// \param g The target graph.
 /// \param source The source vertex.
+/// \param weight Weight map of edges.
+///
 /// \returns A vector \c dist such that  <tt>dist[v]</tt> contains the shortest
 /// distance from the vertex \p source to the vertex \c v. Note that
 /// <tt>dist[source] == 0</tt>.
+///
 /// \par Complexity
-/// O(V * log(V) + E), where <tt>V = g.num_vertices()</tt> and
-/// <tt>E = g.num_edges()</tt>
-template <class Graph, class Distance = std::size_t>
-std::vector<Distance> dijkstra_shortest_paths(const Graph &g, size_t source) {
+/// <tt>O(E * log(V))</tt> (uses a binary heap).
+///
+template <class Graph, class Distance>
+std::vector<Distance>
+dijkstra_shortest_paths(const Graph &g, size_t source,
+                        const std::vector<Distance> &weight) {
 
-  using dist_t = Distance;
   struct pq_elem {
-    dist_t dist;
+    Distance dist;
     size_t vertex;
     bool operator<(const pq_elem &that) const { return dist > that.dist; }
   };
-  constexpr dist_t inf = std::numeric_limits<dist_t>::max();
 
   std::vector<bool> visited(g.num_vertices(), false);
-  std::vector<dist_t> dist(g.num_vertices(), inf);
+  std::vector<Distance> dist(g.num_vertices(),
+                             std::numeric_limits<Distance>::max());
 
   std::priority_queue<pq_elem> pq;
   pq.push({dist[source] = 0, source});
@@ -48,9 +56,9 @@ std::vector<Distance> dijkstra_shortest_paths(const Graph &g, size_t source) {
       continue;
 
     visited[u] = true;
-    for (auto edge : g.out_edges(u)) {
-      const size_t v = edge->target;
-      const dist_t alt = dist[u] + edge->weight; // alternative
+    for (const auto edge : g.out_edges(u)) {
+      const size_t v = g.target(edge);
+      const Distance alt = dist[u] + weight[edge]; // alternative
       if (alt < dist[v])
         pq.push({dist[v] = alt, v});
     }

@@ -11,91 +11,89 @@
 #include <algorithm>   // For std::min
 #include <limits>      // For std::numeric_limits
 #include <queue>       // For std::queue
-#include <type_traits> // For std::is_signed and std::is_floating_point
-#include <utility>     // For std::declval
+#include <type_traits> // For std::is_arithmetic
 #include <vector>      // For std::vector
 #include <cstddef>     // For std::size_t
+#include <cstdint>     // for SIZE_MAX
 
 namespace djp {
 
-/// Solves the maximum flow problem using the Edmonds-Karp algorithm.
+/// \brief Solves the maximum flow problem using the Edmonds-Karp algorithm.
 ///
-/// The member type \c edge of \c Graph must contain the following fields:
-/// \li \c capacity: The maximum flow allowed through the edge.
-/// \li \c flow: Output field where the final flow of each edge will be put on.
-/// This field should be mutable.
-/// \li \c rev_edge: A pointer to the reverse edge. Note that a reverse edge
-/// must exist even though it was not intended to be part of the modeled graph.
-/// In such a case, the reverse edge should have a capacity of 0. In case of
-/// existence of parallel edges, each edge <tt>(u, v)</tt> must have its own
-/// counterpart <tt>(v, u)</tt>.
+/// This algorithm requires that each edge in the graph has its own reverse
+/// edge. Reversed edges that were not intended to be part of the modeled graph
+/// should have a capacity of 0. If \c g is a multigraph, each edge
+/// <tt>(u, v)</tt> must have its own counterpart <tt>(v, u)</tt>.
 ///
-/// \tparam Graph Must be a valid graph type.
-/// \tparam FlowType The type of the flow. It shall be either a signed integer
-/// or a floating point type.
-/// \param graph The graph that represents the flow network.
+/// \param g The target graph.
 /// \param source The source vertex.
 /// \param target The target vertex.
+/// \param rev_edge The reverse edge map.
+/// \param capacity The capacity map.
+/// \param[out] residual The residual capacity map. The unused capacity of each
+/// edge will be recorded in this map. The final flow of each edge \c e can be
+/// obtained as <tt>capacity[e] - residual[e]</tt>.
+///
 /// \returns The maximum possible flow from \p source to \p target.
-/// \pre \p source shall not be equal to \p target.
+///
+/// \pre <tt>source != target</tt>
+///
 /// \par Complexity
-/// At most O(V * E^2) memory accesses, where <tt>V = graph.num_vertices()</tt>
-/// and <tt>E = graph.num_edges()</tt>.
-/// \todo Add example.
-template <typename Graph, typename FlowType = decltype(
-                              std::declval<typename Graph::edge>().flow)>
-FlowType edmonds_karp_max_flow(Graph &graph, size_t source, size_t target) {
-  static_assert(std::is_signed<FlowType>::value ||
-                    std::is_floating_point<FlowType>::value,
-                "The flow type must be signed or floating point.");
+/// At most O(V * E^2) memory accesses.
+///
+template <typename Graph, typename Flow>
+Flow edmonds_karp_max_flow(const Graph &g, const size_t source,
+                           const size_t target,
+                           const std::vector<size_t> &rev_edge,
+                           const std::vector<Flow> &capacity,
+                           std::vector<Flow> &residual) {
 
-  for (auto &edge : graph.edges())
-    edge.flow = 0;
+  static_assert(std::is_arithmetic<Flow>::value, "'Flow' must be arithmetic.");
+  using edge_id = size_t;
 
-  // last_queue_ids[v] represents the the last BFS queue in which the vertex v
-  // was inserted. Note that the source vertex is present in all BFS queues.
-  std::vector<unsigned> last_queue_ids(graph.num_vertices());
-  std::vector<typename Graph::edge *> parents(graph.num_vertices());
+  // last_bfs[v] stores the the last BFS tree that vertex v was part of.  Note
+  // that the source vertex is present in all BFS trees as it is the root.
+  std::vector<unsigned> last_bfs(g.num_vertices());
+  std::vector<edge_id> pred(g.num_vertices(), SIZE_MAX);
 
-  auto find_path = [source, target, &parents, &last_queue_ids, &graph] {
-    std::queue<size_t> queue;
-    queue.push(source);
-    const auto current_queue_id = ++last_queue_ids[source];
+  auto find_path = [&, source, target] {
+    std::queue<size_t> bfs_queue;
+    bfs_queue.push(source);
+    const auto current_bfs = ++last_bfs[source];
 
-    while (!queue.empty()) {
-      const size_t curr = queue.front();
-      queue.pop();
-      for (auto *edge : graph.out_edges(curr)) {
-        const size_t child = edge->target;
-        if (last_queue_ids[child] == current_queue_id)
-          continue;
-        if (edge->flow >= edge->capacity)
-          continue;
-        parents[child] = edge;
+    while (!bfs_queue.empty()) {
+      const size_t curr = bfs_queue.front();
+      bfs_queue.pop();
+      for (const auto edge : g.out_edges(curr)) {
+        const size_t child = g.target(edge);
+        if (last_bfs[child] == current_bfs)
+          continue; // Already in the tree.
+        if (!residual[edge])
+          continue; // Can't navigate through saturated edges.
+        pred[child] = edge;
         if (child == target)
           return true;
-        queue.push(child);
-        last_queue_ids[child] = current_queue_id;
+        bfs_queue.push(child);
+        last_bfs[child] = current_bfs;
       }
     }
     return false;
   };
 
-  FlowType max_flow = 0;
-
+  Flow total_flow = 0;
+  residual = capacity;
   while (find_path()) {
-    FlowType path_flow = std::numeric_limits<FlowType>::max();
-    for (auto *edge = parents[target]; edge; edge = parents[edge->source]) {
-      path_flow = std::min(path_flow, edge->capacity - edge->flow);
+    Flow path_flow = std::numeric_limits<Flow>::max();
+    for (auto e = pred[target]; e != SIZE_MAX; e = pred[g.source(e)]) {
+      path_flow = std::min(path_flow, residual[e]);
     }
-    for (auto *edge = parents[target]; edge; edge = parents[edge->source]) {
-      edge->flow += path_flow;
-      edge->rev_edge->flow -= path_flow;
+    for (auto e = pred[target]; e != SIZE_MAX; e = pred[g.source(e)]) {
+      residual[e] -= path_flow;
+      residual[rev_edge[e]] += path_flow;
     }
-    max_flow += path_flow;
+    total_flow += path_flow;
   }
-
-  return max_flow;
+  return total_flow;
 }
 
 } // end namespace djp

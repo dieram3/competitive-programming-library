@@ -82,12 +82,11 @@ TEST(multiply_comparators, WorksWell) {
   using djp::multiply_greater;
   using djp::multiply_less;
 
-  std::random_device rd;
-  std::mt19937 gen(rd());
+  std::mt19937 gen;
 
   // Pathological cases are difficult to find thereby many repetitions
   // are needed to check that multiply_greater works well.
-  djp::repeat(250000, [&gen] {
+  djp::repeat(12345, [&gen] {
     std::uniform_int_distribution<uint32_t> dist(0, UINT16_MAX);
     const auto a = dist(gen);
     const auto b = dist(gen);

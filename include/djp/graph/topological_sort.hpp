@@ -6,16 +6,20 @@
 #ifndef DJP_GRAPH_TOPOLOGICAL_SORT_HPP
 #define DJP_GRAPH_TOPOLOGICAL_SORT_HPP
 
-#include <stdexcept> // for std::logical_error
-#include <vector>    // for std::vector
-#include <cstddef>   // for std::size_t
-#include <cassert>   // for assert
+#include <functional> // for std::function
+#include <queue>      // for std::priority_queue
+#include <stdexcept>  // for std::logic_error
+#include <vector>     // for std::vector
+#include <cstddef>    // for std::size_t
 
 namespace djp {
 
 /// \brief Sorts the vertices of the given graph topologically.
 ///
-/// \param graph The target graph.
+/// Uses a DFS-based approach to find a topological sort of the given graph. If
+/// multiple topological sorts exist, any of them is found.
+///
+/// \param g The target graph.
 ///
 /// \returns A <tt>std::vector</tt> which contains the vertex descriptors of
 /// \p graph in topological order.
@@ -23,43 +27,91 @@ namespace djp {
 /// \throws std::logic_error if \p graph is not a DAG.
 ///
 /// \par Complexity
-/// <tt>O(V + E)</tt>, where <tt>V = graph.num_vertices()</tt> and
-/// <tt>E = graph.num_edges()</tt>
+/// <tt>O(V + E)</tt>
+///
+/// \sa prioritized_topological_sort
 ///
 template <typename Graph>
-std::vector<size_t> topological_sort(const Graph &graph) {
+std::vector<size_t> topological_sort(const Graph &g) {
+  enum colors { white, gray, black };
+  const size_t num_v = g.num_vertices();
+  std::vector<size_t> list(num_v);
+  std::vector<colors> color(num_v, white);
+  size_t cur_pos = num_v;
 
-  const size_t num_vertices = graph.num_vertices();
-  std::vector<size_t> sorted_list;
-  sorted_list.reserve(num_vertices);
+  std::function<void(size_t)> dfs_visit;
+  dfs_visit = [&](const size_t src) {
+    color[src] = gray;
+    for (const auto e : g.out_edges(src)) {
+      const size_t tgt = g.target(e);
+      if (color[tgt] == white)
+        dfs_visit(tgt);
+      else if (color[tgt] == gray)
+        throw std::logic_error("Not a DAG");
+    }
+    color[src] = black;
+    list[--cur_pos] = src;
+  };
 
+  for (size_t v = 0; v != num_v; ++v)
+    if (color[v] == white)
+      dfs_visit(v);
+
+  return list;
+}
+
+/// \brief Sorts the directed graph in topological order and prioritizes
+/// candidate vertices according to the given comparator.
+///
+/// Sorts the vertices of the graph \p g topologically. If multiple vertices can
+/// be chosen at a given moment, the one with the highest priority will be
+/// outputted first.
+///
+/// \param g The target graph.
+///
+/// \param comp The comparator used to prioritize vertices. Given two vertices
+/// \c u and \c v, <tt>comp(u, v)</tt> must return \c true if \c u has lower
+/// priority than \c v.
+///
+/// \param[out] output_vertex Each time a new vertex \c v is added to the
+/// topological sort, it will be notified via this parameter by calling
+/// <tt>output_vertex(v)</tt>. This unary function shall be called exactly once
+/// for each vertex in the graph in their respective topological order. If the
+/// number of calls is less than <tt>g.num_vertices()</tt>, it means that \p g
+/// is not a DAG.
+///
+/// \par Complexity
+/// <tt>O(E + C*V*log(V))</tt> where \c C is the cost of \p comp.
+///
+/// \sa topological_sort
+///
+template <typename Graph, typename Comp, typename UnaryFunction>
+void prioritized_topological_sort(const Graph &g, Comp comp,
+                                  UnaryFunction output_vertex) {
+  const size_t num_vertices = g.num_vertices();
+  const size_t num_edges = g.num_edges();
+  std::priority_queue<void, std::vector<size_t>, Comp> Q(comp);
   std::vector<size_t> in_degree(num_vertices);
 
-  for (size_t v = 0; v != num_vertices; ++v) {
-    in_degree[v] = graph.in_degree(v);
-    if (in_degree[v] == 0)
-      sorted_list.push_back(v);
-  }
+  for (size_t e = 0; e != num_edges; ++e)
+    ++in_degree[g.target(e)];
 
-  size_t num_processed = 0;
-  while (num_processed < sorted_list.size()) {
-    // Note: If sorted_list.size() - num_processed > 1 in some cycle, there are
-    // multiple topological sorts.
+  for (size_t v = 0; v != num_vertices; ++v)
+    if (!in_degree[v])
+      Q.push(v);
 
-    const size_t root = sorted_list[num_processed++];
+  while (!Q.empty()) {
+    const size_t src = Q.top();
+    Q.pop();
+    output_vertex(src);
 
-    for (const auto *edge : graph.out_edges(root)) {
-      const size_t child = edge->target;
-      --in_degree[child];
-      if (in_degree[child] == 0)
-        sorted_list.push_back(child);
+    for (const auto e : g.out_edges(src)) {
+      const auto tgt = g.target(e);
+      --in_degree[tgt];
+      if (!in_degree[tgt])
+        Q.push(tgt);
     }
   }
-
-  if (num_processed < num_vertices)
-    throw std::logic_error("topological_sort: Not a DAG");
-
-  return sorted_list;
 }
 
 } // end namespace djp

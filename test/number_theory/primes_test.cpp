@@ -102,11 +102,10 @@ TEST(is_prime_mr, WorksOnItsRange) {
   for (auto prime : sieve)
     EXPECT_TRUE(djp::is_prime_mr(prime));
 
-  std::random_device rd;
-  std::mt19937 gen(rd());
+  std::mt19937 gen;
   std::uniform_int_distribution<uint32_t> dist;
 
-  djp::repeat(12345, [&dist, &gen, &sieve] {
+  djp::repeat(1234, [&dist, &gen, &sieve] {
     const uint32_t number = dist(gen);
     EXPECT_EQ(is_prime_sieve(number, sieve), djp::is_prime_mr(number));
   });

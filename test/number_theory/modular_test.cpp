@@ -7,11 +7,14 @@
 #include <gtest/gtest.h>
 
 #include <djp/utility/basics.hpp> // for djp::repeat
-#include <random>
-#include <cstdint> // for std::uint32_t, SIZE_MAX
 
-TEST(modular, HandlesArithmeticOps) {
-  using modular_t = djp::modular<unsigned, 7>;
+#include <random>  // for mt19937, uniform_int_distribution
+#include <cstdint> // for uint32_t, SIZE_MAX
+
+using namespace djp;
+
+TEST(ModularTest, HandlesArithmeticOps) {
+  using modular_t = modular<unsigned, 7>;
 
   const modular_t a = 4;
   const modular_t b = 12;
@@ -32,23 +35,49 @@ TEST(modular, HandlesArithmeticOps) {
   EXPECT_EQ(5, static_cast<int>(b));
 }
 
-TEST(mod_mul, WorksWell) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<std::uint32_t> dist;
+TEST(ModMulTest, WorksWell) {
+  std::mt19937 gen;
+  std::uniform_int_distribution<uint32_t> dist;
 
-  djp::repeat(12345, [&gen, &dist] {
-    const std::uint32_t a = dist(gen);
-    const std::uint32_t b = dist(gen);
-    constexpr std::uint32_t mod = 1000000000 + 7;
-    EXPECT_EQ(std::uint64_t(a) * b % mod, djp::mod_mul(a, b, mod));
+  /// \todo Improve this test, random data based testing is not a good idea and
+  /// makes it slow.
+  repeat(1234, [&gen, &dist] {
+    const uint32_t a = dist(gen);
+    const uint32_t b = dist(gen);
+    constexpr uint32_t mod = 1000000000 + 7;
+    EXPECT_EQ(uint64_t(a) * b % mod, mod_mul(a, b, mod));
   });
 }
 
-TEST(mod_pow, WorksWhenOverflowDoesNotNeedControl) {
-  EXPECT_EQ(90, djp::mod_pow<uint32_t>(2342, 14233, 2011));
-  EXPECT_EQ(10817, djp::mod_pow<uint32_t>(2017, 1238912398, 65536));
-  EXPECT_EQ(12, djp::mod_pow<uint32_t>(22342, 1238912398, 13));
-  EXPECT_EQ(8001, djp::mod_pow<uint32_t>(25237, 131312, 65536));
-  EXPECT_EQ(370, djp::mod_pow<uint32_t>(292, SIZE_MAX, 41202));
+TEST(ModPowTest, WorksWhenOverflowDoesNotNeedControl) {
+  EXPECT_EQ(90, mod_pow(2342, 14233, 2011));
+  EXPECT_EQ(10817, mod_pow(2017, 1238912398, 65536));
+  EXPECT_EQ(12, mod_pow(22342, 1238912398, 13));
+  EXPECT_EQ(8001, mod_pow(25237, 131312, 65536));
+  EXPECT_EQ(370, mod_pow(292, SIZE_MAX, 41202));
+}
+
+TEST(ModInverseTest, WorksWithPrimeModules) {
+
+  EXPECT_EQ(1, mod_inverse(1, 2));
+
+  EXPECT_EQ(2, mod_inverse(2, 3));
+
+  EXPECT_EQ(2, mod_inverse(4, 7));
+  EXPECT_EQ(4, mod_inverse(2, 7));
+
+  EXPECT_EQ(8, mod_inverse(6, 47));
+  EXPECT_EQ(6, mod_inverse(8, 47));
+
+  EXPECT_EQ(22, mod_inverse(17, 373));
+  EXPECT_EQ(17, mod_inverse(22, 373));
+
+  EXPECT_EQ(144, mod_inverse(55, 7919));
+  EXPECT_EQ(55, mod_inverse(144, 7919));
+
+  EXPECT_EQ(1984127, mod_inverse(504, 1000000007));
+  EXPECT_EQ(504, mod_inverse(1984127, 1000000007));
+
+  EXPECT_EQ(32768, mod_inverse(65536, 2147483647));
+  EXPECT_EQ(65536, mod_inverse(32768, 2147483647));
 }

@@ -11,7 +11,6 @@ Currently CP-utils has the following modules:
 - Data Structure
 - Geometry
 - Graph
-- Miscellaneous
 - Number Theory
 - Search
 - Sorting
@@ -55,14 +54,15 @@ The following code snippet shows how to generate a suffix array and using it.
 #include <djp/strings/suffix_array.hpp>  // for djp::make_suffix_array
 
 int main() {
-  // We have a text
+  // Have a text.
   std::string text = "mississippi";
 
-  // We generate the suffix array
+  // Generate the suffix array.
   auto sa = djp::make_suffix_array(text);
 
-  // And then, we use it to show the suffixes sorted lexicographically.
-  for (size_t suffix : sa) std::cout << text.substr(suffix) << '\n';
+  // Use it to show the suffixes sorted lexicographically.
+  for (size_t suffix : sa) 
+    std::cout << text.substr(suffix) << '\n';
 }
 
 ```
