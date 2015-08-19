@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DJP_GEOMETRY_SORT_POINTS_HPP
-#define DJP_GEOMETRY_SORT_POINTS_HPP
+#ifndef DJP_GEOMETRY_POINT_ORDER_HPP
+#define DJP_GEOMETRY_POINT_ORDER_HPP
 
 #include <algorithm> // For std::sort, std::is_sorted
 
@@ -108,7 +108,8 @@ bool is_clockwise_sorted(const Point &center, ForwardIt first, ForwardIt last) {
 /// Linear in <tt>std::distance(first, last)</tt>.
 ///
 template <class ForwardIt, class Point>
-bool is_ccw_sorted(const Point &center, ForwardIt first, ForwardIt last) {
+bool is_counter_clockwise_sorted(const Point &center, ForwardIt first,
+                                 ForwardIt last) {
   return std::is_sorted(first, last,
                         [&center](const Point &lhs, const Point &rhs) {
                           const auto u = lhs - center;

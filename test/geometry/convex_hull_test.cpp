@@ -7,7 +7,7 @@
 #include <gtest/gtest.h>
 
 #include <djp/geometry/point_2d.hpp>
-#include <djp/geometry/sort_points.hpp>
+#include <djp/geometry/point_order.hpp>
 
 #include <algorithm> // For std::sort
 #include <iterator>  // For std::begin, std::end
@@ -27,7 +27,8 @@ TEST(ConvexHullTest, SortsPointsInCounterClockwiseOrder) {
   std::sort(begin(points), end(points));
 
   auto hull = convex_hull(begin(points), end(points), true);
-  EXPECT_TRUE(is_ccw_sorted(*begin(hull), begin(hull), end(hull)));
+  EXPECT_TRUE(
+      is_counter_clockwise_sorted(hull.front(), begin(hull), end(hull)));
 
   points.erase(begin(points),
                convex_hull_partition(begin(points), end(points), true));
@@ -39,7 +40,8 @@ TEST(ConvexHullTest, SortsPointsInCounterClockwiseOrder) {
     EXPECT_EQ(hull[i].y, points[i].y);
   }
 
-  EXPECT_TRUE(is_ccw_sorted(*begin(hull), begin(points), end(points)));
+  EXPECT_TRUE(
+      is_counter_clockwise_sorted(hull.front(), begin(points), end(points)));
 }
 
 TEST(ConvexHullTest, WithCollinearPoints) {
