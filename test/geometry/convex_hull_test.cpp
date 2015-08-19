@@ -12,20 +12,22 @@
 #include <iterator>
 #include <cstdint>
 
+using namespace djp;
+
 TEST(convex_hull, SortsPointsInCounterclockwiseOrder) {
   using scalar_t = int32_t;
-  using point_t = djp::point<scalar_t>;
+  using point_t = point<scalar_t>;
   using vector_t = std::vector<point_t>;
 
   vector_t points = {{1, 1}, {1, -1}, {-1, -1}, {-1, 1}};
 
   std::sort(begin(points), end(points));
 
-  auto hull = djp::convex_hull(begin(points), end(points), true);
-  EXPECT_TRUE(djp::is_ccw_sorted(*begin(hull), begin(hull), end(hull)));
+  auto hull = convex_hull(begin(points), end(points), true);
+  EXPECT_TRUE(is_ccw_sorted(*begin(hull), begin(hull), end(hull)));
 
   points.erase(begin(points),
-               djp::convex_hull_partition(begin(points), end(points), true));
+               convex_hull_partition(begin(points), end(points), true));
 
   EXPECT_EQ(hull.size(), points.size());
 
@@ -34,12 +36,12 @@ TEST(convex_hull, SortsPointsInCounterclockwiseOrder) {
     EXPECT_EQ(hull[i].y, points[i].y);
   }
 
-  EXPECT_TRUE(djp::is_ccw_sorted(*begin(hull), begin(points), end(points)));
+  EXPECT_TRUE(is_ccw_sorted(*begin(hull), begin(points), end(points)));
 }
 
 TEST(convex_hull, WithCollinearPoints) {
   using scalar_t = int32_t;
-  using point_t = djp::point<scalar_t>;
+  using point_t = point<scalar_t>;
   using vector_t = std::vector<point_t>;
 
   vector_t points = {// Square
@@ -62,10 +64,10 @@ TEST(convex_hull, WithCollinearPoints) {
 
   std::sort(begin(points), end(points));
 
-  auto hull = djp::convex_hull(begin(points), end(points), true);
+  auto hull = convex_hull(begin(points), end(points), true);
 
   points.erase(begin(points),
-               djp::convex_hull_partition(begin(points), end(points), true));
+               convex_hull_partition(begin(points), end(points), true));
 
   const size_t expected_len = 8;
   EXPECT_EQ(expected_len, hull.size());
@@ -84,7 +86,7 @@ TEST(convex_hull, WithCollinearPoints) {
 
 TEST(convex_hull, WithoutCollinearPoints) {
   using scalar_t = int32_t;
-  using point_t = djp::point<scalar_t>;
+  using point_t = point<scalar_t>;
   using vector_t = std::vector<point_t>;
 
   vector_t points = {// Square
@@ -107,10 +109,10 @@ TEST(convex_hull, WithoutCollinearPoints) {
 
   std::sort(begin(points), end(points));
 
-  auto hull = djp::convex_hull(begin(points), end(points));
+  auto hull = convex_hull(begin(points), end(points));
 
   points.erase(begin(points),
-               djp::convex_hull_partition(begin(points), end(points)));
+               convex_hull_partition(begin(points), end(points)));
 
   const size_t expected_len = 4;
   EXPECT_EQ(expected_len, hull.size());
