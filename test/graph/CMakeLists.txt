@@ -9,6 +9,7 @@ set(GRAPH_TEST_SOURCES
   "edmonds_karp_max_flow_test.cpp"
   "gusfield_all_pairs_min_cut_test.cpp"
   "hopcroft_karp_maximum_matching_test.cpp"
+  "jump_pointer_tree_test.cpp"
   "kruskal_minimum_spanning_tree_test.cpp"
 	"lowest_common_ancestor_test.cpp"
   "min_st_cut_test.cpp"
