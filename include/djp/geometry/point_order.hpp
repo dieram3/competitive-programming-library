@@ -18,8 +18,8 @@ namespace djp {
 /// \param center The reference point used as a center.
 /// \param start Point used to specify the zero angle which is formed by the
 /// vector <tt>(start - center)</tt>.
-/// \param lhs The beginning of the range to be sorted.
-/// \param rhs The end of the range to be sorted.
+/// \param lhs Left hand side point.
+/// \param rhs Right hand side point.
 ///
 template<class Point>
 bool cw_less(const Point &center, const Point &from, const Point &lhs, const Point &rhs) {
@@ -49,8 +49,8 @@ bool cw_less(const Point &center, const Point &from, const Point &lhs, const Poi
 /// \param center The reference point used as a center.
 /// \param start Point used to specify the zero angle which is formed by the
 /// vector <tt>(start - center)</tt>.
-/// \param lhs The beginning of the range to be sorted.
-/// \param rhs The end of the range to be sorted.
+/// \param lhs Left hand side point.
+/// \param rhs Right hand side point.
 ///
 template<class Point>
 bool ccw_less(const Point &center, const Point &from, const Point &lhs, const Point &rhs) {
