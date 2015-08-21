@@ -6,20 +6,25 @@
 #ifndef DJP_GEOMETRY_POINT_ORDER_HPP
 #define DJP_GEOMETRY_POINT_ORDER_HPP
 
-#include <algorithm> // For std::sort, std::is_sorted
-
-#include <iostream>
-
 namespace djp {
 
 /// \brief Check if two points are in clockwise order according to a
 /// center and a start angle.
 ///
 /// \param center The reference point used as a center.
-/// \param start Reference point relative to the origin used to specify the start
-/// angle.
-/// \param lhs The beginning of the range to be sorted.
-/// \param rhs The end of the range to be sorted.
+/// \param start Reference point relative to the origin used to specify the
+/// start angle.
+/// \param lhs The left-hand side point.
+/// \param rhs The right-hand side point.
+///
+/// \returns \c true if \p lhs is clockwise less than \p rhs, \c false
+/// otherwise.
+///
+/// \pre <tt>lhs != center && rhs != center && start != center</tt>, otherwise
+/// the order is undetermined.
+///
+/// \par Complexity
+/// Constant.
 ///
 template <typename Point>
 bool cw_less(const Point &center, const Point &start, const Point &lhs,
@@ -48,10 +53,19 @@ bool cw_less(const Point &center, const Point &start, const Point &lhs,
 /// center and a start angle.
 ///
 /// \param center The reference point used as a center.
-/// \param start Reference point relative to the origin used to specify the start
-/// angle.
-/// \param lhs The beginning of the range to be sorted.
-/// \param rhs The end of the range to be sorted.
+/// \param start Reference point relative to the origin used to specify the
+/// start angle.
+/// \param lhs The left-hand side point.
+/// \param rhs The right-hand side point.
+///
+/// \returns \c true if \p lhs is counter clockwise less than \p rhs, \c false
+/// otherwise.
+///
+/// \pre <tt>lhs != center && rhs != center && start != center</tt>, otherwise
+/// the order is undetermined.
+///
+/// \par Complexity
+/// Constant.
 ///
 template <typename Point>
 bool ccw_less(const Point &center, const Point &start, const Point &lhs,

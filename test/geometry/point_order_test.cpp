@@ -8,8 +8,9 @@
 
 #include <djp/geometry/point_2d.hpp>
 
-#include <vector>  // For std::vector
-#include <cstdint> // For std::int32_t
+#include <algorithm> // For std::sort, std::is_sorted
+#include <vector>    // For std::vector
+#include <cstdint>   // For std::int32_t
 
 using namespace djp;
 using point_i = point<std::int32_t>;
@@ -46,7 +47,6 @@ static void cw_sort(const point_i &center, const point_i &start, RandomIt first,
 
 static bool cw_sorted(const point_i &center,
                       const std::vector<point_i> &points) {
-
   if (points.empty())
     return true;
 
@@ -81,7 +81,7 @@ static bool cw_sorted(std::vector<point_i> points) {
   return cw_sorted(center, points);
 }
 
-TEST(PointOrderTest, SortPointsInClockWiseOrder) {
+TEST(PointOrderTest, SortPointsInClockwiseOrder) {
   std::vector<point_i> points = {{1, 2},
                                  {5, 5},
                                  {6, 2},
@@ -171,14 +171,13 @@ TEST(PointOrderTest, TwoPointsTest) {
   EXPECT_TRUE(cw_sorted({2 * p6_00, p6_00}));
 }
 
-TEST(PointOrderTest, IsUnsortedTrivialTest) {
+TEST(PointOrderTest, IsUnsortedBasicTest) {
   EXPECT_FALSE(cw_sorted({p0_00, p3_00, p1_30}));
   EXPECT_FALSE(cw_sorted({p0_00, p9_00, p10_30, p7_30}));
   EXPECT_FALSE(cw_sorted({p0_00, p6_00, p3_00}));
 }
 
-TEST(PointOrderTest, IsSortedTrivialTest) {
-
+TEST(PointOrderTest, IsSortedBasicTest) {
   // When rotates 180 degrees.
   EXPECT_TRUE(cw_sorted({p3_00, p6_00, p0_00}));
   EXPECT_TRUE(cw_sorted({p3_00, 2 * p6_00, p0_00}));
