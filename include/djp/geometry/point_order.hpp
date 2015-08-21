@@ -11,67 +11,29 @@
 #include <iostream>
 
 namespace djp {
-
-/// \brief Check if two points are in clockwise order according to a
-/// center and a start angle.
-///
-/// \param center The reference point used as a center.
-/// \param start Point used to specify the zero angle which is formed by the
-/// vector <tt>(start - center)</tt>.
-/// \param lhs Left hand side point.
-/// \param rhs Right hand side point.
-///
 template<class Point>
-bool cw_less(const Point &center, const Point &from, const Point &lhs, const Point &rhs) {
-  const auto u = lhs - center;
-  const auto v = rhs - center;
-
-  const auto lhs_rotation = (from ^ u);
-  const auto rhs_rotation = (from ^ v);
-
-  if (lhs_rotation <= 0 && rhs_rotation > 0)
-    return true;
-  if (lhs_rotation > 0 && rhs_rotation <= 0)
-    return false;
-
-  if (lhs_rotation == 0 && rhs_rotation == 0) {
-    // rotate 90 degrees in clockwise order
-    const Point rotated_from = {from.y, -from.x};
-    return (rotated_from ^ u) >= 0 && (rotated_from ^ v) < 0;
-  }
-
-  return (u ^ v) < 0;
+unsigned clock_rotation(const Point &reference, const Point &p) {
+  auto rotation = reference ^ p;
+  if (rotation != 0)
+    return rotation < 0 ? 1 : 3;
+  const Point rotated_from = {reference.y, -reference.x};
+  return (rotated_from ^ p) > 0 ? 0 : 2;
 }
 
-/// \brief Check if two points are in counter clockwise order according to a
-/// center and a start angle.
-///
-/// \param center The reference point used as a center.
-/// \param start Point used to specify the zero angle which is formed by the
-/// vector <tt>(start - center)</tt>.
-/// \param lhs Left hand side point.
-/// \param rhs Right hand side point.
-///
 template<class Point>
-bool ccw_less(const Point &center, const Point &from, const Point &lhs, const Point &rhs) {
+int cw_compare(const Point &center, const Point &from, const Point &lhs, const Point &rhs) {
   const auto u = lhs - center;
   const auto v = rhs - center;
 
-  const auto lhs_rotation = (from ^ u);
-  const auto rhs_rotation = (from ^ v);
+  unsigned urot = clock_rotation(from, u);
+  unsigned vrot = clock_rotation(from, v);
 
-  if (lhs_rotation >= 0 && rhs_rotation < 0)
-    return true;
-  if (lhs_rotation < 0 && rhs_rotation >= 0)
-    return false;
-
-  if (lhs_rotation == 0 && rhs_rotation == 0) {
-    // rotate 90 degrees in clockwise order
-    const Point rotated_from = {from.y, -from.x};
-    return (rotated_from ^ u) <= 0 && (rotated_from ^ v) > 0;
+  if (urot == vrot){
+    if(urot == 0 || urot == 2)
+      return 0;
+    return (u ^ v);
   }
-
-  return (u ^ v) > 0;
+  return urot < vrot ? -1 : 1;
 }
 
 /// \brief Sorts a range of points in clockwise order according to a center and
@@ -91,7 +53,7 @@ void clockwise_sort(const Point &center, const Point &start, RandomIt first,
                     RandomIt last) {
   const auto from = start - center;
   std::sort(first, last, [center, from](const Point &lhs, const Point &rhs) {
-    return cw_less(center, from, lhs, rhs);
+    return cw_compare(center, from, lhs, rhs) < 0;
   });
 }
 
@@ -112,7 +74,7 @@ void counter_clockwise_sort(const Point &center, const Point &start,
                             RandomIt first, RandomIt last) {
   const auto from = start - center;
   std::sort(first, last, [center, from](const Point &lhs, const Point &rhs) {
-    return ccw_less(center, from, lhs, rhs);
+    return cw_compare(center, from, lhs, rhs) > 0;
   });
 }
 
@@ -128,13 +90,13 @@ void counter_clockwise_sort(const Point &center, const Point &start,
 ///
 template <class ForwardIt, class Point>
 bool is_clockwise_sorted(const Point &center, ForwardIt first, ForwardIt last) {
-  if (std::distance(first, last) == 0)
+  if (first == last)
     return true;
 
   const auto from = *first - center;
   return std::is_sorted(first, last,
                         [center, from](const Point &lhs, const Point &rhs) {
-                          return cw_less(center, from, lhs, rhs);
+                          return cw_compare(center, from, lhs, rhs) < 0;
                         });
 }
 
@@ -151,13 +113,13 @@ bool is_clockwise_sorted(const Point &center, ForwardIt first, ForwardIt last) {
 template <class ForwardIt, class Point>
 bool is_counter_clockwise_sorted(const Point &center, ForwardIt first,
                                  ForwardIt last) {
-  if (std::distance(first, last) == 0)
+  if (first == last)
     return true;
 
   const auto from = *first - center;
   return std::is_sorted(first, last,
                         [center, from](const Point &lhs, const Point &rhs) {
-                          return ccw_less(center, from, lhs, rhs);
+                          return cw_compare(center, from, lhs, rhs) > 0;
                         });
 }
 
