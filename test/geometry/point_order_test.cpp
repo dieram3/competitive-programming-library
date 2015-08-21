@@ -28,9 +28,46 @@ const point_i p10_30 = {-1, 1};
 
 } // end anonymous namespace
 
+// Sorts in clockwise order. If two points have same angle, the nearest one to
+// the center comes first.
+template <class RandomIt>
+static void cw_sort(const point_i &center, const point_i &start, RandomIt first,
+                    RandomIt last) {
+  auto less = [=](const point_i &lhs, const point_i &rhs) {
+    if (cw_less(center, start, lhs, rhs))
+      return true;
+    if (cw_less(center, start, rhs, lhs))
+      return false;
+    return distance2(lhs, center) < distance2(rhs, center);
+  };
+
+  std::sort(first, last, less);
+}
+
 static bool cw_sorted(const point_i &center,
                       const std::vector<point_i> &points) {
-  const bool result = is_clockwise_sorted(center, points.begin(), points.end());
+
+  if (points.empty())
+    return true;
+
+  const point_i start = points.front() - center;
+  const point_i rev_start = points.back() - center;
+
+  auto cw_less = [=](const point_i &lhs, const point_i &rhs) {
+    return djp::cw_less(center, start, lhs, rhs);
+  };
+  auto ccw_less = [=](const point_i &lhs, const point_i &rhs) {
+    return djp::ccw_less(center, rev_start, lhs, rhs);
+  };
+
+  const bool result = std::is_sorted(points.begin(), points.end(), cw_less);
+  // Points in same angle should be considered equal i.e no one is less than
+  // other.
+  const bool rev_result =
+      std::is_sorted(points.rbegin(), points.rend(), ccw_less);
+
+  EXPECT_EQ(result, rev_result);
+
   return result;
 }
 
@@ -44,138 +81,116 @@ static bool cw_sorted(std::vector<point_i> points) {
   return cw_sorted(center, points);
 }
 
-TEST(PointOrderTest, SortPointsInCounterClockWiseOrder) {
-  std::vector<point_i> points = {{1, 2},
-                                 {5, 4},
-                                 {2, 1},
-                                 {2, 3},
-                                 {4, 6},
-                                 {1, 5},
-                                 {4, 1},
-                                 {6, 2},
-                                 {5, 5},
-                                 {3, 2},
-                                 {3, 1},
-                                 {4, 4}};
-  point_i center = {3, 3};
-  point_i start = {3, 4};
-  counter_clockwise_sort(center, start, points.begin(), points.end());
-  std::vector<point_i> expected = {{1, 5},
-                                   {2, 3},
-                                   {1, 2},
-                                   {2, 1},
-                                   {3, 2},
-                                   {3, 1},
-                                   {4, 1},
-                                   {6, 2},
-                                   {5, 4},
-                                   {5, 5},
-                                   {4, 4},
-                                   {4, 6}};
-  EXPECT_EQ(expected, points);
-  EXPECT_TRUE(
-      is_counter_clockwise_sorted(center, points.begin(), points.end()));
-}
-
 TEST(PointOrderTest, SortPointsInClockWiseOrder) {
   std::vector<point_i> points = {{1, 2},
-                                 {5, 4},
-                                 {2, 1},
-                                 {2, 3},
-                                 {4, 6},
-                                 {1, 5},
-                                 {4, 1},
-                                 {6, 2},
                                  {5, 5},
-                                 {3, 2},
+                                 {6, 2},
+                                 {3, -2},
                                  {3, 1},
-                                 {4, 4}};
+                                 {5, 5},
+                                 {2, 2},
+                                 {1, 5},
+                                 {2, 3},
+                                 {4, 4},
+                                 {6, 2},
+                                 {6, 2},
+                                 {4, 6},
+                                 {3, 2},
+                                 {1, 1},
+                                 {3, 0},
+                                 {3, -1},
+                                 {6, 6},
+                                 {4, 1},
+                                 {5, 4},
+                                 {2, 1}};
+
   std::vector<point_i> expected = {{4, 6},
-                                   {5, 5},
                                    {4, 4},
+                                   {5, 5},
+                                   {5, 5},
+                                   {6, 6},
                                    {5, 4},
+                                   {6, 2},
+                                   {6, 2},
                                    {6, 2},
                                    {4, 1},
                                    {3, 2},
                                    {3, 1},
+                                   {3, 0},
+                                   {3, -1},
+                                   {3, -2},
                                    {2, 1},
+                                   {2, 2},
+                                   {1, 1},
                                    {1, 2},
                                    {2, 3},
                                    {1, 5}};
   point_i center = {3, 3};
-  point_i start = {3, 4};
+  point_i start = {0, 1};
 
-  clockwise_sort(center, start, points.begin(), points.end());
+  cw_sort(center, start, points.begin(), points.end());
 
   EXPECT_EQ(expected, points);
-  EXPECT_TRUE(is_clockwise_sorted(center, points.begin(), points.end()));
+  EXPECT_TRUE(cw_sorted(center, points));
 }
 
-TEST(IsClockwiseSortedTest, EmptyRangeTest) { EXPECT_TRUE(cw_sorted({})); }
+TEST(PointOrderTest, MoreThan360DegreesTest) {
+  // Giving small hops
+  EXPECT_FALSE(cw_sorted({p0_00, p3_00, p7_30, p0_00}));
+  EXPECT_FALSE(cw_sorted({p1_30, p4_30, p7_30, p10_30, p0_00, p3_00, p4_30}));
 
-TEST(IsClockwiseSortedTest, SinglePointTest) {
-  EXPECT_TRUE(cw_sorted({origin}));
-  EXPECT_TRUE(cw_sorted({p3_00}));
-  EXPECT_TRUE(cw_sorted({p10_30}));
+  // Giving large hops
+  EXPECT_FALSE(cw_sorted({p6_00, p4_30, p6_00}));
+  EXPECT_FALSE(cw_sorted({p7_30, p3_00, p6_00, p4_30}));
+
+  // Giving 180 degrees hops
+  EXPECT_FALSE(cw_sorted({p0_00, p6_00, p0_00}));
+  EXPECT_FALSE(cw_sorted({p9_00, p3_00, p9_00}));
 }
 
-TEST(IsClockwiseSortedTest, MoreThan360DegreesTest) {
- // Giving small hops
- EXPECT_FALSE(cw_sorted({p0_00, p3_00, p7_30, p0_00}));
- EXPECT_FALSE(cw_sorted({p1_30, p4_30, p7_30, p10_30, p0_00, p3_00, p4_30}));
+TEST(PointOrderTest, TwoPointsTest) {
+  // When rotates x degrees and x is in (0, 180)
+  EXPECT_TRUE(cw_sorted({p9_00, p10_30}));
+  EXPECT_TRUE(cw_sorted({p9_00, p0_00}));
+  EXPECT_TRUE(cw_sorted({p9_00, p1_30}));
 
- // Giving large hops
- EXPECT_FALSE(cw_sorted({p6_00, p4_30, p6_00}));
- EXPECT_FALSE(cw_sorted({p7_30, p3_00, p6_00, p4_30}));
+  // When rotates x degrees and x is in (180, 360)
+  EXPECT_TRUE(cw_sorted({p3_00, p10_30}));
+  EXPECT_TRUE(cw_sorted({p3_00, p0_00}));
+  EXPECT_TRUE(cw_sorted({p3_00, p1_30}));
 
- // Giving 180 degrees hops
- EXPECT_FALSE(cw_sorted({p0_00, p6_00, p0_00}));
- EXPECT_FALSE(cw_sorted({p9_00, p3_00, p9_00}));
+  // When rotates exactly 180 degrees.
+  EXPECT_TRUE(cw_sorted({p0_00, p6_00}));
+  EXPECT_TRUE(cw_sorted({p6_00, p0_00}));
+  EXPECT_TRUE(cw_sorted({p4_30, p10_30}));
+  EXPECT_TRUE(cw_sorted({p10_30, p4_30}));
+
+  // When rotates 0 degrees
+  EXPECT_TRUE(cw_sorted({p4_30, p4_30}));
+  EXPECT_TRUE(cw_sorted({p6_00, 2 * p6_00}));
+  EXPECT_TRUE(cw_sorted({2 * p6_00, p6_00}));
 }
 
-TEST(IsClockwiseSortedTest, TwoPointsTest) {
- // When rotates x degrees and x is in (0, 180)
- EXPECT_TRUE(cw_sorted({p9_00, p10_30}));
- EXPECT_TRUE(cw_sorted({p9_00, p0_00}));
- EXPECT_TRUE(cw_sorted({p9_00, p1_30}));
-
- // When rotates x degrees and x is in (180, 360)
- EXPECT_TRUE(cw_sorted({p3_00, p10_30}));
- EXPECT_TRUE(cw_sorted({p3_00, p0_00}));
- EXPECT_TRUE(cw_sorted({p3_00, p1_30}));
-
- // When rotates exactly 180 degrees.
- EXPECT_TRUE(cw_sorted({p0_00, p6_00}));
- EXPECT_TRUE(cw_sorted({p6_00, p0_00}));
- EXPECT_TRUE(cw_sorted({p4_30, p10_30}));
- EXPECT_TRUE(cw_sorted({p10_30, p4_30}));
-
- // When rotates 0 degrees
- EXPECT_TRUE(cw_sorted({p4_30, p4_30}));
- EXPECT_TRUE(cw_sorted({p6_00, 2 * p6_00}));
- EXPECT_TRUE(cw_sorted({2 * p6_00, p6_00}));
-}
-
-TEST(IsClockwiseSortedTest, IsUnsortedTrivialTest) {
+TEST(PointOrderTest, IsUnsortedTrivialTest) {
   EXPECT_FALSE(cw_sorted({p0_00, p3_00, p1_30}));
   EXPECT_FALSE(cw_sorted({p0_00, p9_00, p10_30, p7_30}));
   EXPECT_FALSE(cw_sorted({p0_00, p6_00, p3_00}));
 }
 
-TEST(IsClockwiseSortedTest, IsSortedTrivialTest) {
+TEST(PointOrderTest, IsSortedTrivialTest) {
 
- // When rotates 180 degrees.
- EXPECT_TRUE(cw_sorted({p3_00, p6_00, p0_00}));
- EXPECT_TRUE(cw_sorted({p3_00, 2 * p6_00, p0_00}));
- EXPECT_TRUE(cw_sorted({p3_00, p6_00, 2 * p0_00}));
+  // When rotates 180 degrees.
+  EXPECT_TRUE(cw_sorted({p3_00, p6_00, p0_00}));
+  EXPECT_TRUE(cw_sorted({p3_00, 2 * p6_00, p0_00}));
+  EXPECT_TRUE(cw_sorted({p3_00, p6_00, 2 * p0_00}));
 
- // When rotates 0 degrees.
- EXPECT_TRUE(cw_sorted({p6_00, p7_30, p7_30}));
- EXPECT_TRUE(cw_sorted({p6_00, 2 * p7_30, p7_30}));
- EXPECT_TRUE(cw_sorted({p6_00, p7_30, 2 * p7_30}));
+  // When rotates 0 degrees.
+  EXPECT_TRUE(cw_sorted({p6_00, p7_30, p7_30}));
+  EXPECT_TRUE(cw_sorted({p6_00, 2 * p7_30, p7_30}));
+  EXPECT_TRUE(cw_sorted({p6_00, p7_30, 2 * p7_30}));
 
- // When rotates arbitrary degrees.
- EXPECT_TRUE(cw_sorted({p0_00, p1_30, p4_30, p9_00}));
- EXPECT_TRUE(cw_sorted({p9_00, p3_00, p6_00, p7_30}));
- EXPECT_TRUE(cw_sorted({p9_00, p6_00, p7_30}));
+  // When rotates arbitrary degrees.
+  EXPECT_TRUE(cw_sorted({p0_00, p1_30, p4_30, p9_00}));
+  EXPECT_TRUE(cw_sorted({p9_00, p3_00, p6_00, p7_30}));
+  EXPECT_TRUE(cw_sorted({p9_00, p6_00, p7_30}));
 }

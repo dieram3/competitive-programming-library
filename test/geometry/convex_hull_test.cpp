@@ -17,6 +17,19 @@
 using namespace djp;
 using std::int32_t;
 
+template <class ForwardIt, class Point>
+static bool is_ccw_sorted(const Point &center, ForwardIt first,
+                          ForwardIt last) {
+  if (first == last)
+    return true;
+
+  const auto start = *first - center;
+  return std::is_sorted(first, last,
+                        [center, start](const Point &lhs, const Point &rhs) {
+                          return ccw_less(center, start, lhs, rhs);
+                        });
+}
+
 TEST(ConvexHullTest, SortsPointsInCounterClockwiseOrder) {
   using scalar_t = int32_t;
   using point_t = point<scalar_t>;
@@ -27,8 +40,7 @@ TEST(ConvexHullTest, SortsPointsInCounterClockwiseOrder) {
   std::sort(begin(points), end(points));
 
   auto hull = convex_hull(begin(points), end(points), true);
-  EXPECT_TRUE(
-      is_counter_clockwise_sorted(hull.front(), begin(hull), end(hull)));
+  EXPECT_TRUE(is_ccw_sorted(hull.front(), begin(hull), end(hull)));
 
   points.erase(begin(points),
                convex_hull_partition(begin(points), end(points), true));
@@ -40,8 +52,7 @@ TEST(ConvexHullTest, SortsPointsInCounterClockwiseOrder) {
     EXPECT_EQ(hull[i].y, points[i].y);
   }
 
-  EXPECT_TRUE(
-      is_counter_clockwise_sorted(hull.front(), begin(points), end(points)));
+  EXPECT_TRUE(is_ccw_sorted(hull.front(), begin(points), end(points)));
 }
 
 TEST(ConvexHullTest, WithCollinearPoints) {
