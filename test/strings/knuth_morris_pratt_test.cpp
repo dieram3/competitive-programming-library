@@ -3,15 +3,18 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/search/knuth_morris_pratt.hpp>
-#include <gtest/gtest.h>
-#include <string>
-#include <random>
-#include <algorithm>
-#include <iterator>
-#include <functional>
+/// \todo Improve test quality.
 
-TEST(kmp_searcher, SearchsQuickly) {
+#include <djp/strings/knuth_morris_pratt.hpp>
+#include <gtest/gtest.h>
+
+#include <algorithm>
+#include <functional>
+#include <iterator>
+#include <random>
+#include <string>
+
+TEST(KMPSearcherTest, SearchsQuickly) {
   std::string pattern(1000, 'a');
   pattern.back() = 'b';
   std::string text(1000000, 'a');
@@ -21,7 +24,7 @@ TEST(kmp_searcher, SearchsQuickly) {
   EXPECT_EQ(pattern.size(), std::distance(it, text.end()));
 }
 
-TEST(kmp_searcher, SearchCorrectly) {
+TEST(KMPSearcherTest, SearchCorrectly) {
   std::string text(10000, '\0');
   std::default_random_engine gen;
   std::uniform_int_distribution<> dist(0, 255);
@@ -37,7 +40,7 @@ TEST(kmp_searcher, SearchCorrectly) {
   EXPECT_TRUE(expected == actual);
 }
 
-TEST(kmp_searcher, ReturnLastIfNoMatch) {
+TEST(KMPSearcherTest, ReturnLastIfNoMatch) {
   std::string pattern(10, 'b');
   std::string text(1000, 'c');
   auto search_on = djp::make_kmp_searcher(pattern.begin(), pattern.end());
