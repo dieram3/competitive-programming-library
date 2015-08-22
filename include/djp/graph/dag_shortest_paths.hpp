@@ -17,9 +17,9 @@ namespace djp {
 /// \brief Solves the single-source shortest-paths problem on a weighted,
 /// directed acyclic graph.
 ///
-/// The distance map will be resized and modified in such a way that \c dist[v]
-/// will contain the shortest distance from vertex \p src to vertex \p v if a
-/// path exist or \c std::numeric_limits::max() otherwise.
+/// Distance to each vertex from \p source is recorded in the \p dist map.
+/// Distances to unreachable vertices are set to
+/// <tt>std::numeric_limits<Distance>::max()</tt>.
 ///
 /// \param g The target graph.
 /// \param source Descriptor of the source vertex.
@@ -51,8 +51,8 @@ void dag_shortest_paths(const Graph &g, const size_t source,
   };
   dfs(source);
 
-  // Note: To change 'limits::max()' by 'limits::min()' and
-  // 'std::min' by 'std::max' gives as a result the longest paths.
+  // Note: If 'limits::max()' is changed by 'limits::min()' and 'std::min' is
+  // changed by 'std::max' it gives as a result the longest paths.
   dist.assign(num_v, std::numeric_limits<Distance>::max());
   dist[source] = 0;
   std::for_each(rev_topo.rbegin(), rev_topo.rend(), [&](const size_t src) {
