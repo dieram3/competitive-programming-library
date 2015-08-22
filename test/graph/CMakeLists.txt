@@ -4,6 +4,7 @@ set(GRAPH_TEST_SOURCES
   "bipartite_test.cpp"
   "bridges_test.cpp"
   "connected_components_test.cpp"
+  "dag_shortest_paths_test.cpp"
 	"dijkstra_shortest_paths_test.cpp"
   "directed_graph_test.cpp"
   "edmonds_karp_max_flow_test.cpp"
