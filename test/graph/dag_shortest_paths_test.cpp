@@ -8,6 +8,7 @@
 
 #include <djp/graph/directed_graph.hpp>
 
+#include <limits> // For std::numeric_limits
 #include <vector> // For std::vector
 
 using namespace djp;
