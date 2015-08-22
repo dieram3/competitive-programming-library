@@ -103,9 +103,7 @@ public:
   /// \par Complexity
   /// Constant.
   ///
-  size_t depth_of(const size_t v) const {
-    return stree.elem(euler_pos[v]).depth;
-  }
+  size_t depth_of(const size_t v) const { return stree.at(euler_pos[v]).depth; }
 
   /// \brief Computes the distance between the given pair of vertices using the
   /// stored data.
