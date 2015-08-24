@@ -5,14 +5,17 @@
 
 #include <djp/utility/matrix.hpp>
 #include <gtest/gtest.h>
+
 #include <type_traits> // is const, remove_reference
 #include <cstddef>     // size_t
 
-TEST(matrix, ConstrucstWell) {
+using namespace djp;
+
+TEST(MatrixTest, ConstrucstWell) {
 
   // elements are value-initialized
   {
-    djp::matrix<int> mat({5, 7});
+    matrix<int> mat({5, 7});
     EXPECT_EQ(5u, mat.rows());
     EXPECT_EQ(7u, mat.cols());
 
@@ -23,7 +26,7 @@ TEST(matrix, ConstrucstWell) {
 
   // elements are copy-initialized
   {
-    djp::matrix<bool> mat({3, 4}, true);
+    matrix<bool> mat({3, 4}, true);
     EXPECT_EQ(3u, mat.rows());
     EXPECT_EQ(4u, mat.cols());
 
@@ -33,8 +36,8 @@ TEST(matrix, ConstrucstWell) {
   }
 }
 
-TEST(matrix, IndexesWell) {
-  djp::matrix<int> mat({8, 5});
+TEST(MatrixTest, IndexesWell) {
+  matrix<int> mat({8, 5});
   EXPECT_EQ(0u, mat.pos({0, 0}));
   EXPECT_EQ(mat.cols(), mat.pos({1, 0}));
   EXPECT_EQ(3u, mat.pos({0, 3}));
@@ -42,8 +45,8 @@ TEST(matrix, IndexesWell) {
   EXPECT_EQ(6u * mat.cols() + 4, mat.pos({6, 4}));
 }
 
-TEST(matrix, IsConstAware) {
-  djp::matrix<int> mat({1, 1});
+TEST(MatrixTest, IsConstAware) {
+  matrix<int> mat({1, 1});
   const auto &cmat = mat;
 
   using ref = decltype(mat[{0, 0}]);
@@ -63,4 +66,24 @@ TEST(matrix, IsConstAware) {
   EXPECT_EQ(0, (cmat[{0, 0}]));
   mat[{0, 0}] = 4;
   EXPECT_EQ(4, (cmat[{0, 0}]));
+}
+
+TEST(MatrixTest, AssignDefaultTest) {
+  matrix<int> mat({2, 2}, 3); // Initial garbage.
+  mat.assign({3, 4});
+  ASSERT_EQ(3, mat.rows());
+  ASSERT_EQ(4, mat.cols());
+  for (size_t i = 0; i != mat.rows(); ++i)
+    for (size_t j = 0; j != mat.cols(); ++j)
+      EXPECT_EQ(0, (mat[{i, j}])) << " at (" << i << ", " << j << ")";
+}
+
+TEST(MatrixTest, AssignWithFillValueTest) {
+  matrix<int> mat({1, 4}, 2); // Initial garbage.
+  mat.assign({5, 4}, 7);
+  ASSERT_EQ(5, mat.rows());
+  ASSERT_EQ(4, mat.cols());
+  for (size_t i = 0; i != mat.rows(); ++i)
+    for (size_t j = 0; j != mat.cols(); ++j)
+      EXPECT_EQ(7, (mat[{i, j}])) << " at (" << i << ", " << j << ")";
 }

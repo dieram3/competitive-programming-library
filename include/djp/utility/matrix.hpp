@@ -26,10 +26,13 @@ public:
   using reference = typename std::vector<T>::reference;
   using const_reference = typename std::vector<T>::const_reference;
 
-  matrix(index_type bounds) : bounds_(bounds), data_(rows() * cols()) {}
-
-  matrix(index_type bounds, const T &value)
+  explicit matrix(index_type bounds, const T &value = T())
       : bounds_(bounds), data_(rows() * cols(), value) {}
+
+  void assign(index_type bounds, const T &value = T()) {
+    bounds_ = bounds;
+    data_.assign(rows() * cols(), value);
+  }
 
   size_t pos(index_type idx) const { return idx.first * cols() + idx.second; }
   size_t rows() const { return bounds_.first; }
