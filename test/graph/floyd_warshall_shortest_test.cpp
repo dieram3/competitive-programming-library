@@ -9,9 +9,10 @@
 #include <djp/graph/directed_graph.hpp>
 #include <djp/utility/matrix.hpp>
 
-#include <limits>  // For std::numeric_limits
-#include <vector>  // For std::vector
-#include <cstddef> // For std::size_t
+#include <iterator> // For std::back_inserter
+#include <limits>   // For std::numeric_limits
+#include <vector>   // For std::vector
+#include <cstddef>  // For std::size_t
 
 using namespace djp;
 using std::vector;
@@ -56,7 +57,7 @@ public:
 
 protected:
   directed_graph g;
-  std::vector<int> weight;
+  vector<int> weight;
 };
 
 } // end anonymous namespace
