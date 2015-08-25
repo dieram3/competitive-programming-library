@@ -94,7 +94,7 @@ TEST_F(FloydWarshallAPSPTest, PathTest) {
   matrix<size_t> next({0, 0});
   floyd_warshall_all_pairs_shortest_paths(g, weight, dist, next);
 
-  // Long paths.
+  // Long paths
 
   vector<size_t> path;
   floyd_warshall_path(9, 7, next, back_inserter(path));
@@ -115,6 +115,7 @@ TEST_F(FloydWarshallAPSPTest, PathTest) {
   EXPECT_EQ(vector<size_t>({3, 1, 2}), path);
 
   // Empty paths
+
   path.clear();
   floyd_warshall_path(3, 4, next, back_inserter(path));
   EXPECT_EQ(vector<size_t>(), path);
@@ -135,8 +136,10 @@ TEST_F(FloydWarshallAPSPTest, PathTest) {
 
   path.clear();
   floyd_warshall_path(7, 7, next, back_inserter(path));
+  EXPECT_EQ(vector<size_t>({7}), path);
 
   // Single edge paths
+
   path.clear();
   floyd_warshall_path(8, 1, next, back_inserter(path));
   EXPECT_EQ(vector<size_t>({8, 1}), path);
