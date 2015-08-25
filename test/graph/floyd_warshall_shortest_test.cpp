@@ -9,10 +9,13 @@
 #include <djp/graph/directed_graph.hpp>
 #include <djp/utility/matrix.hpp>
 
-#include <limits> // for std::numeric_limits
+#include <limits>  // For std::numeric_limits
+#include <vector>  // For std::vector
+#include <cstddef> // For std::size_t
 
 using namespace djp;
 using std::vector;
+using std::size_t;
 
 static constexpr int inf = std::numeric_limits<int>::max();
 

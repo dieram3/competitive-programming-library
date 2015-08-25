@@ -7,10 +7,11 @@
 #define DJP_GRAPH_FLOYD_WARSHALL_SHORTEST_HPP
 
 #include <djp/utility/matrix.hpp>
-#include <limits>  // For std::numeric_limits
-#include <vector>  // For std::vector
-#include <cstddef> // For std::size_t
-#include <cstdint> // For SIZE_MAX
+#include <algorithm> // For std::min
+#include <limits>    // For std::numeric_limits
+#include <vector>    // For std::vector
+#include <cstddef>   // For std::size_t
+#include <cstdint>   // For SIZE_MAX
 
 namespace djp {
 
