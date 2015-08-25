@@ -17,6 +17,10 @@ namespace djp {
 /// \brief Finds the shortest-distance for each pair of vertices in a directed
 /// edge-weighted graph.
 ///
+/// This algorithm should be used to compute all-pairs shortest paths in a dense
+/// graph. If the target graph is sparse, the Johnson's algorithm should be
+/// used instead.
+///
 /// \param g The target graph.
 ///
 /// \param weight Edge-weight map.
