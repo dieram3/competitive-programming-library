@@ -22,7 +22,10 @@ template <typename Point>
 bool segment_intersect(const Point &p0, const Point &p1, const Point &q0,
                        const Point &q1) {
   // check bounding box first
-  if (false)
+  if ((std::max(p0.x, p1.x) < std::min(q0.x, q1.x) &&
+       std::max(p0.y, p1.y) < std::min(q0.y, q1.y)) ||
+      (std::max(q0.x, q1.x) < std::min(p0.x, p1.x) &&
+       std::max(q0.y, q1.y) < std::min(p0.y, p1.y)))
     return false;
 
   auto lrot = (p1 - p0) ^ (q0 - p0);
