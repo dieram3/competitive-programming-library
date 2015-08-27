@@ -6,16 +6,19 @@
 #ifndef DJP_GEOMETRY_SEGMENT_INTERSECTION_HPP
 #define DJP_GEOMETRY_SEGMENT_INTERSECTION_HPP
 
-#include <algorithm>
-#include <iterator>
-#include <set>
-#include <utility>
-#include <vector>
-#include <tuple>
-#include <algorithm>
+#include <algorithm> // For std::minmax, std::for_each, std::sort
+#include <iterator>  // For std::iterator_traits
+#include <set>       // For std::set
+#include <utility>   // For std::pair
+#include <vector>    // For std::vector
+#include <tuple>     // For std::tie
 
 namespace djp {
-
+///  \brief Check if two segments intersect.
+///
+/// Check if segment formed by \p p0 and \p p1 intersect with the segment formed
+/// by \p q0 and \p q1.
+///
 template <typename Point>
 bool segment_intersect(const Point &p0, const Point &p1, const Point &q0,
                        const Point &q1) {
@@ -37,6 +40,7 @@ bool segment_intersect(const Point &p0, const Point &p1, const Point &q0,
   return true;
 }
 
+/// Check if two segments itersect.
 template <typename Segment>
 bool intersect(const Segment &s0, const Segment &s1) {
   return segment_intersect(s0.a, s0.b, s1.a, s1.b);
@@ -58,13 +62,33 @@ struct segment {
     }
     if (s0.a.x < s1.a.x) {
       auto det = (s0.b - s0.a) ^ (s1.a - s0.a);
-      return (det > 0) || (det == 0 && s0.a.y <= s1.a.y);
+      if (det == 0)
+        return (s0.a.y < s1.a.y) || (s0.a.y == s1.a.y && s0.b.x < s1.a.x);
+      return (det > 0);
+    } else if (s0.a.x > s1.a.x) {
+      auto det = (s1.b - s1.a) ^ (s0.a - s1.a);
+      if (det == 0)
+        return (s0.a.y < s1.a.y) || (s0.a.y == s1.a.y && s1.b.x > s1.a.x);
+      return (det < 0);
     }
-    auto det = (s1.b - s1.a) ^ (s0.a - s1.a);
-    return (det < 0) || (det == 0 && (s0.a.y < s1.a.y));
+    return s0.a.y < s1.a.y;
   }
 };
 
+/// \brief Check if range <tt>[first, last)</tt> is a simple polygon.
+///
+/// Uses Shamos hoey algorithm to check is range <tt>[first, last)</tt> is a
+/// simple polygon.
+///
+/// \param first The beginning of range to check.
+/// \param last The end of range to check.
+///
+/// \pre Segment must implement the <tt>operator < </tt>, where the lesser
+/// element is the one that is below another.
+///
+/// \par Complexity
+///  <tt> O(n log(n))</tt> where n = <tt>std::distance(first, last)</tt>
+///
 template <typename Iterator>
 bool simple_polygon(Iterator first, Iterator last) {
   using segment_t = typename std::iterator_traits<Iterator>::value_type;
@@ -113,12 +137,23 @@ bool simple_polygon(Iterator first, Iterator last) {
   return true;
 }
 
-/// \brief Find first intersection of segments in range [first, last).
+/// \brief Find first intersection of segments in range <tt>[first, last)</tt>.
 ///
-/// Use a simple modification of the Shamos Hoey algorithm.
+/// Use a sweep line algorithm based on the Shamos Hoey algorithm to find the
+/// first intersection of segments in the range <tt>[first ,last)</tt>.
 ///
-/// Complexity
-///  <tt> O(n log(n))</tt> where n = std::distance(first, last)
+/// \param first The beginning range of segments to check for intersections.
+/// \param last The end of range of segments to check for intersections.
+///
+/// \returns The two first segments that intersect, the order of the segments is
+/// given by the sweep line. In case that no intersection found returns <tt>
+/// std::pair<last, last> </tt>
+///
+/// \pre Segment must implement the <tt>operator < </tt>, where the lesser
+/// element is the one that is below another.
+///
+/// \par Complexity
+///  <tt> O(n log(n))</tt> where n = <tt>std::distance(first, last)</tt>
 ///
 template <typename Iterator>
 std::pair<Iterator, Iterator> find_intersection(Iterator first, Iterator last) {
