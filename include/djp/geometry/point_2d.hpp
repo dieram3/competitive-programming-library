@@ -14,7 +14,8 @@
 
 namespace djp {
 /// 2D Euclidian vector representation.
-template <typename T> struct point {
+template <typename T>
+struct point {
   T x, y;
   point() {}
   point(T x_, T y_) : x{x_}, y{y_} {}
@@ -58,7 +59,7 @@ template <typename T> struct point {
     return std::tie(p.x, p.y) == std::tie(q.x, q.y);
   }
 
-  friend bool operator!=(const point& p, const point& q) { return !(p == q); }
+  friend bool operator!=(const point &p, const point &q) { return !(p == q); }
 
   friend bool operator<=(const point &p, const point &q) { return !(p > q); }
 

@@ -34,10 +34,10 @@ target_include_directories(CP_utils INTERFACE "include")
 # The following list does not contain all features used in CP-utils
 # but contain the main ones. It will induce cmake to compile with a C++ standard >= 11
 target_compile_features(CP_utils INTERFACE
-	cxx_auto_type
-	cxx_lambdas
-	cxx_nullptr
-	)
+  cxx_auto_type
+  cxx_lambdas
+  cxx_nullptr
+  )
 
 # ---------------------------------------
 # Add the unit tests
