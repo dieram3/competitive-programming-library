@@ -12,6 +12,7 @@
 #include <djp/utility/matrix.hpp>
 #include <algorithm>   // For std::swap
 #include <limits>      // For std::numeric_limits
+#include <stdexcept>   // For std::domain_error
 #include <type_traits> // For std::is_floating_point
 #include <vector>      // For std::vector
 #include <cassert>     // For assert
@@ -38,7 +39,11 @@ namespace djp {
 /// \param eps The epsilon value to compare floats.
 ///
 /// \returns Value of the optimal solution. If the solution is unbounded
-/// returns <tt>std::numeric_limits<T>::infinity()</tt>.
+/// returns <tt>std::numeric_limits<T>::infinity()</tt>. If no feasible solution
+/// exists returns <tt>std::numeric_limits<T>::quiet_NaN()</tt>.
+///
+/// \throws std::domain_error If the simplex algorithm was stalled in an
+/// infinite loop.
 ///
 /// \pre <tt>std::fabs(eps) >= std::numeric_limits<T>::epsilon()</tt>.
 ///
@@ -107,21 +112,22 @@ T simplex_maximize(const matrix<T> &A, const std::vector<T> &b,
   };
   auto simplex = [&](const phase_t phase) {
     const size_t ix = (phase == phase_1) ? m + 1 : m;
-    while (true) {
+    for (size_t iter = 0; iter != 100; ++iter) {
       size_t s = SIZE_MAX;
       for (size_t j = 0; j != n + 1; ++j)
         if (phase == phase_1 || N[j] != SIZE_MAX)
           relax_s(ix, j, s);
-      if (D[{ix, s}] >= -eps)
+      if (D[{ix, s}] > -eps)
         return true;
       size_t r = SIZE_MAX;
       for (size_t i = 0; i != m; ++i)
-        if (D[{i, s}] > 0)
+        if (D[{i, s}] > eps)
           relax_r(s, i, r);
       if (r == SIZE_MAX)
         return false;
       pivot(r, s);
     }
+    throw std::domain_error("Infinite loop detected\n");
   };
 
   // Solve the system
@@ -130,10 +136,10 @@ T simplex_maximize(const matrix<T> &A, const std::vector<T> &b,
   for (size_t i = 1; i != m; ++i)
     if (D[{i, n + 1}] < D[{r, n + 1}])
       r = i;
-  if (D[{r, n + 1}] <= -eps) {
+  if (D[{r, n + 1}] < -eps) {
     pivot(r, n);
     if (!simplex(phase_1) || D[{m + 1, n + 1}] < -eps)
-      return -std::numeric_limits<T>::infinity();
+      return std::numeric_limits<T>::quiet_NaN();
     for (size_t i = 0; i != m; ++i)
       if (B[i] == SIZE_MAX) {
         size_t s = SIZE_MAX;
