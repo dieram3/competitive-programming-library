@@ -6,8 +6,6 @@
 #ifndef DJP_GEOMETRY_SEGMENT_INTERSECTION_HPP
 #define DJP_GEOMETRY_SEGMENT_INTERSECTION_HPP
 
-#include <iostream>
-
 #include <algorithm>
 #include <iterator>
 #include <set>
