@@ -12,6 +12,7 @@ Currently CP-utils has the following modules:
 - Geometry
 - Graph
 - Number Theory
+- Numerical
 - Search
 - Sorting
 - Strings
