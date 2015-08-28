@@ -58,7 +58,7 @@ struct segment {
   friend bool operator<(const segment &s0, const segment &s1) {
     if (s0.a == s1.a) {
       auto det = (s0.b - s0.a) ^ (s1.b - s0.a);
-      return (det > 0) || (det == 0 && s0.b.y < s1.a.y);
+      return (det > 0) || (det == 0 && s0.b < s1.a);
     }
     if (s0.a.x < s1.a.x) {
       auto det = (s0.b - s0.a) ^ (s1.a - s0.a);
