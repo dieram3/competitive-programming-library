@@ -38,14 +38,14 @@ namespace djp {
 /// \param[out] x Vector where the optimal solution will be stored.
 /// \param eps The epsilon value to compare floats.
 ///
+/// \pre <tt>eps >= std::numeric_limits<T>::epsilon()</tt>
+///
 /// \returns Value of the optimal solution. If the solution is unbounded
 /// returns <tt>std::numeric_limits<T>::infinity()</tt>. If no feasible solution
 /// exists returns <tt>std::numeric_limits<T>::quiet_NaN()</tt>.
 ///
 /// \throws std::domain_error If the simplex algorithm was stalled in an
 /// infinite loop.
-///
-/// \pre <tt>std::fabs(eps) >= std::numeric_limits<T>::epsilon()</tt>.
 ///
 /// \note If \p A, \p b and \p c are restricted to integer values and the
 /// matrix \p A is totally unimodular, then it is guaranteed that every basic
@@ -81,8 +81,10 @@ T simplex_maximize(const matrix<T> &A, const std::vector<T> &b,
 
   // Auxiliary functions
   // ===================
+  auto is_neg = [eps](const T val) { return val < -eps; };
+  auto is_pos = [eps](const T val) { return val > eps; };
   auto approx =
-      [eps](const T v1, const T v2) { return std::fabs(v1 - v2) < eps; };
+      [eps](const T v1, const T v2) { return std::fabs(v1 - v2) <= eps; };
 
   auto relax_s = [&](const size_t i, const size_t j, size_t &s) {
     const auto dj = D[{i, j}], ds = D[{i, s}];
@@ -117,11 +119,11 @@ T simplex_maximize(const matrix<T> &A, const std::vector<T> &b,
       for (size_t j = 0; j != n + 1; ++j)
         if (phase == phase_1 || N[j] != SIZE_MAX)
           relax_s(ix, j, s);
-      if (D[{ix, s}] > -eps)
-        return true;
+      if (!is_neg(D[{ix, s}]))
+        return true; // true if non-negative
       size_t r = SIZE_MAX;
       for (size_t i = 0; i != m; ++i)
-        if (D[{i, s}] > eps)
+        if (is_pos(D[{i, s}]))
           relax_r(s, i, r);
       if (r == SIZE_MAX)
         return false;
@@ -136,9 +138,9 @@ T simplex_maximize(const matrix<T> &A, const std::vector<T> &b,
   for (size_t i = 1; i != m; ++i)
     if (D[{i, n + 1}] < D[{r, n + 1}])
       r = i;
-  if (D[{r, n + 1}] < -eps) {
+  if (is_neg(D[{r, n + 1}])) {
     pivot(r, n);
-    if (!simplex(phase_1) || D[{m + 1, n + 1}] < -eps)
+    if (!simplex(phase_1) || is_neg(D[{m + 1, n + 1}]))
       return std::numeric_limits<T>::quiet_NaN();
     for (size_t i = 0; i != m; ++i)
       if (B[i] == SIZE_MAX) {
