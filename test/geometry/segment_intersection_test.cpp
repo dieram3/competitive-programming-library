@@ -352,12 +352,12 @@ TEST_F(SimplePolygonTest, OverlappedSegments) {
   ASSERT_EQ(point_t(5, 3), points.back());
   EXPECT_FALSE(is_simple());
 
-  // It gives segment fault:
-  //  points.clear();
-  //  add(0, 0);
-  //  rel_add(0, 2), rel_add(1, 0), rel_add(0, -2);
-  //  rel_add(1, 0), rel_add(0, 3), rel_add(-2, 0);
-  //  ASSERT_EQ(7, points.size());
-  //  ASSERT_EQ(point_t(0, 3), points.back());
-  //  EXPECT_FALSE(is_simple());
+  //  It gives segment fault : points.clear();
+  points.clear();
+  add(0, 0);
+  rel_add(0, 2), rel_add(1, 0), rel_add(0, -2);
+  rel_add(1, 0), rel_add(0, 3), rel_add(-2, 0);
+  ASSERT_EQ(7, points.size());
+  ASSERT_EQ(point_t(0, 3), points.back());
+  EXPECT_FALSE(is_simple());
 }

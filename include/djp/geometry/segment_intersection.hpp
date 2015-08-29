@@ -60,17 +60,17 @@ struct segment {
   friend bool operator<(const segment &s0, const segment &s1) {
     if (s0.a == s1.a) {
       auto det = (s0.b - s0.a) ^ (s1.b - s0.a);
-      return (det > 0) || (det == 0 && s0.b < s1.a);
+      return (det > 0) || (det == 0 && s0.b < s1.b);
     }
     if (s0.a.x < s1.a.x) {
       auto det = (s0.b - s0.a) ^ (s1.a - s0.a);
       if (det == 0)
-        return (s0.a.y < s1.a.y) || (s0.a.y == s1.a.y && s0.b.x < s1.a.x);
+        return (s0.a.y < s1.a.y) || (s0.a.y == s1.a.y && s0.b.x > s1.a.x);
       return (det > 0);
     } else if (s0.a.x > s1.a.x) {
       auto det = (s1.b - s1.a) ^ (s0.a - s1.a);
       if (det == 0)
-        return (s0.a.y < s1.a.y) || (s0.a.y == s1.a.y && s1.b.x > s1.a.x);
+        return (s0.a.y < s1.a.y) || (s0.a.y == s1.a.y && s0.b.x > s1.a.x);
       return (det < 0);
     }
     return s0.a.y < s1.a.y;
@@ -127,6 +127,7 @@ bool simple_polygon(Iterator first, Iterator last) {
   std::set<segment_t> sweep_line;
 
   for (const auto &event : event_queue) {
+
     if (event.first) { // left event
       auto it = sweep_line.lower_bound(event.second);
       if (it != sweep_line.end() && edge_intersect(*it, event.second))
