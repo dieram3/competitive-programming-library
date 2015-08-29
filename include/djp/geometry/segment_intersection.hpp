@@ -75,19 +75,29 @@ struct segment {
   }
 };
 
-/// \brief Check if range <tt>[first, last)</tt> is a simple polygon.
+/// \brief Checks whether a polygon is simple.
 ///
-/// Uses Shamos hoey algorithm to check is range <tt>[first, last)</tt> is a
-/// simple polygon.
+/// Uses the Shamos-Hoey algorithm to check if the polygon defined by the range
+/// of segments <tt>[first, last)</tt> is simple. A polygon is simple if no
+/// two segments intersect. The only exception are the vertices that
+/// connect adjacent segments (otherwise the polygon could not be chained).
 ///
 /// \param first The beginning of range to check.
 /// \param last The end of range to check.
 ///
-/// \pre Segment must implement the <tt>operator < </tt>, where the lesser
-/// element is the one that is below another.
+/// \pre Segments must be \a less comparable. The comparison must return \c
+/// true if the left-hand segment element is considered below the right-hand
+/// segment.
+///
+/// \pre The given range must represent a valid polygon, that is, a sequence of
+/// segments where the right-point of segment <tt>(i % N)</tt> is equal to the
+/// left-point of segment <tt>((i + 1) % N)</tt> being \c N the total numbers of
+/// segments. Moreover, no two segments can overlap, and no two segments can be
+/// collinear.
 ///
 /// \par Complexity
-///  <tt> O(n log(n))</tt> where n = <tt>std::distance(first, last)</tt>
+///  At most <tt>O(n*log(n))</tt> segment-comparisons where
+/// <tt>n = std::distance(first, last)</tt>
 ///
 template <typename Iterator>
 bool simple_polygon(Iterator first, Iterator last) {
