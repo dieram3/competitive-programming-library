@@ -1,4 +1,4 @@
-//          Copyb Jorge Aguirre August 2015
+//          Copyright Jorge Aguirre August 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -7,13 +7,15 @@
 #define DJP_GEOMETRY_SEGMENT_INTERSECTION_HPP
 
 #include <algorithm> // For std::minmax, std::for_each, std::sort
-#include <iterator>  // For std::iterator_traits
+#include <iterator>  // For std::iterator_traits, std::next, std::prev
 #include <set>       // For std::set
 #include <utility>   // For std::pair
 #include <vector>    // For std::vector
 #include <tuple>     // For std::tie
+#include <cstddef>   // For std::size_t
 
 namespace djp {
+
 ///  \brief Check if two segments intersect.
 ///
 /// Check if segment formed by \p p0 and \p p1 intersect with the segment formed
@@ -40,7 +42,7 @@ bool segment_intersect(const Point &p0, const Point &p1, const Point &q0,
   return true;
 }
 
-/// Check if two segments itersect.
+/// Check if two segments intersect.
 template <typename Segment>
 bool intersect(const Segment &s0, const Segment &s1) {
   return segment_intersect(s0.a, s0.b, s1.a, s1.b);
@@ -86,14 +88,12 @@ struct segment {
 /// \param last The end of range to check.
 ///
 /// \pre Segments must be \a less comparable. The comparison must return \c
-/// true if the left-hand segment element is considered below the right-hand
-/// segment.
+/// true if the left-hand segment is considered \a below the right-hand segment.
 ///
 /// \pre The given range must represent a valid polygon, that is, a sequence of
 /// segments where the right-point of segment <tt>(i % N)</tt> is equal to the
 /// left-point of segment <tt>((i + 1) % N)</tt> being \c N the total numbers of
-/// segments. Moreover, no two segments can overlap, and no two \a chained
-/// segments can be collinear.
+/// segments.
 ///
 /// \par Complexity
 ///  At most <tt>O(n*log(n))</tt> segment-comparisons where
@@ -119,7 +119,7 @@ bool simple_polygon(Iterator first, Iterator last) {
   };
   std::sort(event_queue.begin(), event_queue.end(), event_less);
 
-  auto edge_intersect = [](segment_t s0, segment_t s1) {
+  auto edge_intersect = [](const segment_t &s0, const segment_t &s1) {
     if (s0.a == s1.a || s0.a == s1.b || s0.b == s1.a || s0.b == s1.b)
       return false;
     return intersect(s0, s1);
@@ -147,28 +147,31 @@ bool simple_polygon(Iterator first, Iterator last) {
   return true;
 }
 
-/// \brief Find first intersection of segments in range <tt>[first, last)</tt>.
+/// \brief Finds a pair of intersecting segments in the given range.
 ///
-/// Use a sweep line algorithm based on the Shamos Hoey algorithm to find the
-/// first intersection of segments in the range <tt>[first ,last)</tt>.
+/// Uses a sweep line based on the Shamos-Hoey algorithm to find a pair of
+/// intersecting segments in the range <tt>[first ,last)</tt>. The finding order
+/// is given by the sweep line.
 ///
-/// \param first The beginning range of segments to check for intersections.
-/// \param last The end of range of segments to check for intersections.
+/// \param first The beginning range to check.
+/// \param last The end of range to check.
 ///
-/// \returns The two first segments that intersect, the order of the segments is
-/// given by the sweep line. In case that no intersection found returns <tt>
-/// std::pair<last, last> </tt>
+/// \returns The first pair of intersecting segments which this function finds
+/// according to the sweep line order. If no intersection exist then returns
+/// <tt>std::make_pair(last, last)</tt>.
 ///
-/// \pre Segment must implement the <tt>operator < </tt>, where the lesser
-/// element is the one that is below another.
+/// \pre Segments must be \a less comparable. The comparison must return \c
+/// true if the left-hand segment is considered \a below the right-hand segment.
 ///
 /// \par Complexity
-///  <tt> O(n log(n))</tt> where n = <tt>std::distance(first, last)</tt>
+///  At most <tt>O(n*log(n))</tt> segment-comparisons where
+/// <tt>n = std::distance(first, last)</tt>
 ///
-template <typename Iterator>
-std::pair<Iterator, Iterator> find_intersection(Iterator first, Iterator last) {
-  using event_t = std::pair<bool, Iterator>;
-  std::size_t set_size = std::distance(first, last);
+template <typename ForwardIt>
+std::pair<ForwardIt, ForwardIt> find_intersection(ForwardIt first,
+                                                  ForwardIt last) {
+  using event_t = std::pair<bool, ForwardIt>;
+  const size_t set_size = std::distance(first, last);
 
   std::vector<event_t> event_queue;
   event_queue.reserve(set_size);
@@ -178,8 +181,8 @@ std::pair<Iterator, Iterator> find_intersection(Iterator first, Iterator last) {
     event_queue.emplace_back(false, it);
   }
 
-  auto segment_less = [&](Iterator lhs, Iterator rhs) { return *lhs < *rhs; };
-  std::set<Iterator, decltype(segment_less)> sweep_line(segment_less);
+  auto segment_less = [&](ForwardIt lhs, ForwardIt rhs) { return *lhs < *rhs; };
+  std::set<ForwardIt, decltype(segment_less)> sweep_line(segment_less);
 
   auto event_less = [&](const event_t &lhs, const event_t &rhs) {
     auto &lpoint = lhs.first ? lhs.second->a : lhs.second->b;
@@ -209,5 +212,6 @@ std::pair<Iterator, Iterator> find_intersection(Iterator first, Iterator last) {
   return {last, last};
 }
 
-} // namespace djp
-#endif // HEADER GUARD
+} // end namespace djp
+
+#endif // Header guard
