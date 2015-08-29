@@ -92,8 +92,8 @@ struct segment {
 /// \pre The given range must represent a valid polygon, that is, a sequence of
 /// segments where the right-point of segment <tt>(i % N)</tt> is equal to the
 /// left-point of segment <tt>((i + 1) % N)</tt> being \c N the total numbers of
-/// segments. Moreover, no two segments can overlap, and no two segments can be
-/// collinear.
+/// segments. Moreover, no two segments can overlap, and no two \a chained
+/// segments can be collinear.
 ///
 /// \par Complexity
 ///  At most <tt>O(n*log(n))</tt> segment-comparisons where
