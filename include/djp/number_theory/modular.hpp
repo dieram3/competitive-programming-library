@@ -73,8 +73,7 @@ T mod_pow(T base, size_t exp, T m) {
 /// \brief Computes the modular multiplicative inverse of the given integer
 /// modulo \c m.
 ///
-/// Finds a value \c x such that  <tt>a * x == 1 (mod m)</tt>. It requires
-/// that
+/// Finds a value \c x such that  <tt>a * x == 1 (mod m)</tt>. It requires that
 /// <tt>gcd(a, m) == 1</tt> and <tt>a != 0</tt>, otherwise \p a will not be
 /// invertible.
 ///
