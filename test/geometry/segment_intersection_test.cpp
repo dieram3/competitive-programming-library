@@ -8,7 +8,8 @@
 
 #include <djp/geometry/point_2d.hpp>
 
-#include <vector> // For std::vector
+#include <algorithm> // For std::count
+#include <vector>    // For std::vector
 
 using namespace djp;
 
@@ -169,6 +170,20 @@ TEST_F(FindIntersectionTest, TangentSegmentTest) {
   add(1, 1, 2, 4), add(1, 2, 3, 6);
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds(set[4], set[3]));
+}
+
+TEST_F(FindIntersectionTest, CollinearSegmentWithSameStartTest) {
+  add(0, 2, 1, 2), add(-2, 0, -1, 2), add(-1, 1, 1, 1);
+  add(0, 0, 1, -1), add(3, -1, 3, 1);
+  EXPECT_TRUE(finds_nothing());
+  add(-1, 1, 1, 1);
+  EXPECT_TRUE(finds(set[2], set[5]));
+
+  set.clear();
+  add(1, 1, 0, 2), add(2, 1, 4, 4), add(1, 2, 2, 3), add(1, 3, 2, 4);
+  EXPECT_TRUE(finds_nothing());
+  add(1, 2, 3, 4);
+  EXPECT_TRUE(finds(set[2], set[4]));
 }
 
 // ==========================================
@@ -352,7 +367,6 @@ TEST_F(SimplePolygonTest, OverlappedSegments) {
   ASSERT_EQ(point_t(5, 3), points.back());
   EXPECT_FALSE(is_simple());
 
-  //  It gives segment fault : points.clear();
   points.clear();
   add(0, 0);
   rel_add(0, 2), rel_add(1, 0), rel_add(0, -2);
@@ -360,4 +374,26 @@ TEST_F(SimplePolygonTest, OverlappedSegments) {
   ASSERT_EQ(7, points.size());
   ASSERT_EQ(point_t(0, 3), points.back());
   EXPECT_FALSE(is_simple());
+}
+
+TEST_F(SimplePolygonTest, EightTest) {
+  add(0, 0);
+  rel_add(1, 1), rel_add(1, -1), rel_add(-1, -1), rel_add(-1, -1);
+  rel_add(1, -1), rel_add(1, 1);
+  rel_add(-1, 1);
+  ASSERT_EQ(8, points.size());
+  ASSERT_EQ(point_t(1, -1), points.back());
+  EXPECT_TRUE(is_simple());
+}
+
+TEST_F(SimplePolygonTest, RareSimplePolygonTest) {
+  add(0, 0);
+  rel_add(3, -4), rel_add(2, 7), rel_add(5, 0), rel_add(-3, -3);
+  rel_add(-3, -4), rel_add(3, -2), rel_add(3, -2), rel_add(1, 0);
+  rel_add(2, -2), rel_add(-3, 2), rel_add(-1, 0), rel_add(-5, -2);
+  rel_add(0, 4), rel_add(-1, -1);
+  ASSERT_EQ(15, points.size());
+  ASSERT_EQ(point_t(3, -7), points.back());
+  ASSERT_EQ(2, std::count(points.begin(), points.end(), point_t(10, -8)));
+  EXPECT_TRUE(is_simple());
 }
