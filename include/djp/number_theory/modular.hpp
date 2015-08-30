@@ -58,13 +58,14 @@ T mod_mul(T a, T b, T m) {
 /// \param m The modulo.
 ///
 /// \pre <tt>base >= 0</tt>
+/// \pre <tt>exp >= 0</tt>
 ///
 /// \par Complexity
 /// <tt>O(log(exp))</tt>
 ///
 template <typename T>
-T mod_pow(T base, size_t exp, T m) {
-  assert(base >= 0);
+T mod_pow(T base, T exp, T m) {
+  assert(base >= 0 && exp >= 0);
   base %= m;
   T result = 1;
   while (exp) {
