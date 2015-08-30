@@ -32,3 +32,6 @@ script:
   - cmake -DCMAKE_CXX_COMPILER=$CXX -DCMAKE_C_COMPILER=$CC -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
   - make
   - make test 
+
+after_failure:
+  - cat Testing/Temporary/LastTest.log
