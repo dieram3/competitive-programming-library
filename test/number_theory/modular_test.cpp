@@ -9,7 +9,7 @@
 #include <djp/utility/basics.hpp> // for djp::repeat
 
 #include <random>  // for mt19937, uniform_int_distribution
-#include <cstdint> // for uint32_t, SIZE_MAX
+#include <cstdint> // for uint32_t, SIZE_MAX, INT64_MAX
 
 using namespace djp;
 
@@ -47,6 +47,14 @@ TEST(ModMulTest, WorksWell) {
     constexpr uint32_t mod = 1000000000 + 7;
     EXPECT_EQ(uint64_t(a) * b % mod, mod_mul(a, b, mod));
   });
+
+  EXPECT_EQ(121704964, mod_mul<uint64_t>(123897123, 12387123982, 123412421));
+  EXPECT_EQ(5306660808504233892,
+            mod_mul<uint64_t>(983475987235822983, 3234987329847383934,
+                              6473292374838378342));
+  EXPECT_EQ(
+      160348183393232245,
+      mod_mul<uint64_t>(5624398623487263287, 2340923408932939303, INT64_MAX));
 }
 
 TEST(ModPowTest, WorksWhenOverflowDoesNotNeedControl) {
