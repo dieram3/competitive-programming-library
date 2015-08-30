@@ -9,6 +9,7 @@
 #include <djp/geometry/point_2d.hpp>
 
 #include <algorithm> // For std::count
+#include <utility>   // For std::make_pair
 #include <vector>    // For std::vector
 
 using namespace djp;
@@ -31,13 +32,12 @@ protected:
     set.emplace_back(point_t(p0, p1), point_t(q0, q1));
   }
 
-  bool finds(const segment_t &s0, const segment_t &s1) {
-    const auto intersected_pair = find_intersection(set.begin(), set.end());
-    EXPECT_EQ(s0.a, intersected_pair.first->a);
-    EXPECT_EQ(s0.b, intersected_pair.first->b);
-    EXPECT_EQ(s1.a, intersected_pair.second->a);
-    EXPECT_EQ(s1.b, intersected_pair.second->b);
-    return &*intersected_pair.first == &s0 && &*intersected_pair.second == &s1;
+  bool finds(const size_t s0, const size_t s1) {
+    const auto it0 = set.begin() + s0;
+    const auto it1 = set.begin() + s1;
+    const auto pair = find_intersection(set.begin(), set.end());
+    return (pair == std::make_pair(it0, it1)) ||
+           (pair == std::make_pair(it1, it0));
   }
 
   bool finds_nothing() {
@@ -52,19 +52,19 @@ TEST_F(FindIntersectionTest, CommonCrossingTest) {
   add(2, 0, 4, 0), add(5, 0, 4, 3), add(4, 4, 0, 4);
   add(3, 1, 2, 3), add(1, 0, 4, 3), add(0, 1, 1, 3);
   ASSERT_EQ(6, set.size());
-  EXPECT_TRUE(finds(set[3], set[4]));
+  EXPECT_TRUE(finds(3, 4));
 
   set.clear();
   add(-2, -1, 0, 1), add(-1, -1, 1, 1), add(0, -1, 2, 1), add(1, -1, 3, 1);
   add(0, -2, 2, 2);
   ASSERT_EQ(5, set.size());
-  EXPECT_TRUE(finds(set[2], set[4]));
+  EXPECT_TRUE(finds(2, 4));
 
   // Several crosses
   set.clear();
   add(-2, -1, 0, 1), add(-1, -1, 1, 1), add(0, -1, 2, 1), add(-2, 0, 2, 0);
   ASSERT_EQ(4, set.size());
-  EXPECT_TRUE(finds(set[3], set[0]));
+  EXPECT_TRUE(finds(0, 3));
 }
 
 TEST_F(FindIntersectionTest, NoIntersectionTest) {
@@ -100,27 +100,27 @@ TEST_F(FindIntersectionTest, SequentialSegmentsTest) {
   add(0, 0, 0, 1), add(0, 1, 0, 2), add(1, 0, 1, 1), add(2, 2, 3, 3);
   add(-1, -1, 1, -1), add(-1, 0, -1, 3), add(-2, 0, -2, 1), add(-3, 2, -2, 2);
   ASSERT_EQ(8, set.size());
-  EXPECT_TRUE(finds(set[1], set[0]));
+  EXPECT_TRUE(finds(1, 0));
 
   // horizontal line
   set.clear();
   add(0, 0, 1, 0), add(1, 0, 2, 0), add(0, 1, 1, 1);
   add(1, -1, 2, -1), add(3, -1, 3, 2), add(-2, -1, -2, 2);
   ASSERT_EQ(6, set.size());
-  EXPECT_TRUE(finds(set[1], set[0]));
+  EXPECT_TRUE(finds(1, 0));
 
   // diagonal line
   set.clear();
   add(0, 0, 1, 1), add(1, 1, 2, 2), add(0, 1, 1, 2);
   add(1, -1, 2, 0), add(3, -3, 3, 4);
   ASSERT_EQ(5, set.size());
-  EXPECT_TRUE(finds(set[1], set[0]));
+  EXPECT_TRUE(finds(1, 0));
 
   // perpendicular lines
   set.clear();
   add(0, 0, 0, 1), add(0, 1, 1, 1), add(-1, -1, 2, -1), add(-1, 1, -1, 0);
   ASSERT_EQ(4, set.size());
-  EXPECT_TRUE(finds(set[1], set[0]));
+  EXPECT_TRUE(finds(1, 0));
 }
 
 TEST_F(FindIntersectionTest, OverlappedSegments) {
@@ -128,27 +128,27 @@ TEST_F(FindIntersectionTest, OverlappedSegments) {
   add(0, 0, 0, 2), add(0, 1, 0, 3), add(1, 0, 1, 1), add(2, 2, 3, 3);
   add(-1, -1, 1, -1), add(-1, 0, -1, 3), add(-2, 0, -2, 1), add(-3, 2, -2, 2);
   ASSERT_EQ(8, set.size());
-  EXPECT_TRUE(finds(set[1], set[0]));
+  EXPECT_TRUE(finds(1, 0));
 
   // horizontal line
   set.clear();
   add(0, 0, 2, 0), add(1, 0, 5, 0), add(0, 1, 1, 1);
   add(1, -1, 2, -1), add(3, -1, 3, 2), add(-2, -1, -2, 2);
   ASSERT_EQ(6, set.size());
-  EXPECT_TRUE(finds(set[1], set[0]));
+  EXPECT_TRUE(finds(1, 0));
 
   // diagonal line
   set.clear();
   add(0, 0, 2, 2), add(1, 1, 3, 3), add(0, 1, 1, 2);
   add(1, -1, 2, 0), add(3, -3, 3, 4);
   ASSERT_EQ(5, set.size());
-  EXPECT_TRUE(finds(set[1], set[0]));
+  EXPECT_TRUE(finds(1, 0));
 
   // perpendicular lines
   set.clear();
   add(0, 0, 0, 2), add(0, 1, 1, 1), add(-1, -1, 2, -1), add(-1, 1, -1, 0);
   ASSERT_EQ(4, set.size());
-  EXPECT_TRUE(finds(set[1], set[0]));
+  EXPECT_TRUE(finds(1, 0));
 }
 
 TEST_F(FindIntersectionTest, TangentSegmentTest) {
@@ -156,34 +156,34 @@ TEST_F(FindIntersectionTest, TangentSegmentTest) {
   add(0, 0, 0, 3), add(1, 0, 2, 2), add(0, 2, 1, 2);
   add(-1, -1, -1, 1), add(-2, 1, -1, 2), add(-2, 2, -1, 3);
   ASSERT_EQ(6, set.size());
-  EXPECT_TRUE(finds(set[2], set[0]));
+  EXPECT_TRUE(finds(2, 0));
 
   // Another perpendicular case
   set.clear();
   add(-1, -1, 1, 1), add(1, -2, 2, 1), add(-3, 0, -2, 1), add(-1, 1, -2, 2);
   add(0, 0, 1, -1), add(-1, -2, -2, 0);
   ASSERT_EQ(6, set.size());
-  EXPECT_TRUE(finds(set[4], set[0]));
+  EXPECT_TRUE(finds(4, 0));
 
   set.clear();
   add(0, 2, 1, 0), add(0, 4, 1, 3), add(2, 1, 3, 4);
   add(1, 1, 2, 4), add(1, 2, 3, 6);
   ASSERT_EQ(5, set.size());
-  EXPECT_TRUE(finds(set[4], set[3]));
+  EXPECT_TRUE(finds(4, 3));
 }
 
-TEST_F(FindIntersectionTest, CollinearSegmentWithSameStartTest) {
+TEST_F(FindIntersectionTest, CollinearSegmentsWithSameStartTest) {
   add(0, 2, 1, 2), add(-2, 0, -1, 2), add(-1, 1, 1, 1);
   add(0, 0, 1, -1), add(3, -1, 3, 1);
   EXPECT_TRUE(finds_nothing());
   add(-1, 1, 1, 1);
-  EXPECT_TRUE(finds(set[2], set[5]));
+  EXPECT_TRUE(finds(2, 5));
 
   set.clear();
   add(1, 1, 0, 2), add(2, 1, 4, 4), add(1, 2, 2, 3), add(1, 3, 2, 4);
   EXPECT_TRUE(finds_nothing());
   add(1, 2, 3, 4);
-  EXPECT_TRUE(finds(set[2], set[4]));
+  EXPECT_TRUE(finds(2, 4));
 }
 
 // ==========================================
