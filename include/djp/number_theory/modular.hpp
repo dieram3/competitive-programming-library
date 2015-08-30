@@ -22,8 +22,8 @@ namespace djp {
 /// \param b The second operand.
 /// \param m The modulo.
 ///
-/// \pre <tt>0 <= a < m</tt>
-/// \pre <tt>0 <= b < m</tt>
+/// \pre <tt>a >= 0</tt>
+/// \pre <tt>b >= 0</tt>
 /// \pre <tt>m < 2^63</tt>
 ///
 /// \par Complexity
@@ -32,15 +32,19 @@ namespace djp {
 ///
 template <typename T>
 T mod_mul(T a, T b, T m) {
-  if (uint64_t(a) <= UINT32_MAX && uint64_t(b) <= UINT32_MAX)
+  using uint_t = typename std::make_unsigned<T>::type;
+  assert(a >= 0 && b >= 0 && "Does not handle negative numbers");
+  assert(uint_t(m) <= uint64_t(INT64_MAX) && "Cannot multiply safely");
+
+  a %= m;
+  b %= m;
+  if (uint_t(a) <= UINT32_MAX && uint_t(b) <= UINT32_MAX)
     return T(uint64_t(a) * b % m);
-  assert(uint64_t(m) <= uint64_t(INT64_MAX) && "Cannot multiply safely");
-  // return T(__uint128_t(a) * b % m);
-  typename std::make_unsigned<T>::type x = 0, y = a % m;
+
+  uint_t x = 0, y = a % m;
   while (b > 0) {
-    if (b % 2 == 1) {
+    if (b % 2 == 1)
       x = (x + y) % m;
-    }
     y = (y * 2) % m;
     b /= 2;
   }
@@ -53,13 +57,15 @@ T mod_mul(T a, T b, T m) {
 /// \param exp The exponent.
 /// \param m The modulo.
 ///
-/// \pre <tt>0 <= base < m</tt>
+/// \pre <tt>base >= 0</tt>
 ///
 /// \par Complexity
 /// <tt>O(log(exp))</tt>
 ///
 template <typename T>
 T mod_pow(T base, size_t exp, T m) {
+  assert(base >= 0);
+  base %= m;
   T result = 1;
   while (exp) {
     if (exp & 1)
@@ -87,8 +93,8 @@ T mod_pow(T base, size_t exp, T m) {
 ///
 /// \returns The modular inverse of <tt>a (mod m)</tt>.
 ///
+/// \pre <tt>a >= 0</tt>
 /// \pre \p m is prime.
-/// \pre <tt>0 < a < m</tt>
 ///
 /// \par Complexity
 /// <tt>O(log(m))</tt>
