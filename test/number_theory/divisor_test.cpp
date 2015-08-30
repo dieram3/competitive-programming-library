@@ -6,9 +6,9 @@
 #include <djp/number_theory/divisor.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/number_theory/basics.hpp> // for djp::multiply_less
-#include <djp/number_theory/primes.hpp> // for djp::sieve_of_eratosthenes
-#include <djp/utility/basics.hpp>       // for djp::repeat
+#include <djp/number_theory/basics.hpp>       // for djp::multiply_less
+#include <djp/number_theory/eratosthenes.hpp> // for djp::sieve_of_eratosthenes
+#include <djp/utility/basics.hpp>             // for djp::repeat
 
 #include <algorithm> // for std::sort
 #include <random>    // for std::mt19937

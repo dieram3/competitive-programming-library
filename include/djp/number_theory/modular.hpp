@@ -8,9 +8,11 @@
 #ifndef DJP_NUMBER_THEORY_MODULAR_HPP
 #define DJP_NUMBER_THEORY_MODULAR_HPP
 
-#include <limits>  // for std::numeric_limits
-#include <cstddef> // for std::size_t
-#include <cstdint> // for std::uint32_t, std::uint64_t
+#include <limits>      // for std::numeric_limits
+#include <type_traits> // for std::make_unsigned
+#include <cstddef>     // for std::size_t
+#include <cstdint>     // for std::uint64_t, UINT32_MAX, INT64_MAX
+#include <cassert>     // for assert
 
 namespace djp {
 
@@ -22,14 +24,27 @@ namespace djp {
 ///
 /// \pre <tt>0 <= a < m</tt>
 /// \pre <tt>0 <= b < m</tt>
+/// \pre <tt>m < 2^63</tt>
 ///
 /// \par Complexity
-/// Constant.
+/// Constant if <tt>(a <= UINT32_MAX && b <= UINT32_MAX)</tt>, otherwise
+/// logarithmic in \c b.
 ///
 template <typename T>
 T mod_mul(T a, T b, T m) {
-  static_assert(sizeof(T) <= sizeof(uint32_t), "Can't multiply safely");
-  return uint64_t(a) * b % m;
+  if (uint64_t(a) <= UINT32_MAX && uint64_t(b) <= UINT32_MAX)
+    return T(uint64_t(a) * b % m);
+  assert(uint64_t(m) <= uint64_t(INT64_MAX) && "Cannot multiply safely");
+  // return T(__uint128_t(a) * b % m);
+  typename std::make_unsigned<T>::type x = 0, y = a % m;
+  while (b > 0) {
+    if (b % 2 == 1) {
+      x = (x + y) % m;
+    }
+    y = (y * 2) % m;
+    b /= 2;
+  }
+  return x % m;
 }
 
 /// \brief Computes <tt>pow(a, b) % m</tt>
@@ -58,12 +73,14 @@ T mod_pow(T base, size_t exp, T m) {
 /// \brief Computes the modular multiplicative inverse of the given integer
 /// modulo \c m.
 ///
-/// Finds a value \c x such that  <tt>a * x == 1 (mod m)</tt>. It requires that
+/// Finds a value \c x such that  <tt>a * x == 1 (mod m)</tt>. It requires
+/// that
 /// <tt>gcd(a, m) == 1</tt> and <tt>a != 0</tt>, otherwise \p a will not be
 /// invertible.
 ///
 /// The current implementation uses the Euler's theorem for computing the
-/// inverse of \p a given that \p m is a prime number. Therefore, this function
+/// inverse of \p a given that \p m is a prime number. Therefore, this
+/// function
 /// can be used iff \p m is prime.
 ///
 /// \param a The number to be inverted.
