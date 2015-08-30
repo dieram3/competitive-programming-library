@@ -23,7 +23,7 @@ namespace djp {
 /// \param n The number to be tested.
 ///
 /// \pre n > 0
-/// \pre n < 2^64
+/// \pre n < 2^63
 ///
 /// \par Complexity
 /// At most <tt>O(k * log^2(n))</tt> modular multiplications, where \c k is the
