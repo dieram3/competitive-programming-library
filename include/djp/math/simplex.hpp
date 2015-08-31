@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DJP_NUMERICAL_SIMPLEX_HPP
-#define DJP_NUMERICAL_SIMPLEX_HPP
+#ifndef DJP_MATH_SIMPLEX_HPP
+#define DJP_MATH_SIMPLEX_HPP
 
 // This implementation of simplex is based on:
 // https://web.stanford.edu/~liszt90/acm/notebook.html#file17
