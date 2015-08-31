@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/numerical/simplex.hpp>
+#include <djp/math/simplex.hpp>
 #include <gtest/gtest.h>
 
 #include <djp/utility/matrix.hpp>

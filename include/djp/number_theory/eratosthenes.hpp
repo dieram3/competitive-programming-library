@@ -14,7 +14,7 @@
 #include <vector>    // for std::vector
 #include <cassert>   // for assert macro
 #include <cstddef>   // for std::size_t
-#include <cstdint>   // for std::uint32_t
+#include <cstdint>   // for std::uint32_t, std::uint64_t
 
 namespace djp {
 
@@ -25,32 +25,33 @@ namespace djp {
 /// \returns A sorted \c vector containing all primes numbers less than \p
 /// limit.
 ///
-/// \pre \p limit shall be a non-negative number.
+/// \pre <tt>limit >= 0</tt>.
 ///
 /// \par Complexity
 /// <tt>O(N * log log N)</tt>, where <tt>N = limit</tt>.
 ///
-template <typename T = std::uint32_t>
-std::vector<T> sieve_of_eratosthenes(size_t limit) {
+template <typename T>
+std::vector<T> sieve_of_eratosthenes(const T limit) {
   if (limit < 2)
     return {};
 
   std::vector<bool> is_prime(limit, true);
   is_prime[0] = is_prime[1] = false;
 
-  for (size_t i = 2; i * i < limit; ++i) {
+  // uint64_t is used to prevent integer overflow.
+  for (uint64_t i = 2; i * i < uint64_t(limit); ++i) {
     if (!is_prime[i])
       continue;
-    for (size_t j = i * i; j < limit; j += i)
+    for (uint64_t j = i * i; j < uint64_t(limit); j += i)
       is_prime[j] = false;
   }
 
   const size_t num_primes = std::count(begin(is_prime), end(is_prime), true);
   std::vector<T> primes;
   primes.reserve(num_primes);
-  for (size_t i = 2; i < limit; ++i)
+  for (T i = 2; i < limit; ++i)
     if (is_prime[i])
-      primes.push_back(static_cast<T>(i));
+      primes.push_back(i);
 
   assert(num_primes == primes.size());
   return primes;

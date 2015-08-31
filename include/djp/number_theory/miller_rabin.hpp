@@ -23,14 +23,11 @@ namespace djp {
 /// \param n The number to be tested.
 ///
 /// \pre n > 0
-///
-/// \throws std::domain_error if the given number is not less than
-/// \c 3,825,123,056,546,413,051 which is the upper bound of numbers that can be
-/// tested.
+/// \pre n < 2^63
 ///
 /// \par Complexity
 /// At most <tt>O(k * log^2(n))</tt> modular multiplications, where \c k is the
-/// number of base numbers to test against \c n (at most 9).
+/// number of base numbers to test against \c n (at most 12).
 ///
 template <typename T>
 bool miller_rabin_primality_test(const T n) {
@@ -80,7 +77,9 @@ bool miller_rabin_primality_test(const T n) {
     return test_with({2, 3, 5, 7, 11, 13, 17});
   if (n < 3825123056546413051)
     return test_with({2, 3, 5, 7, 11, 13, 17, 19, 23});
-  throw std::domain_error("The input number is too big");
+  // The first 12 primes taken as base are enough to test numbers less than
+  // 318665857834031151167461 ~ 3.18E23 i.e numbers having upto 78 bits.
+  return test_with({2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37});
 }
 
 } // end namespace djp

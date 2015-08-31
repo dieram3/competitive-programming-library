@@ -42,13 +42,6 @@ TEST(MillerRabinTest, DegenerateNumbersTest) {
   test_prime(2u);
 }
 
-TEST(MillerRabinTest, ThrowsTooBigNumberTest) {
-  EXPECT_THROW(miller_rabin_primality_test(3825123056546413051),
-               std::domain_error);
-
-  EXPECT_THROW(miller_rabin_primality_test(UINT64_MAX), std::domain_error);
-}
-
 TEST(MillerRabinTest, PrimesUnder2147Test) {
   test_prime_numbers(
       {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
@@ -81,7 +74,8 @@ TEST(MillerRabinTest, PrimesUnder2147Test) {
 TEST(MillerRabinTest, StrongPseudoprimesTest) {
   // Strong pseudoprimes used in the implementation.
   test_composite_numbers({2147, 9080191, 4759123141, 1122004669633,
-                          2152302898747, 3474749660383, 341550071728321});
+                          2152302898747, 3474749660383, 341550071728321,
+                          3825123056546413051});
 
   // Other significative strong pseudoprimes
   test_composite_numbers({1373653, 25326001, 3215031751});
@@ -112,8 +106,9 @@ TEST(MillerRabinTest, DifferentBitsNumberTest) {
   // Thanks to https://primes.utm.edu/lists/2small/0bit.html
 
   auto test_set = [](const size_t n, std::initializer_list<uint64_t> ilist) {
+    const uint64_t two_pow_n = (n == 64) ? 0 : (UINT64_C(1) << n);
     for (const uint64_t k : ilist) {
-      const auto p = (UINT64_C(1) << n) - k;
+      const auto p = two_pow_n - k;
       test_prime(p);
     }
   };
@@ -172,4 +167,10 @@ TEST(MillerRabinTest, DifferentBitsNumberTest) {
   test_set(59, {55, 99, 225, 427, 517, 607, 649, 687, 861, 871});
   test_set(60, {93, 107, 173, 179, 257, 279, 369, 395, 399, 453});
   test_set(61, {1, 31, 45, 229, 259, 283, 339, 391, 403, 465});
+  test_set(62, {57, 87, 117, 143, 153, 167, 171, 195, 203, 273});
+  test_set(63, {25, 165, 259, 301, 375, 387, 391, 409, 457, 471});
+
+  // mod_mul still can't multiply numbers >= 2^63 (at least uint128_t were
+  // used).
+  // test_set(64, {59, 83, 95, 179, 189, 257, 279, 323, 353, 363});
 }
