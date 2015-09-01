@@ -62,7 +62,7 @@ TEST(ModPowTest, WorksWhenOverflowDoesNotNeedControl) {
   EXPECT_EQ(10817, mod_pow(2017, 1238912398, 65536));
   EXPECT_EQ(12, mod_pow(22342, 1238912398, 13));
   EXPECT_EQ(8001, mod_pow(25237, 131312, 65536));
-  EXPECT_EQ(370, mod_pow(292, SIZE_MAX, 41202));
+  EXPECT_EQ(370, mod_pow<size_t>(292, SIZE_MAX, 41202));
 }
 
 TEST(ModInverseTest, WorksWithPrimeModules) {

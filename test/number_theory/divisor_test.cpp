@@ -13,19 +13,17 @@
 #include <algorithm> // for std::sort
 #include <random>    // for std::mt19937
 #include <stdexcept> // for std::logic_error
-#include <utility>   // for std::pair
 #include <vector>    // for std::vector
 #include <cstddef>   // for std::size_t
-#include <cstdio>    // for std::sprintf
 #include <cstdint>   //for std::uint32_t
 
-namespace {
+using namespace djp;
 
 template <class T>
-std::size_t naive_count_divisors(T n) {
+static std::size_t naive_count_divisors(T n) {
   T d = 1;
   std::size_t ans = 0;
-  for (; djp::multiply_less(d, d, n); ++d) {
+  for (; multiply_less(d, d, n); ++d) {
     if (n % d == 0)
       ans += 2;
   }
@@ -34,13 +32,9 @@ std::size_t naive_count_divisors(T n) {
   return ans;
 }
 
-} // anonymous namespace
-
 TEST(count_divisors, WorksWell) {
+  const auto sieve = sieve_of_eratosthenes<uint32_t>(66000);
 
-  using djp::count_divisors;
-
-  auto sieve = djp::sieve_of_eratosthenes<std::uint32_t>(66000);
   for (uint32_t n = 1; n < 1000; ++n) {
     const auto count0 = naive_count_divisors(n);
     const auto count1 = count_divisors(n);
@@ -50,15 +44,15 @@ TEST(count_divisors, WorksWell) {
   }
 
   std::mt19937 gen;
-  djp::repeat(1000, [&gen, &sieve] {
-    std::uniform_int_distribution<std::uint32_t> dist;
+  repeat(1000, [&gen, &sieve] {
+    std::uniform_int_distribution<uint32_t> dist;
     const auto n = dist(gen);
     const auto count1 = count_divisors(n);
     const auto count2 = count_divisors(n, sieve);
     EXPECT_EQ(count1, count2) << "n=" << n;
   });
 
-  const auto small_sieve = djp::sieve_of_eratosthenes(30);
+  const auto small_sieve = sieve_of_eratosthenes<uint32_t>(30);
   for (uint32_t n = 1; n < 842; ++n)
     EXPECT_EQ(naive_count_divisors(n), count_divisors(n, small_sieve));
   EXPECT_EQ(2, count_divisors(827, small_sieve));
@@ -68,7 +62,7 @@ TEST(count_divisors, WorksWell) {
 }
 
 TEST(find_divisors, WorksWell) {
-  auto sieve = djp::sieve_of_eratosthenes(66000);
+  auto sieve = sieve_of_eratosthenes<uint32_t>(66000);
   using vec = std::vector<std::uint32_t>;
 
   auto divisors_of = [&sieve](std::uint32_t n) {
