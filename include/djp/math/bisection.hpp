@@ -26,8 +26,8 @@ namespace djp {
 /// \param f The function to be examined.
 /// \param a The lower bound of the interval to be examined.
 /// \param b The upper bound of the interval to be examined.
-/// \param tol The maximum allowed absolute difference between the real root and
-/// the estimated root (the found one).
+/// \param tol The maximum allowed absolute difference between the found root
+/// the actual corresponding root.
 /// \param max_iter The maximum allowed number of iterations.
 ///
 /// \pre <tt>a <= b</tt>.
@@ -35,7 +35,7 @@ namespace djp {
 /// \pre Either <tt>f(a)</tt> is a valid root, or <tt>f(b)</tt> is a valid root,
 /// or <tt>f(a)</tt> and <tt>f(b)</tt> have opposite signs.
 ///
-/// \returns The estimated root (according to the given parameters).
+/// \returns A valid root (according to the given parameters).
 ///
 /// \throws std::runtime_error if the maximum number of iterations was exceeded.
 ///
@@ -47,14 +47,15 @@ template <typename T, typename F>
 T bisect(F f, T a, T b, T tol, size_t max_iter) {
   static_assert(std::is_floating_point<T>::value, "Must be floating-point");
 
-  auto is_zero = [](T x) { return fabs(x) < std::numeric_limits<T>::min(); };
+  auto is_zero =
+      [](T x) { return std::fabs(x) < std::numeric_limits<T>::min(); };
   T fa = f(a);
   T fb = f(b);
   if (is_zero(fa))
     return a;
   if (is_zero(fb))
     return b;
-  assert(signbit(fa) != signbit(fb));
+  assert(std::signbit(fa) != std::signbit(fb));
   assert(a <= b);
 
   while (max_iter--) {
@@ -63,7 +64,7 @@ T bisect(F f, T a, T b, T tol, size_t max_iter) {
     if (is_zero(fc) || (b - a) / 2 <= tol) {
       return c;
     }
-    if (signbit(fc) == signbit(fa))
+    if (std::signbit(fc) == std::signbit(fa))
       a = c, fa = fc;
     else
       b = c, fb = fc;
