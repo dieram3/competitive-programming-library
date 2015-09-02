@@ -61,15 +61,13 @@ T bisect(F f, T a, T b, T tol, size_t max_iter) {
   while (max_iter--) {
     T c = (a + b) / 2;
     T fc = f(c);
-    if (is_zero(fc) || (b - a) / 2 <= tol) {
+    if (is_zero(fc) || (b - a) / 2 <= tol)
       return c;
-    }
     if (std::signbit(fc) == std::signbit(fa))
       a = c, fa = fc;
     else
       b = c, fb = fc;
   }
-
   throw std::runtime_error("Max number of iterations exceeded");
 }
 
