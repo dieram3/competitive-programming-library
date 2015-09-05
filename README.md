@@ -7,12 +7,13 @@ CP-utils is a header-only library that contains implementations of typical algor
 ## Modules
 
 Currently CP-utils has the following modules:
+- Bits
 - Combinatorics
 - Data Structure
 - Geometry
 - Graph
+- Math
 - Number Theory
-- Numerical
 - Search
 - Sorting
 - Strings

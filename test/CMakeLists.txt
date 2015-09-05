@@ -20,6 +20,7 @@ function(add_unittest TEST_NAME)
   add_test(NAME ${TEST_NAME} COMMAND ${TARGET_ID})
 endfunction()
 
+add_subdirectory(bits)
 add_subdirectory(combinatorics)
 add_subdirectory(data_structure)
 add_subdirectory(geometry)
