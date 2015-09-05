@@ -1,6 +1,5 @@
-set(SEARCH_TEST_SOURCES
+add_unittest("search"
   "binary_search_test.cpp"
+  "brent_find_cycle_test.cpp"
   "longest_increasing_subsequence_test.cpp"
-  )
-
-add_unittest("search" ${SEARCH_TEST_SOURCES})
+)
