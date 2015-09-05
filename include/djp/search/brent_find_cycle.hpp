@@ -13,13 +13,16 @@ namespace djp {
 
 /// \brief Finds a cycle in an iterated function.
 ///
-/// Uses the Brent's algorithm to find the cycle length and the cycle start in
-/// an iterated function according to an initial state. This function finds two
-/// values: \p lam and \p mu. The cycle length \p lam is defined as the smallest
-/// value that satisfies the loop condition <tt>x_i == x_(i + lam)</tt> for all
-/// <tt>i >= mu</tt> and <tt>mu >= 0</tt>. The cycle start \p mu is defined as
-/// the smallest value needed to comply the above condition, in other words, the
-/// number of iterations needed to reach the loop.
+/// Given the sequence of iterated function values:
+/// <blockquote><tt>x<sub>0</sub>, x<sub>1</sub> = f(x<sub>0</sub>), ...,
+/// x<sub>i</sub> = f(x<sub>i-1</sub>)</tt></blockquote>
+///
+/// This function uses the Brent's algorithm to find two values: \p lam and
+/// \p mu. The cycle length \p lam is defined as the smallest value that
+/// satisfies the loop condition <tt>x<sub>i</sub> ==  x<sub>i+lam</sub></tt>
+/// for all <tt>i >= mu</tt>. The cycle start \p mu is defined as the smallest
+/// value needed to comply the above condition, in other words, the number of
+/// iterations needed to reach the loop.
 ///
 /// \param f The function to be examined.
 /// \param x0 The initial state.
