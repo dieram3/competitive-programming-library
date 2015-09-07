@@ -19,11 +19,14 @@ namespace djp {
 ///
 /// Uses the Gauss's area formula to compute the area of the polygon \p poly.
 ///
-/// \param poly The polygon to determine area
+/// \param poly The polygon to determine area.
 ///
-/// \pre <tt> poly.size() >= 3 </tt>
+/// \pre <tt>poly.size() >= 3</tt>
 ///
 /// \returns Twice the area of the polygon \p poly.
+///
+/// \par Complexity
+/// Linear in <tt>poly.size()</tt>.
 ///
 template <typename T>
 T shoelace_area(const std::vector<point<T>> &poly) {
