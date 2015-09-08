@@ -8,10 +8,12 @@
 
 #include <djp/geometry/point_2d.hpp>
 
-#include <vector>
+#include <vector>  // For std::vector
+#include <cstdint> // For std::int32_t
+
 using namespace djp;
 
-using scalar_t = int;
+using scalar_t = std::int32_t;
 using point_t = point<scalar_t>;
 
 TEST(PointInPolygonTest, SimpleShapes) {

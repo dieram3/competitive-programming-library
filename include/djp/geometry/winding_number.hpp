@@ -6,9 +6,9 @@
 #ifndef DJP_GEOMETRY_POINT_IN_POLYGON_HPP
 #define DJP_GEOMETRY_POINT_IN_POLYGON_HPP
 
-#include <algorithm> // For std::next
-#include <cstdint>   // For std::int64_t
-#include <vector>    // For std::vector
+#include <cstddef> // For std::size_t
+#include <cstdint> // For std::int64_t
+#include <vector>  // For std::vector
 
 namespace djp {
 /// \brief Uses winding number test for a point in a polygon.
