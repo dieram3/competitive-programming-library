@@ -57,3 +57,16 @@ TEST(PointInPolygonTest, NonConvexPolygon) {
   EXPECT_FALSE(point_in_polygon({3, 4}, poly));
   EXPECT_FALSE(point_in_polygon({4, 1}, poly));
 }
+
+TEST(PointInPolygonTest, ConvolutedTest) {
+  std::vector<point_t> poly = {{0, 0}, {2, 4}, {4, 0}, {0, 3}, {5, 3}};
+
+  EXPECT_FALSE(point_in_polygon({-1, -1}, poly));
+  EXPECT_FALSE(point_in_polygon({1, 0}, poly));
+  EXPECT_FALSE(point_in_polygon({2, 0}, poly));
+  EXPECT_FALSE(point_in_polygon({3, 0}, poly));
+
+  EXPECT_TRUE(point_in_polygon({2, 3}, poly));
+  EXPECT_TRUE(point_in_polygon({2, 2}, poly));
+  EXPECT_TRUE(point_in_polygon({1, 1}, poly));
+}
