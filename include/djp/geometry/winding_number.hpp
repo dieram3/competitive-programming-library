@@ -32,18 +32,35 @@ bool point_in_polygon(const Point &p0, const std::vector<Point> &poly) {
   std::ptrdiff_t wn = 0;
 
   auto check_crossing = [&](const Point &q0, const Point &q1) {
+    auto det = ((q1 - q0) ^ (p0 - q0));
     if (q0.y <= p0.y) {
       if (q1.y > p0.y)
-        wn += ((q1 - q0) ^ (p0 - q0)) > 0;
+        wn += det > 0;
     } else {
       if (q1.y <= p0.y)
-        wn -= ((q1 - q0) ^ (p0 - q0)) < 0;
+        wn -= det < 0;
     }
+    return det;
   };
+
+  auto in_boundigbox = [&](const Point &q0, const Point &q1) {
+    return (p0.x <= std::max(q0.x, q1.x) && p0.x >= std::min(q0.x, q1.x) &&
+            p0.y <= std::max(q0.y, q1.y) && p0.y >= std::min(q0.y, q1.y));
+  };
+
   const std::size_t N = poly.size();
-  for (std::size_t i = 0; i + 1 < N; ++i)
-    check_crossing(poly[i], poly[i + 1]);
-  check_crossing(poly[N - 1], poly[0]);
+  for (std::size_t i = 0; i + 1 < N; ++i) {
+    if (p0 == poly[i] || p0 == poly[i + 1])
+      return true;
+    if (check_crossing(poly[i], poly[i + 1]))
+      continue;
+    if (in_boundigbox(poly[i], poly[i + 1]))
+      return true;
+  }
+  if (!check_crossing(poly[N - 1], poly[0])) {
+    if (in_boundigbox(poly[N - 1], poly[0]))
+      return true;
+  }
 
   return wn != 0;
 }

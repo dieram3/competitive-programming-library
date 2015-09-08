@@ -47,8 +47,8 @@ TEST(PointInPolygonTest, CollinearPoint) {
 }
 
 TEST(PointInPolygonTest, NonConvexPolygon) {
-  std::vector<point_t> poly = {
-      {1, 1}, {3, 0}, {4, 2}, {6, 1}, {3, 6}, {4, 3}, {2, 4}};
+  std::vector<point_t> poly = {{1, 1}, {3, 0}, {4, 2}, {6, 1},
+                               {3, 6}, {4, 3}, {2, 4}};
   EXPECT_TRUE(point_in_polygon({2, 3}, poly));
   EXPECT_TRUE(point_in_polygon({5, 2}, poly));
   EXPECT_TRUE(point_in_polygon({4, 4}, poly));
@@ -112,26 +112,21 @@ TEST(PointInPolygonTest, MessNonSimplePolygonTest) {
   EXPECT_TRUE(point_in_polygon({5, 6}, poly));
   EXPECT_TRUE(point_in_polygon({11, 12}, poly));
 
-  // Points that are in segments but not in the boundary polygon.
-  // EXPECT_TRUE(point_in_polygon({12, 10}, poly)); // fails!
+  // Points that are in the boundary of polygon but not vertices.
+  EXPECT_TRUE(point_in_polygon({6, 3}, poly));
+  EXPECT_TRUE(point_in_polygon({9, 7}, poly));
+  EXPECT_TRUE(point_in_polygon({12, 12}, poly));
+  EXPECT_TRUE(point_in_polygon({14, 9}, poly));
+  EXPECT_TRUE(point_in_polygon({6, 6}, poly));
+  EXPECT_TRUE(point_in_polygon({12, 10}, poly));
   EXPECT_TRUE(point_in_polygon({12, 9}, poly));
 
-  // Points that are in vertices that are inside polygon.
-  EXPECT_TRUE(point_in_polygon({11, 7}, poly));
-  // EXPECT_TRUE(point_in_polygon({11, 9}, poly)); // fails!
-
-  // Points that are in the boundary of polygon but not vertices.
-  EXPECT_FALSE(point_in_polygon({6, 3}, poly));
-  // EXPECT_FALSE(point_in_polygon({9, 7}, poly)); // fails!
-  EXPECT_FALSE(point_in_polygon({12, 12}, poly));
-  EXPECT_FALSE(point_in_polygon({14, 9}, poly));
-  EXPECT_FALSE(point_in_polygon({6, 6}, poly));
-
   // Points that are in vertices that belong to the boundary of the polygon.
-  EXPECT_FALSE(point_in_polygon({2, 1}, poly));
-  EXPECT_FALSE(point_in_polygon({5, 10}, poly));
-  // EXPECT_FALSE(point_in_polygon({3, 2}, poly)); // fails!
-  // EXPECT_FALSE(point_in_polygon({12, 11}, poly)); // fails!
-  // EXPECT_FALSE(point_in_polygon({10, 10}, poly)); // fails!
-  // EXPECT_FALSE(point_in_polygon({4, 7}, poly)); // fails!
+  EXPECT_TRUE(point_in_polygon({2, 1}, poly));
+  EXPECT_TRUE(point_in_polygon({5, 10}, poly));
+  EXPECT_TRUE(point_in_polygon({3, 2}, poly));
+  EXPECT_TRUE(point_in_polygon({10, 10}, poly));
+  EXPECT_TRUE(point_in_polygon({4, 7}, poly));
+  EXPECT_TRUE(point_in_polygon({11, 7}, poly));
+  EXPECT_TRUE(point_in_polygon({11, 9}, poly));
 }
