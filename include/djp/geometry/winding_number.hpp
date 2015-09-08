@@ -11,17 +11,16 @@
 
 namespace djp {
 
-/// \brief Checks if a point is inside a polygon.
+/// \brief Checks if a point is inside or in the boundary of a simple polygon.
 ///
 /// Uses a modern version of the Winding number algorithm which does not involve
-/// trigonometric operations, to check whether the point \p p0 is inside (but
-/// not in the boundary) the polygon defined by \p poly . The polygon is allowed
-/// to be nonsimple.
+/// trigonometric operations, to check whether the point \p p0 is in the
+/// simple polygon defined by \p poly.
 ///
 /// \param p0 The point to test.
 /// \param poly The polygon to test.
 ///
-/// \returns \c true if point \p p0 is inside the polygon \p poly, \c false
+/// \returns \c true if point \p p0 is in the polygon \p poly, \c false
 /// otherwise.
 ///
 /// \par Complexity
@@ -50,8 +49,6 @@ bool point_in_polygon(const Point &p0, const std::vector<Point> &poly) {
 
   const std::size_t N = poly.size();
   for (std::size_t i = 0; i + 1 < N; ++i) {
-    if (p0 == poly[i] || p0 == poly[i + 1])
-      return true;
     if (check_crossing(poly[i], poly[i + 1]))
       continue;
     if (in_boundigbox(poly[i], poly[i + 1]))

@@ -104,6 +104,7 @@ TEST(PointInPolygonTest, MessNonSimplePolygonTest) {
   EXPECT_FALSE(point_in_polygon({10, 6}, poly));
   EXPECT_FALSE(point_in_polygon({9, 8}, poly));
   EXPECT_FALSE(point_in_polygon({13, 12}, poly));
+  EXPECT_FALSE(point_in_polygon({11, 8}, poly));
 
   // Points in polygon trivial part
   EXPECT_TRUE(point_in_polygon({5, 9}, poly));
