@@ -1,5 +1,6 @@
 set(NUMBER_THEORY_TEST_SOURCES
 	"basics_test.cpp"
+  "diophantine_test.cpp"
   "divisor_test.cpp"
   "eratosthenes_test.cpp"
   "miller_rabin_test.cpp"
