@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef DJP_NUMBER_THEORY_DIOPHANTINE_HPP
-#define DJP_NUMBER_THEORY_DIOPHANTINE_HPP
+#ifndef DJP_NUMBER_THEORY_EXTENDED_EUCLID_HPP
+#define DJP_NUMBER_THEORY_EXTENDED_EUCLID_HPP
 
 #include <tuple> // For std::tuple, std::make_tuple
 

@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/diophantine.hpp>
+#include <djp/number_theory/extended_euclid.hpp>
 #include <gtest/gtest.h>
 
 #include <tuple> // For std::tuple
