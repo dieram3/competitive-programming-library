@@ -9,8 +9,9 @@
 #define DJP_NUMBER_THEORY_MODULAR_HPP
 
 #include <limits>      // for std::numeric_limits
-#include <type_traits> // for std::make_unsigned
+#include <type_traits> // for std::make_unsigned, std::make_signed
 #include <cstddef>     // for std::size_t
+#include <cstdlib>     // for std::abs
 #include <cstdint>     // for std::uint64_t, UINT32_MAX, INT64_MAX
 #include <cassert>     // for assert
 
@@ -81,28 +82,32 @@ T mod_pow(T base, T exp, T m) {
 /// modulo \c m.
 ///
 /// Finds a value \c x such that  <tt>a * x == 1 (mod m)</tt>. It requires that
-/// <tt>gcd(a, m) == 1</tt> and <tt>a != 0</tt>, otherwise \p a will not be
-/// invertible.
-///
-/// The current implementation uses the Euler's theorem for computing the
-/// inverse of \p a given that \p m is a prime number. Therefore, this
-/// function
-/// can be used iff \p m is prime.
+/// <tt>gcd(a, m) == 1</tt>, otherwise \p a will not be invertible.
 ///
 /// \param a The number to be inverted.
 /// \param m The modulo.
 ///
-/// \returns The modular inverse of <tt>a (mod m)</tt>.
+/// \pre <tt>m > 0</tt>.
 ///
-/// \pre <tt>a >= 0</tt>
-/// \pre \p m is prime.
-///
-/// \par Complexity
-/// <tt>O(log(m))</tt>
+/// \returns The modular inverse of <tt>a (mod m)</tt> in the range <tt>[0,
+/// m)</tt>. If no inverse exists, returns <tt>m</tt>.
 ///
 template <typename T>
 T mod_inverse(T a, T m) {
-  return mod_pow(a, m - 2, m);
+  using ST = typename std::make_signed<T>::type;
+  ST r = a, old_r = m;
+  ST t = 1, old_t = 0;
+  while (r) {
+    ST quotient = old_r / r;
+    ST tmp;
+    tmp = r, r = old_r - quotient * r, old_r = tmp;
+    tmp = t, t = old_t - quotient * t, old_t = tmp;
+  }
+  if (old_r < 0)
+    old_r = -old_r, old_t = -old_t;
+  if (old_r != 1)
+    return m; // a is not invertible.
+  return old_t < 0 ? old_t + ST(m) : old_t;
 }
 
 /// \brief Integer like class used for doing modular arithmetics.
