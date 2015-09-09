@@ -9,7 +9,7 @@
 #define DJP_NUMBER_THEORY_MODULAR_HPP
 
 #include <limits>      // for std::numeric_limits
-#include <type_traits> // for std::make_unsigned
+#include <type_traits> // for std::make_unsigned, std::make_signed
 #include <cstddef>     // for std::size_t
 #include <cstdlib>     // for std::abs
 #include <cstdint>     // for std::uint64_t, UINT32_MAX, INT64_MAX

@@ -9,7 +9,7 @@
 #include <djp/utility/basics.hpp> // for djp::repeat
 
 #include <random>  // for mt19937, uniform_int_distribution
-#include <cstdint> // for uint32_t, uint64_t, SIZE_MAX, INT64_MAX
+#include <cstdint> // for uint32_t, uint64_t, int32_t, SIZE_MAX, INT64_MAX
 #include <cstdlib> // for std::abs
 
 using namespace djp;
