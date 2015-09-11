@@ -10,18 +10,6 @@
 
 namespace djp {
 
-/// Computes the greatest common divisor between two integer numbers.
-template <typename T>
-constexpr T gcd(T a, T b) {
-  return b == 0 ? a : gcd(b, a % b);
-}
-
-/// Computes the least common multiple between two integer numbers.
-template <typename T>
-constexpr T lcm(T a, T b) {
-  return a || b ? a / gcd(a, b) * b : 0;
-}
-
 /// Computes the ceil of <tt>a / b</tt>
 template <typename T>
 constexpr T ceil_div(T a, T b) {
