@@ -63,3 +63,26 @@ TEST_F(IsqrtTest, LimitsTest) {
   EXPECT_EQ(4294967295, isqrt(18446744073709551518u));
   EXPECT_EQ(4294967295, isqrt(18446744073709551615u));
 }
+
+//#include <chrono>
+//#include <random>
+// TEST_F(IsqrtTest, Benchmark) {
+//  std::mt19937 gen;
+//  std::uniform_int_distribution<uint64_t> dist;
+//  std::vector<uint64_t> values(10000000);
+//  for (auto &elem : values)
+//    elem = dist(gen);
+//
+//  using namespace std;
+//  using namespace chrono;
+//  auto start = steady_clock::now();
+//  uint64_t checksum = 0;
+//  for (const auto x : values)
+//    checksum += isqrt(x);
+//  auto end = steady_clock::now();
+//  auto elapsed = duration_cast<milliseconds>(end - start);
+//  std::cout << sizeof(double) << '\n';
+//  std::cout << sizeof(long double) << '\n';
+//  std::cout << "Elapsed: " << elapsed.count() << " ms\n";
+//  std::cout << "Checksum: " << checksum << '\n';
+//}

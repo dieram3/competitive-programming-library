@@ -9,7 +9,7 @@
 #include <algorithm>   // For std::min
 #include <limits>      // For std::numeric_limits
 #include <type_traits> // For std::is_unsigned
-#include <cmath>       // For std::sqrtf
+#include <cmath>       // For std::sqrt
 
 namespace djp {
 
@@ -28,7 +28,7 @@ template <typename T>
 T isqrt(const T x) {
   static_assert(std::is_unsigned<T>::value, "T must be unsigned type");
   constexpr T max_ans = (T{1} << std::numeric_limits<T>::digits / 2) - 1;
-  T ans = std::min(max_ans, static_cast<T>(std::sqrtf(x)));
+  T ans = std::min(max_ans, static_cast<T>(std::sqrt(x)));
   // At this point, ans is an approximate square root.
   while (ans * ans > x)
     --ans;
