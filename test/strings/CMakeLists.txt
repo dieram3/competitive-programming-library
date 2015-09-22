@@ -1,5 +1,6 @@
 set(STRINGS_TEST_SOURCES
   "basics_test.cpp"
+  "dc3_suffix_array_test.cpp"
   "edit_distance_test.cpp"
   "knuth_morris_pratt_test.cpp"
   "lcp_array_test.cpp"
