@@ -15,25 +15,22 @@ using std::uint_fast32_t;
 using std::uint_fast64_t;
 
 namespace {
-
 class IsqrtTest : public ::testing::Test {
 protected:
   template <typename T>
   void check_sqrt(const T x) const {
+    assert(x > 0);
     const T squared_x = x * x;
-    assert(squared_x != 0);
     EXPECT_EQ(x - 1, isqrt(squared_x - 1));
     EXPECT_EQ(x, isqrt(squared_x));
     EXPECT_EQ(x, isqrt(squared_x + 1));
   }
-
   template <typename T>
   void check_sqrts(std::initializer_list<T> ilist) const {
     for (T x : ilist)
       check_sqrt(x);
   }
 };
-
 } // end anonymous namespace
 
 TEST_F(IsqrtTest, ZeroTest) { EXPECT_EQ(0, isqrt(0)); }
@@ -88,7 +85,6 @@ TEST_F(IsqrtTest, LimitsTest) {
 //}
 
 namespace {
-
 class IsSquareTest : public ::testing::Test {
 protected:
   template <typename T>
@@ -102,7 +98,6 @@ protected:
       EXPECT_FALSE(is_square(x)) << " where x=" << x;
   }
 };
-
 } // End anonymous namespace
 
 TEST_F(IsSquareTest, ZeroTest) { check_squares({0}); }
