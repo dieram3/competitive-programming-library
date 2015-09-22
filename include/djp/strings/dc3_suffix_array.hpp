@@ -15,8 +15,6 @@
 #include <string>    // for std::string
 #include <cstddef>   // for std::size_t
 
-#include <iostream> // TEMP!
-
 namespace djp {
 
 template <typename Range>
