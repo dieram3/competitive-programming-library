@@ -17,13 +17,6 @@
 
 namespace djp {
 
-template <typename Range>
-void print_v(const Range &range) {
-  for (auto &&value : range)
-    std::cout << value << ' ';
-  std::cout << '\n';
-}
-
 class dc3_helper {
   using vec_t = std::vector<size_t>;
 
