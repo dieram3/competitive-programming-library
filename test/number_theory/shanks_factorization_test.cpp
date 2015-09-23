@@ -7,8 +7,9 @@
 #include <gtest/gtest.h>
 
 #include <initializer_list> // For std::initializer_list
+#include <stdexcept>        // For std::overflow_error
 #include <cassert>          // For assert
-#include <cstdint>          // For std::int_fast64_t
+#include <cstdint>          // For std::int_fast64_t, std::int64_t
 
 using namespace djp;
 
@@ -98,6 +99,15 @@ TEST_F(ShanksFactorizationTest, LargePrimesTest) {
   check(233077484153LL * 1236629LL);
   check(22336190273LL * 12904187LL);
   check(536870909LL * 536870879LL);
+}
+
+TEST_F(ShanksFactorizationTest, OverflowDetectionTest) {
+  // Note that int64_t is put to force overflow.
+  using std::int64_t;
+  EXPECT_NO_THROW(shanks_factor<int64_t>(INT64_MAX - 31)); // k=1 is ok
+  EXPECT_NO_THROW(shanks_factor<int64_t>(INT64_MAX - 59)); // k=1 is ok
+  EXPECT_THROW(shanks_factor<int64_t>(INT64_MAX - 24), std::overflow_error);
+  EXPECT_THROW(shanks_factor<int64_t>(INT64_MAX - 81), std::overflow_error);
 }
 
 //#include <chrono>
