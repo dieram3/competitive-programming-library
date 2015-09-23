@@ -6,5 +6,6 @@ add_unittest("number_theory"
   "extended_euclid_test.cpp"
   "miller_rabin_test.cpp"
   "modular_test.cpp"
+  "shanks_factorization_test.cpp"
   "square_root_test.cpp"
 )
