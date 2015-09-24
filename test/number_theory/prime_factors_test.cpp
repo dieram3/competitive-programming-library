@@ -31,12 +31,13 @@ protected:
   }
 
   static void check(int_t N) {
+    int_t rem = N;
     for (const auto p : factor(N)) {
-      EXPECT_EQ(0, N % p);
-      EXPECT_TRUE(miller_rabin_primality_test(p)) << p << " is not prime";
-      N /= p;
+      EXPECT_EQ(0, rem % p);
+      EXPECT_TRUE(miller_rabin_primality_test(p)) << p << " is not a prime";
+      rem /= p;
     }
-    EXPECT_EQ(1, N) << "N was not totally factored\n";
+    EXPECT_EQ(1, rem) << "N was not totally factored, where N=" << N;
   }
 
   static void check(std::initializer_list<int_t> ilist) {
