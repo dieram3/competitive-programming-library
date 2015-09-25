@@ -14,7 +14,7 @@
 using namespace djp;
 
 namespace {
-class ShanksFactorizationTest : public ::testing::Test {
+class ShanksFactorTest : public ::testing::Test {
 protected:
   using int_t = std::int_fast64_t;
 
@@ -39,7 +39,7 @@ protected:
 };
 } // end anonymous namespace
 
-TEST_F(ShanksFactorizationTest, DifferentBitsTest) {
+TEST_F(ShanksFactorTest, DifferentBitsTest) {
   check(10, {1, 4, 12, 34, 97, 182, 464});
   check(20, {128, 493, 139, 382, 555, 893});
   check(30, {198, 269, 511, 689, 743, 899});
@@ -55,7 +55,7 @@ TEST_F(ShanksFactorizationTest, DifferentBitsTest) {
   check(58, {13, 25, 39, 43, 58, 173, 512, 912});
 }
 
-TEST_F(ShanksFactorizationTest, SquaresTest) {
+TEST_F(ShanksFactorTest, SquaresTest) {
   int_t list[] = {2,      3,      4,      5,       6,         7,        9,
                   10,     124,    304,    634,     873,       1928,     2489,
                   5341,   8934,   12237,  15344,   19587,     24985,    34899,
@@ -77,7 +77,7 @@ TEST_F(ShanksFactorizationTest, SquaresTest) {
   check(536870911LL * 536870911LL);
 }
 
-TEST_F(ShanksFactorizationTest, LargeMultiplierTest) {
+TEST_F(ShanksFactorTest, LargeMultiplierTest) {
   check(281128058351311643); // Needs k=17
   check(248243352878275597); // Needs k=19
   check(113644992211567699); // Needs k=20
@@ -86,7 +86,7 @@ TEST_F(ShanksFactorizationTest, LargeMultiplierTest) {
   check(138849925491605621); // Needs k=26
 }
 
-TEST_F(ShanksFactorizationTest, LargePrimesTest) {
+TEST_F(ShanksFactorTest, LargePrimesTest) {
   check(26202761468337431LL * 11LL);
   check(870786634899431LL * 331LL);
   check(290848008225743LL * 991LL);
@@ -101,7 +101,7 @@ TEST_F(ShanksFactorizationTest, LargePrimesTest) {
   check(536870909LL * 536870879LL);
 }
 
-TEST_F(ShanksFactorizationTest, OverflowDetectionTest) {
+TEST_F(ShanksFactorTest, OverflowDetectionTest) {
   // Note that int64_t is put to force overflow.
   using std::int64_t;
   EXPECT_NO_THROW(shanks_factor<int64_t>(INT64_MAX - 31)); // k=1 is ok
@@ -113,7 +113,7 @@ TEST_F(ShanksFactorizationTest, OverflowDetectionTest) {
 //#include <chrono>
 //#include <random>
 //#include <djp/number_theory/miller_rabin.hpp>
-// TEST_F(ShanksFactorizationTest, Benchmark) {
+// TEST_F(ShanksFactorTest, Benchmark) {
 //  std::mt19937 gen(234872);
 //  std::uniform_int_distribution<int_t> dist(2, (1LL << 58) - 1);
 //  std::vector<int_t> values(2000);
