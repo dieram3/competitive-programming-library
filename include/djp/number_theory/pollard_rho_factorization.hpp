@@ -14,8 +14,8 @@ namespace djp {
 /// \brief Finds a non-trivial factor of a composite number.
 ///
 /// Uses the Pollard's rho algorithm to find a non-trivial factor of <tt>n</tt>.
-/// This a special-purpose integer factorization algorithm which is particularly
-/// effective for composite numbers having small prime factors.
+/// It is a special-purpose integer factorization algorithm which is
+/// particularly effective for composite numbers having small prime factors.
 ///
 /// \param n The integer to be factored.
 ///
