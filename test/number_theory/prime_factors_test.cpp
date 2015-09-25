@@ -74,7 +74,7 @@ TEST_F(PrimeFactorsTest, PerfectSquaresTest) {
 
 //#include <chrono>
 //#include <random>
-// TEST_F(PrimeFactorsTest, Bechmark) {
+// TEST_F(PrimeFactorsTest, Benchmark) {
 //  std::mt19937 gen(187238);
 //  std::uniform_int_distribution<int_t> dist(1, (1LL << 58) - 1);
 //  std::vector<int_t> values(1000);
