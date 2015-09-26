@@ -77,7 +77,6 @@ template <typename T>
 T mod_pow(T base, T exp, T m) {
   assert(base >= 0 && base < m);
   assert(exp >= 0);
-  base %= m;
   T result = 1;
   while (exp) {
     if (exp & 1)

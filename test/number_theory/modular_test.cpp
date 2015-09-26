@@ -7,7 +7,7 @@
 #include <gtest/gtest.h>
 
 #include <djp/number_theory/euclid.hpp> // for djp:gcd
-#include <cstdint> // For INT64_MAX, UINT64_MAX
+#include <cstdint>                      // For INT64_MAX, UINT64_MAX
 
 using namespace djp;
 
@@ -36,7 +36,7 @@ TEST(ModMulTest, WorksWell) {
   EXPECT_EQ(1500, mod_mul(15, 100, 2000));
   EXPECT_EQ(500, mod_mul(15, 100, 1000));
 
-  EXPECT_EQ(121704964, mod_mul<long long>(123897123, 12387123982, 123412421));
+  EXPECT_EQ(121704964, mod_mul<long long>(484702, 45881882, 123412421));
   EXPECT_EQ(5306660808504233892,
             mod_mul<long long>(983475987235822983, 3234987329847383934,
                                6473292374838378342));
@@ -50,10 +50,10 @@ TEST(ModMulTest, WorksWell) {
   EXPECT_EQ(350, mod_mul(UINT64_MAX - 35, UINT64_MAX - 10, UINT64_MAX));
 }
 
-TEST(ModPowTest, WorksWhenOverflowDoesNotNeedControl) {
-  EXPECT_EQ(90, mod_pow(2342, 14233, 2011));
+TEST(ModPowTest, WorksWell) {
+  EXPECT_EQ(12, mod_pow(8, 1238912398, 13));
+  EXPECT_EQ(90, mod_pow(331, 14233, 2011));
   EXPECT_EQ(10817, mod_pow(2017, 1238912398, 65536));
-  EXPECT_EQ(12, mod_pow(22342, 1238912398, 13));
   EXPECT_EQ(8001, mod_pow(25237, 131312, 65536));
 }
 
