@@ -8,7 +8,7 @@
 #ifndef DJP_NUMBER_THEORY_MODULAR_HPP
 #define DJP_NUMBER_THEORY_MODULAR_HPP
 
-#include <type_traits> // for std::make_signed
+#include <type_traits> // for std::is_signed
 #include <cassert>     // for assert
 
 namespace djp {
@@ -17,7 +17,6 @@ namespace djp {
 ///
 /// \param a The first operand.
 /// \param b The second operand.
-///
 /// \param m The modulo.
 ///
 /// \pre <tt>0 <= a < m</tt>.
@@ -27,12 +26,33 @@ namespace djp {
 /// Constant.
 ///
 template <typename T>
-T mod_sum(T a, T b, T m) {
+T mod_add(T a, T b, T m) {
   assert(a >= 0 && a < m);
   assert(b >= 0 && b < m);
   if (a < m - b)
     return a + b;
   return a - (m - b);
+}
+
+/// \brief Safely computes <tt>((a + m) - b) % m</tt>.
+///
+/// \param a The first operand.
+/// \param b The second operand.
+/// \param m The modulo.
+///
+/// \pre <tt>0 <= a < m</tt>.
+/// \pre <tt>0 <= b < m</tt>
+///
+/// \par Complexity
+/// Constant.
+///
+template <typename T>
+T mod_sub(T a, T b, T m) {
+  assert(a >= 0 && a < m);
+  assert(b >= 0 && b < m);
+  if (a < b)
+    return a + (m - b);
+  return a - b;
 }
 
 /// \brief Safely computes <tt>(a * b) % m</tt>.
@@ -51,17 +71,17 @@ template <typename T>
 T mod_mul(T a, T b, T m) {
   assert(a >= 0 && a < m);
   assert(b >= 0 && b < m);
-  T x = 0, y = a;
+  T result = 0;
   while (b > 0) {
     if (b % 2 == 1)
-      x = mod_sum(x, y, m);
-    y = mod_sum(y, y, m);
+      result = mod_add(result, a, m);
+    a = mod_add(a, a, m);
     b /= 2;
   }
-  return x;
+  return result;
 }
 
-/// \brief Computes <tt>pow(a, b) % m</tt>
+/// \brief Safely computes <tt>pow(a, b) % m</tt>
 ///
 /// \param base The base.
 /// \param exp The exponent.
@@ -78,11 +98,11 @@ T mod_pow(T base, T exp, T m) {
   assert(base >= 0 && base < m);
   assert(exp >= 0);
   T result = 1;
-  while (exp) {
-    if (exp & 1)
+  while (exp > 0) {
+    if (exp % 2 == 1)
       result = mod_mul(result, base, m);
     base = mod_mul(base, base, m);
-    exp >>= 1;
+    exp /= 2;
   }
   return result;
 }
@@ -92,6 +112,8 @@ T mod_pow(T base, T exp, T m) {
 ///
 /// Finds a value \c x such that  <tt>a * x == 1 (mod m)</tt>. It requires that
 /// <tt>gcd(a, m) == 1</tt>, otherwise \p a will not be invertible.
+///
+/// \tparam T A signed integer type.
 ///
 /// \param a The number to be inverted.
 /// \param m The modulo.
@@ -103,13 +125,13 @@ T mod_pow(T base, T exp, T m) {
 ///
 template <typename T>
 T mod_inverse(T a, T m) {
-  // If m is prime, pow(a, m - 2, m) gives the answer.
-  using ST = typename std::make_signed<T>::type;
-  ST r = a, old_r = m;
-  ST t = 1, old_t = 0;
+  // If m is prime, mod_pow(a, m - 2, m) gives the answer.
+  static_assert(std::is_signed<T>::value, "T must be signed");
+  T r = a, old_r = m;
+  T t = 1, old_t = 0;
   while (r) {
-    ST quotient = old_r / r;
-    ST tmp;
+    T quotient = old_r / r;
+    T tmp;
     tmp = r, r = old_r - quotient * r, old_r = tmp;
     tmp = t, t = old_t - quotient * t, old_t = tmp;
   }
@@ -117,7 +139,7 @@ T mod_inverse(T a, T m) {
     old_r = -old_r, old_t = -old_t;
   if (old_r != 1)
     return m; // a is not invertible.
-  return old_t < 0 ? old_t + ST(m) : old_t;
+  return old_t < 0 ? old_t + m : old_t;
 }
 
 } // end namespace djp

@@ -11,28 +11,51 @@
 
 using namespace djp;
 
-TEST(ModSumTest, WorksWell) {
-  EXPECT_EQ(20, mod_sum(10, 10, 31));
-  EXPECT_EQ(9, mod_sum(20, 20, 31));
-  EXPECT_EQ(30, mod_sum(19, 11, 31));
-  EXPECT_EQ(0, mod_sum(19, 12, 31));
-  EXPECT_EQ(1, mod_sum(19, 13, 31));
+TEST(ModAddTest, WorksWell) {
+  EXPECT_EQ(0, mod_add(0, 0, 31));
+  EXPECT_EQ(1, mod_add(0, 1, 31));
+  EXPECT_EQ(2, mod_add(2, 0, 31));
+  EXPECT_EQ(20, mod_add(10, 10, 31));
+  EXPECT_EQ(9, mod_add(20, 20, 31));
+  EXPECT_EQ(30, mod_add(19, 11, 31));
+  EXPECT_EQ(0, mod_add(19, 12, 31));
+  EXPECT_EQ(1, mod_add(19, 13, 31));
 
-  EXPECT_EQ(UINT64_MAX - 3,
-            mod_sum(UINT64_MAX / 2 - 2, UINT64_MAX / 2, UINT64_MAX));
-  EXPECT_EQ(UINT64_MAX - 2,
-            mod_sum(UINT64_MAX / 2 - 1, UINT64_MAX / 2, UINT64_MAX));
-  EXPECT_EQ(UINT64_MAX - 1,
-            mod_sum(UINT64_MAX / 2 + 0, UINT64_MAX / 2, UINT64_MAX));
-  EXPECT_EQ(0, mod_sum(UINT64_MAX / 2 + 1, UINT64_MAX / 2, UINT64_MAX));
-  EXPECT_EQ(1, mod_sum(UINT64_MAX / 2 + 2, UINT64_MAX / 2, UINT64_MAX));
-  EXPECT_EQ(2, mod_sum(UINT64_MAX / 2 + 3, UINT64_MAX / 2, UINT64_MAX));
+  const auto m = UINT64_MAX;
+  const auto x = m / 2;
+  EXPECT_EQ(m - 3, mod_add(x - 2, x, m));
+  EXPECT_EQ(m - 2, mod_add(x - 1, x, m));
+  EXPECT_EQ(m - 1, mod_add(x + 0, x, m));
+  EXPECT_EQ(0, mod_add(x + 1, x, m));
+  EXPECT_EQ(1, mod_add(x + 2, x, m));
+  EXPECT_EQ(2, mod_add(x + 3, x, m));
+  EXPECT_EQ(m - 7, mod_add(m - 3, m - 4, m));
+}
 
-  EXPECT_EQ(UINT64_MAX - 7,
-            mod_sum(UINT64_MAX - 3, UINT64_MAX - 4, UINT64_MAX));
+TEST(ModSubTest, WorksWell) {
+  EXPECT_EQ(0, mod_sub(0, 0, 31));
+  EXPECT_EQ(0, mod_sub(15, 15, 31));
+  EXPECT_EQ(1, mod_sub(0, 30, 31));
+  EXPECT_EQ(30, mod_sub(30, 0, 31));
+  EXPECT_EQ(24, mod_sub(29, 5, 31));
+  EXPECT_EQ(12, mod_sub(20, 8, 31));
+  EXPECT_EQ(30, mod_sub(0, 1, 31));
+  EXPECT_EQ(30, mod_sub(29, 30, 31));
+  EXPECT_EQ(21, mod_sub(10, 20, 31));
+
+  const auto m = UINT64_MAX;
+  EXPECT_EQ(m - 2, mod_sub(m - 3, m - 1, m));
+  EXPECT_EQ(m - 1, mod_sub(m - 2, m - 1, m));
+  EXPECT_EQ(0, mod_sub(m - 1, m - 1, m));
+  EXPECT_EQ(10, mod_sub(m - 30, m - 40, m));
+  EXPECT_EQ(m - 10, mod_sub(m - 40, m - 30, m));
+  EXPECT_EQ(0, mod_sub(m - 35, m - 35, m));
 }
 
 TEST(ModMulTest, WorksWell) {
+  EXPECT_EQ(0, mod_mul(0, 0, 19));
+  EXPECT_EQ(1, mod_mul(1, 1, 19));
+  EXPECT_EQ(18, mod_mul(1, 18, 19));
   EXPECT_EQ(1500, mod_mul(15, 100, 2000));
   EXPECT_EQ(500, mod_mul(15, 100, 1000));
 
@@ -44,13 +67,18 @@ TEST(ModMulTest, WorksWell) {
       160348183393232245,
       mod_mul<long long>(5624398623487263287, 2340923408932939303, INT64_MAX));
 
-  EXPECT_EQ(1, mod_mul(UINT64_MAX - 1, UINT64_MAX - 1, UINT64_MAX));
-  EXPECT_EQ(12, mod_mul(UINT64_MAX - 3, UINT64_MAX - 4, UINT64_MAX));
-  EXPECT_EQ(101, mod_mul(UINT64_MAX - 1, UINT64_MAX - 101, UINT64_MAX));
-  EXPECT_EQ(350, mod_mul(UINT64_MAX - 35, UINT64_MAX - 10, UINT64_MAX));
+  const auto m = UINT64_MAX;
+  EXPECT_EQ(1, mod_mul(m - 1, m - 1, m));
+  EXPECT_EQ(12, mod_mul(m - 3, m - 4, m));
+  EXPECT_EQ(101, mod_mul(m - 1, m - 101, m));
+  EXPECT_EQ(350, mod_mul(m - 35, m - 10, m));
 }
 
 TEST(ModPowTest, WorksWell) {
+  EXPECT_EQ(1, mod_pow(8, 0, 11));
+  EXPECT_EQ(8, mod_pow(8, 1, 11));
+  EXPECT_EQ(9, mod_pow(8, 2, 11));
+  EXPECT_EQ(6, mod_pow(8, 3, 11));
   EXPECT_EQ(12, mod_pow(8, 1238912398, 13));
   EXPECT_EQ(90, mod_pow(331, 14233, 2011));
   EXPECT_EQ(10817, mod_pow(2017, 1238912398, 65536));
