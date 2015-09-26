@@ -7,55 +7,47 @@
 #include <gtest/gtest.h>
 
 #include <djp/number_theory/euclid.hpp> // for djp:gcd
-#include <djp/utility/basics.hpp>       // for djp::repeat
-
-#include <random>  // for mt19937, uniform_int_distribution
-#include <cstdint> // for uint32_t, uint64_t, int32_t, SIZE_MAX, INT64_MAX
+#include <cstdint> // For INT64_MAX, UINT64_MAX
 
 using namespace djp;
 
-TEST(ModularTest, HandlesArithmeticOps) {
-  using modular_t = modular<unsigned, 7>;
+TEST(ModSumTest, WorksWell) {
+  EXPECT_EQ(20, mod_sum(10, 10, 31));
+  EXPECT_EQ(9, mod_sum(20, 20, 31));
+  EXPECT_EQ(30, mod_sum(19, 11, 31));
+  EXPECT_EQ(0, mod_sum(19, 12, 31));
+  EXPECT_EQ(1, mod_sum(19, 13, 31));
 
-  const modular_t a = 4;
-  const modular_t b = 12;
+  EXPECT_EQ(UINT64_MAX - 3,
+            mod_sum(UINT64_MAX / 2 - 2, UINT64_MAX / 2, UINT64_MAX));
+  EXPECT_EQ(UINT64_MAX - 2,
+            mod_sum(UINT64_MAX / 2 - 1, UINT64_MAX / 2, UINT64_MAX));
+  EXPECT_EQ(UINT64_MAX - 1,
+            mod_sum(UINT64_MAX / 2 + 0, UINT64_MAX / 2, UINT64_MAX));
+  EXPECT_EQ(0, mod_sum(UINT64_MAX / 2 + 1, UINT64_MAX / 2, UINT64_MAX));
+  EXPECT_EQ(1, mod_sum(UINT64_MAX / 2 + 2, UINT64_MAX / 2, UINT64_MAX));
+  EXPECT_EQ(2, mod_sum(UINT64_MAX / 2 + 3, UINT64_MAX / 2, UINT64_MAX));
 
-  EXPECT_TRUE(congruent(a, 4));
-  EXPECT_TRUE(congruent(b, 5));
-  EXPECT_TRUE(congruent(a + b, 2));
-  EXPECT_TRUE(congruent(a - b, 6));
-  EXPECT_TRUE(congruent(b - a, 1));
-  EXPECT_TRUE(congruent(a * b, 6));
-  EXPECT_TRUE(congruent(pow(a, 7 - 2), 2));
-  EXPECT_TRUE(congruent(pow(b, 7 - 2), 3));
-  EXPECT_TRUE(congruent(inverse(a), 2));
-  EXPECT_TRUE(congruent(inverse(b), 3));
-  EXPECT_TRUE(congruent(a / b, 5));
-  EXPECT_TRUE(congruent(b / a, 3));
-  EXPECT_EQ(4, static_cast<int>(a));
-  EXPECT_EQ(5, static_cast<int>(b));
+  EXPECT_EQ(UINT64_MAX - 7,
+            mod_sum(UINT64_MAX - 3, UINT64_MAX - 4, UINT64_MAX));
 }
 
 TEST(ModMulTest, WorksWell) {
-  std::mt19937 gen;
-  std::uniform_int_distribution<uint32_t> dist;
+  EXPECT_EQ(1500, mod_mul(15, 100, 2000));
+  EXPECT_EQ(500, mod_mul(15, 100, 1000));
 
-  /// \todo Improve this test, random data based testing is not a good idea and
-  /// makes it slow.
-  repeat(1234, [&gen, &dist] {
-    const uint32_t a = dist(gen);
-    const uint32_t b = dist(gen);
-    constexpr uint32_t mod = 1000000000 + 7;
-    EXPECT_EQ(uint64_t(a) * b % mod, mod_mul(a, b, mod));
-  });
-
-  EXPECT_EQ(121704964, mod_mul<uint64_t>(123897123, 12387123982, 123412421));
+  EXPECT_EQ(121704964, mod_mul<long long>(123897123, 12387123982, 123412421));
   EXPECT_EQ(5306660808504233892,
-            mod_mul<uint64_t>(983475987235822983, 3234987329847383934,
-                              6473292374838378342));
+            mod_mul<long long>(983475987235822983, 3234987329847383934,
+                               6473292374838378342));
   EXPECT_EQ(
       160348183393232245,
-      mod_mul<uint64_t>(5624398623487263287, 2340923408932939303, INT64_MAX));
+      mod_mul<long long>(5624398623487263287, 2340923408932939303, INT64_MAX));
+
+  EXPECT_EQ(1, mod_mul(UINT64_MAX - 1, UINT64_MAX - 1, UINT64_MAX));
+  EXPECT_EQ(12, mod_mul(UINT64_MAX - 3, UINT64_MAX - 4, UINT64_MAX));
+  EXPECT_EQ(101, mod_mul(UINT64_MAX - 1, UINT64_MAX - 101, UINT64_MAX));
+  EXPECT_EQ(350, mod_mul(UINT64_MAX - 35, UINT64_MAX - 10, UINT64_MAX));
 }
 
 TEST(ModPowTest, WorksWhenOverflowDoesNotNeedControl) {
@@ -63,23 +55,18 @@ TEST(ModPowTest, WorksWhenOverflowDoesNotNeedControl) {
   EXPECT_EQ(10817, mod_pow(2017, 1238912398, 65536));
   EXPECT_EQ(12, mod_pow(22342, 1238912398, 13));
   EXPECT_EQ(8001, mod_pow(25237, 131312, 65536));
-  EXPECT_EQ(370, mod_pow<size_t>(292, SIZE_MAX, 41202));
 }
 
 namespace {
-
 class ModInverseTest : public ::testing::Test {
-protected:
-  using int_t = std::int32_t;
+  using int_t = long;
+  int_t mod = 11;
 
-private:
-  template <typename T>
-  int_t normalize(T x) const {
+protected:
+  int_t normalize(int_t x) const {
     x %= mod;
-    return static_cast<int_t>(x < 0 ? x + mod : x);
+    return x < 0 ? x + mod : x;
   }
-
-protected:
   void set_mod(int_t m) {
     assert(m > 0);
     mod = m;
@@ -91,17 +78,13 @@ protected:
     const int_t inv_y = mod_inverse(y, mod);
     EXPECT_EQ(normalize(y), inv_x);
     EXPECT_EQ(normalize(x), inv_y);
-    EXPECT_EQ(int_t(1) % mod, normalize(std::int64_t(x) * y));
+    EXPECT_EQ(1 % mod, mod_mul(normalize(x), normalize(y), mod));
   }
   void check_non_invertible(int_t x) const {
     ASSERT_NE(1, gcd(x, mod));
     EXPECT_EQ(mod, mod_inverse(x, mod));
   }
-
-private:
-  int_t mod = 11;
 };
-
 } // end anonymous namespace
 
 TEST_F(ModInverseTest, PrimeModulesTest) {

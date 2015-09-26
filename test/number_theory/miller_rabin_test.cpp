@@ -7,8 +7,7 @@
 #include <gtest/gtest.h>
 
 #include <initializer_list> // For std::initializer_list
-#include <stdexcept>        // For std::domain_error
-#include <cstdint>          // For std::uint64_t, UINT64_MAX, UINT64_C
+#include <cstdint>          // For std::uint64_t, UINT64_C
 
 using std::uint64_t;
 using namespace djp;
@@ -169,8 +168,26 @@ TEST(MillerRabinTest, DifferentBitsNumberTest) {
   test_set(61, {1, 31, 45, 229, 259, 283, 339, 391, 403, 465});
   test_set(62, {57, 87, 117, 143, 153, 167, 171, 195, 203, 273});
   test_set(63, {25, 165, 259, 301, 375, 387, 391, 409, 457, 471});
-
-  // mod_mul still can't multiply numbers >= 2^63 (at least uint128_t were
-  // used).
-  // test_set(64, {59, 83, 95, 179, 189, 257, 279, 323, 353, 363});
+  test_set(64, {59, 83, 95, 179, 189, 257, 279, 323, 353, 363});
 }
+
+//#include <chrono>
+//#include <random>
+//#include <vector>
+// TEST(MillerRabinTest, Benchmark) {
+//  std::vector<uint_fast64_t> values(50000);
+//  std::mt19937 engine(234362);
+//  std::uniform_int_distribution<uint_fast64_t> gen_value;
+//  for (auto &elem : values)
+//    elem = gen_value(engine);
+//
+//  using namespace std::chrono;
+//  auto start = steady_clock::now();
+//  size_t checksum = 0;
+//  for (const auto x : values)
+//    checksum += miller_rabin_primality_test(x);
+//  auto end = steady_clock::now();
+//  auto elapsed = duration_cast<milliseconds>(end - start);
+//  std::cout << "Elapsed time: " << elapsed.count() << " ms\n";
+//  std::cout << "Checksum: " << checksum << '\n';
+//}
