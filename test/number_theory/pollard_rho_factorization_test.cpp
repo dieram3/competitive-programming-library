@@ -8,14 +8,14 @@
 
 #include <initializer_list> // For std::initializer_list
 #include <cassert>          // For assert
-#include <cstdint>          // For std::uint_fast64_t, INT64_MAX
+#include <cstdint>          // For std::uint64_t, UINT64_MAX
 
 using namespace djp;
 
 namespace {
 class PollardRhoFactorTest : public ::testing::Test {
 protected:
-  using int_t = std::uint_fast64_t;
+  using int_t = std::uint64_t;
 
 protected:
   static void check(int_t N) {
@@ -31,7 +31,8 @@ protected:
   }
   static void check(unsigned bits, int_t delta) {
     assert(delta > 0);
-    const int_t N = (int_t(1) << bits) - delta;
+    const int_t base = bits == 64 ? 0 : int_t(1) << bits;
+    const int_t N = base - delta;
     check(N);
   }
   static void check(unsigned bits, std::initializer_list<int_t> deltas) {
@@ -83,11 +84,7 @@ TEST_F(PollardRhoFactorTest, TwoPrimesTest) {
   check(9223372036854531581); // 34264318463107 * 269183
   check(9223372036849325833); // 1099335888317 * 8389949
   check(9223372036846482341); // 68714427251 * 134227591
-
-  // The integers below take over 100ms to be factored.
-  //  check(9223372036604083009); // 17179710433 * 536875873
-  //  check(9223372033830897791); // 3036944203 * 3037056797
-  //  check(9223372036410771419); // 4294768447 * 2147583077
+  check(9223372033830897791); // 3036944203 * 3037056797
 }
 
 TEST_F(PollardRhoFactorTest, DifferentBitsTest) {
@@ -109,7 +106,7 @@ TEST_F(PollardRhoFactorTest, DifferentBitsTest) {
   check(61, {18, 30, 59, 94, 207, 349, 513, 615});
   check(62, {9, 12, 41, 98, 239, 398, 511, 797, 911});
   check(63, {7, 13, 15, 192, 227, 393, 439, 789, 993});
-  // mod_mul still does not support 64 bit modulos
+  check(64, {1, 2, 3, 4, 5, 6, 7, 10, 15, 310, 399, 712});
 }
 
 //#include <chrono>
@@ -118,10 +115,10 @@ TEST_F(PollardRhoFactorTest, DifferentBitsTest) {
 // TEST_F(PollardRhoFactorTest, Benchmark) {
 //  std::vector<int_t> values;
 //
-//  std::mt19937 gen(634842);
-//  std::uniform_int_distribution<int_t> dist(4, INT64_MAX);
+//  std::mt19937 engine(533439);
+//  std::uniform_int_distribution<int_t> gen_value(4, UINT64_MAX);
 //  while (values.size() < 3000) {
-//    const auto N = dist(gen);
+//    const auto N = gen_value(engine);
 //    if (!miller_rabin_primality_test(N))
 //      values.push_back(N);
 //  }
