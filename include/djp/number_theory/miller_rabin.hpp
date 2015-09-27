@@ -7,9 +7,8 @@
 #define DJP_NUMBER_THEORY_MILLER_RABIN_HPP
 
 #include <djp/number_theory/modular.hpp> // For mod_mul, mod_pow
-#include <algorithm>                     // For std::all_of
+#include <algorithm>                     // For std::none_of
 #include <initializer_list>              // For std::initializer_list
-#include <stdexcept>                     // For std::domain_error
 #include <cassert>                       // For assert
 #include <cstddef>                       // For std::size_t
 
@@ -22,8 +21,7 @@ namespace djp {
 ///
 /// \param n The number to be tested.
 ///
-/// \pre n > 0
-/// \pre n < 2^63
+/// \pre n < 318665857834031151167461 (~3.19E23)
 ///
 /// \par Complexity
 /// At most <tt>O(k * log^2(n))</tt> modular multiplications, where \c k is the
@@ -31,34 +29,31 @@ namespace djp {
 ///
 template <typename T>
 bool miller_rabin_primality_test(const T n) {
-
   if (n == 2)
     return true;
   if (n < 2 || n % 2 == 0)
     return false;
+  // Write n − 1 as 2^s*d (with d odd)
+  T d = n - 1;
+  size_t s = 0;
+  while (d % 2 == 0)
+    d /= 2, ++s;
 
-  // write n − 1 as 2^s*d with d odd by factoring powers of 2 from n − 1
-  const size_t s = __builtin_ctzll(n - 1);
-  const T d = (n - 1) >> s;
-
-  auto witness = [n, s, d](const T a) {
-    assert(a >= 2 && a < n);
+  auto reveals_compositeness = [n, s, d](const T a) {
+    assert(a >= 2 && a < n && "The witness is outside range");
     T x = mod_pow(a, d, n);
     if (x == 1 || x == n - 1)
-      return true;
-
-    for (size_t rep = 0; rep < s - 1; ++rep) {
+      return false;
+    for (size_t r = 1; r < s && x != 1; ++r) {
       x = mod_mul(x, x, n);
-      if (x == 1)
-        return false;
       if (x == n - 1)
-        return true;
+        return false;
     }
-    return false;
+    return true;
   };
-
-  auto test_with = [witness](std::initializer_list<T> ilist) {
-    return std::all_of(begin(ilist), end(ilist), witness);
+  auto test_with = [&](std::initializer_list<T> witnesses) {
+    return std::none_of(witnesses.begin(), witnesses.end(),
+                        reveals_compositeness);
   };
 
   if (n < 2047)
@@ -77,8 +72,8 @@ bool miller_rabin_primality_test(const T n) {
     return test_with({2, 3, 5, 7, 11, 13, 17});
   if (n < 3825123056546413051)
     return test_with({2, 3, 5, 7, 11, 13, 17, 19, 23});
-  // The first 12 primes taken as base are enough to test numbers less than
-  // 318665857834031151167461 ~ 3.18E23 i.e numbers having upto 78 bits.
+  // According to sequence A014233 in OEIS, the first 12 primes taken as base
+  // are enough to test numbers less than 318665857834031151167461 ~ 3.19E23.
   return test_with({2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37});
 }
 

@@ -7,7 +7,7 @@
 #define DJP_NUMBER_THEORY_POLLARD_RHO_FACTORIZATION_HPP
 
 #include <djp/number_theory/euclid.hpp>  // For gcd
-#include <djp/number_theory/modular.hpp> // For mod_mul
+#include <djp/number_theory/modular.hpp> // For mod_add, mod_mul
 
 namespace djp {
 
@@ -21,7 +21,6 @@ namespace djp {
 ///
 /// \pre \p n must be a composite number, that is, a positive integer greater
 /// than 1 that is not a prime number.
-/// \pre <tt>n < 2<sup>63</sup></tt>
 ///
 /// \returns A non-trivial factor of <tt>n</tt>.
 ///
@@ -32,13 +31,13 @@ template <typename T>
 T pollard_rho_factor(const T n) {
   auto find_factor = [&](const T c) {
     auto abs_diff = [](T x, T y) { return x < y ? y - x : x - y; };
-    T power = 1, lam = 1;
+    unsigned long power = 1, lam = 1;
     T x = 2, x_fixed = 2;
     T factor = 1;
     while (factor == 1) {
       if (power == lam)
         x_fixed = x, power *= 2, lam = 0;
-      x = (mod_mul(x, x, n) + c) % n;
+      x = mod_add(mod_mul(x, x, n), c, n);
       ++lam;
       factor = gcd(abs_diff(x, x_fixed), n);
     }
