@@ -21,13 +21,14 @@ namespace djp {
 /// \param sieve A sieve of prime numbers.
 ///
 /// \pre <tt>n > 0</tt>
-/// \pre \p sieve must be a sorted list containing the first
+/// \pre \p sieve must be a sorted vector containing the first
 /// <tt>sieve.size()</tt> prime numbers.
 ///
 /// \returns A sorted \c vector containing the prime factors of <tt>n</tt>.
 ///
 /// \throws std::logic_error if the sieve is not big enough to factor
-/// <tt>n</tt>.
+/// <tt>n</tt>. To ensure success, the square of <tt>sieve.back()</tt> should be
+/// greater than or equal to <tt>n</tt>.
 ///
 /// \par Complexity
 /// The time complexity is <tt>O(&radic;n)</tt>.
