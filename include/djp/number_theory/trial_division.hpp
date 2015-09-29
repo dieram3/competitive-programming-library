@@ -13,6 +13,10 @@ namespace djp {
 
 /// \brief Finds the prime factors of a positive integer.
 ///
+/// Uses the trial division algorithm to find the prime factors of <tt>n</tt>.
+/// It is the most laborious integer factorization algorithm, so should be used
+/// with discretion.
+///
 /// \param n The integer to be factored.
 /// \param sieve A sieve of prime numbers.
 ///
