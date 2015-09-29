@@ -21,7 +21,10 @@ protected:
 
 protected:
   vec_t factor(const int_t n) { return trial_division(n, sieve); }
-  void set_limit(const int_t limit) { sieve = sieve_of_eratosthenes(limit); }
+
+  void set_sieve_limit(const int_t limit) {
+    sieve = sieve_of_eratosthenes(limit);
+  }
 
 private:
   vec_t sieve;
@@ -29,7 +32,7 @@ private:
 } // end anonymous namespace
 
 TEST_F(TrialDivisionTest, SmallIntegersTest) {
-  set_limit(100);
+  set_sieve_limit(100);
   EXPECT_EQ(vec_t(), factor(1));
   EXPECT_EQ(vec_t({2}), factor(2));
   EXPECT_EQ(vec_t({3}), factor(3));
@@ -45,7 +48,7 @@ TEST_F(TrialDivisionTest, SmallIntegersTest) {
 }
 
 TEST_F(TrialDivisionTest, LargeIntegersTest) {
-  set_limit(66000);
+  set_sieve_limit(66000);
   EXPECT_EQ(vec_t({104729}), factor(104729));
   EXPECT_EQ(vec_t({1284287}), factor(1284287));
   EXPECT_EQ(vec_t({43, 1284287}), factor(55224341));
@@ -58,7 +61,7 @@ TEST_F(TrialDivisionTest, LargeIntegersTest) {
 }
 
 TEST_F(TrialDivisionTest, SquaresTest) {
-  set_limit(100);
+  set_sieve_limit(100);
   EXPECT_EQ(vec_t({7, 7}), factor(49));
   EXPECT_EQ(vec_t({3, 3, 3, 3}), factor(81));
   EXPECT_EQ(vec_t({13, 13}), factor(169));
@@ -67,7 +70,7 @@ TEST_F(TrialDivisionTest, SquaresTest) {
 }
 
 TEST_F(TrialDivisionTest, ExceptionsTest) {
-  set_limit(6); // Sieve contains 2,3,5
+  set_sieve_limit(6); // Sieve contains 2,3,5
   EXPECT_EQ(vec_t({5, 5}), factor(25));
   EXPECT_THROW(factor(29), std::logic_error);
 }
