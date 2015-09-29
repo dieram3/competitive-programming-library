@@ -6,8 +6,9 @@
 #ifndef DJP_NUMBER_THEORY_PRIME_FACTORS_HPP
 #define DJP_NUMBER_THEORY_PRIME_FACTORS_HPP
 
-#include <stack>  // For std::stack
-#include <vector> // For std::vector
+#include <algorithm> // For std::sort
+#include <stack>     // For std::stack
+#include <vector>    // For std::vector
 
 namespace djp {
 
@@ -20,8 +21,8 @@ namespace djp {
 /// \param n The integer to be factored.
 ///
 /// \param is_prime The underlying primality test function. Given a positive
-/// number \c m greater than 1, <tt>is_prime(m)</tt> must return \c true if \c m
-/// is a prime number.
+/// integer \c m greater than 1, <tt>is_prime(m)</tt> must return \c true if \c
+/// m is a prime number.
 ///
 /// \param get_factor The underlying integer factorization function. Given a
 /// composite number \c m, <tt>get_factor(m)</tt> must return a non-trivial
@@ -29,8 +30,8 @@ namespace djp {
 ///
 /// \pre <tt>n > 0</tt>.
 ///
-/// \returns An unordered list containing the prime factors of <tt>n</tt>. If
-/// <tt>n == 1</tt>, it returns an empty list.
+/// \returns A sorted vector containing the prime factors of <tt>n</tt>. If
+/// <tt>n == 1</tt>, it returns an empty vector.
 ///
 /// \par Complexity
 /// Exactly \c M applications of \p is_prime and <tt>(M-1)</tt> applications
@@ -54,6 +55,7 @@ std::vector<T> find_prime_factors(T n, F1 is_prime, F2 get_factor) {
       S.push(n / d);
     }
   }
+  std::sort(primes.begin(), primes.end()); // This line is optional.
   return primes;
 }
 

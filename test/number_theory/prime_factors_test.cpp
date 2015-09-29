@@ -8,7 +8,7 @@
 
 #include <djp/number_theory/miller_rabin.hpp>
 #include <djp/number_theory/shanks_factorization.hpp>
-#include <algorithm>        // For std::sort
+#include <algorithm>        // For std::is_sorted
 #include <initializer_list> // For std::initializer_list
 #include <vector>           // For std::vector
 #include <cstdint>          // For std::int_fast64_t
@@ -26,7 +26,7 @@ protected:
     auto is_prime = [](int_t n) { return miller_rabin_primality_test(n); };
     auto get_factor = [](int_t n) { return shanks_factor(n); };
     vec_t primes = find_prime_factors(N, is_prime, get_factor);
-    std::sort(primes.begin(), primes.end());
+    EXPECT_TRUE(std::is_sorted(primes.begin(), primes.end()));
     return primes;
   }
 
