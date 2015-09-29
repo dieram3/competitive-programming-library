@@ -13,8 +13,7 @@ namespace djp {
 /// \brief Computes the totient of a positive integer.
 ///
 /// Computes the totient of <tt>n</tt>, that is, the number of positive integers
-/// less than or equal to <tt>n</tt> that are relatively prime
-/// to <tt>n</tt>.
+/// less than or equal to <tt>n</tt> that are relatively prime to <tt>n</tt>.
 ///
 /// \param n The input integer.
 /// \param prime_factors A sorted \c vector containing the prime factors of

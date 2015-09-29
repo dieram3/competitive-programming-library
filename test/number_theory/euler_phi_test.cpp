@@ -47,7 +47,7 @@ TEST_F(EulerPhiTest, SmallIntegersTest) {
   EXPECT_EQ(4, totient(10));
   EXPECT_EQ(10, totient(11));
   EXPECT_EQ(16, totient(32));
-
+  EXPECT_EQ(32, totient(64));
   EXPECT_EQ(32, totient(120));
   EXPECT_EQ(1296, totient(1417));
   EXPECT_EQ(5986, totient(5987));

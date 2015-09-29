@@ -55,7 +55,7 @@ std::vector<T> find_prime_factors(T n, F1 is_prime, F2 get_factor) {
       S.push(n / d);
     }
   }
-  std::sort(primes.begin(), primes.end()); // This line is optional.
+  std::sort(primes.begin(), primes.end()); // Sorting is optional.
   return primes;
 }
 
