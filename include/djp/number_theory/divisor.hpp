@@ -8,110 +8,85 @@
 #ifndef DJP_NUMBER_THEORY_DIVISOR_HPP
 #define DJP_NUMBER_THEORY_DIVISOR_HPP
 
+#include <algorithm> // for std::find_if_not, std::sort
 #include <stdexcept> // for std::logic_error
 #include <vector>    // for std::vector
-#include <cassert>   // for assert
 #include <cstddef>   // for std::size_t
 
 namespace djp {
 
-/// \brief Counts how many divisors has a given number.
-/// \param n The number to be tested.
-/// \returns The number of divisors.
-/// \pre The number to be tested shall be positive.
-/// \sa find_divisors
+/// \brief Counts the number of positive divisors of a positive integer.
+///
+/// \param prime_factors A sorted vector containing the prime factors of the
+/// integer to be examined.
+///
+/// \returns The number of positive divisors.
+///
+/// \pre Complexity
+/// Linear in <tt>prime_factors.size()</tt>.
+///
 template <typename T>
-std::size_t count_divisors(T n) {
-  std::size_t ans = 1;
-  for (T d = 2; !(d > n / d); ++d) {
-    std::size_t exp = 0;
-    while (n % d == 0) {
-      n /= d;
-      ++exp;
-    }
-    ans *= (exp + 1);
+T count_divisors(const std::vector<T> &prime_factors) {
+  T ans = 1;
+  auto it = prime_factors.begin();
+  while (it != prime_factors.end()) {
+    auto is_current_pf = [it](const T &pf) { return pf == *it; };
+    auto next_it = std::find_if_not(it, prime_factors.end(), is_current_pf);
+    ans *= 1 + static_cast<T>(next_it - it);
+    it = next_it;
   }
-
-  return n > 1 ? 2 * ans : ans;
+  return ans;
 }
 
-/// \brief Counts how many divisors has a given number.
-/// \param n The number to be tested.
-/// \param sieve A sieve of prime numbers.
-/// \returns The number of divisors of \p n.
-/// \pre \p n shall be a positive integer.
-/// \pre \p sieve shall not be empty.
-/// \pre \p sieve shall be a sorted sequence of consecutive prime numbers
-/// starting from 2.
-/// \throws std::logic_error if the sieve was not sufficient to determine how
-/// many divisors has \p n. In order to avoid this, the square of the last prime
-/// of the sieve should be greater than or equal to number to \p n.
-/// \note A sieve containing all primes numbers less than 66000 is enough if the
-/// value of \p n fits in a 32-bit unsigned integer.
-/// \sa find_divisors
-/// \sa sieve_of_eratosthenes
-template <typename T, typename Range>
-std::size_t count_divisors(T n, const Range &sieve) {
-  assert(n > 0);
-
-  std::size_t ans = 1;
-  for (auto d : sieve) {
-    std::size_t exp = 0;
-    while (n % d == 0) {
-      n /= d;
-      ++exp;
+/// \brief Computes the divisor sum of a positive integer.
+///
+/// \param prime_factors A sorted vector containing the prime factors of the
+/// number to be examined.
+///
+/// \returns The sum of all positive divisors.
+///
+/// \par Complexity
+/// Linear in <tt>prime_factors.size()</tt>.
+///
+template <typename T>
+T sum_divisors(const std::vector<T> &prime_factors) {
+  T ans = 1;
+  auto it = prime_factors.begin();
+  while (it != prime_factors.end()) {
+    const T pf = *it;
+    T sum = 1, base = 1;
+    for (; it != prime_factors.end() && *it == pf; ++it) {
+      base *= pf;
+      sum += base;
     }
-    ans *= (exp + 1);
-
-    if (d > n / d)
-      return n > 1 ? 2 * ans : ans;
+    ans *= sum;
   }
-
-  throw std::logic_error("The sieve is too small");
+  return ans;
 }
 
-/// \brief Finds all divisors of a given number.
-/// \param n The number to be tested.
-/// \param sieve A sieve of prime numbers.
-/// \returns A \c vector containing all divisors of \p n. Note that the returned
-/// \c vector might be unordered.
-/// \pre \p n shall be a positive integer.
-/// \pre \p sieve shall not be empty.
-/// \pre \p sieve shall be a sorted sequence of consecutive prime numbers
-/// starting from 2.
-/// \throws std::logic_error if the sieve was not sufficient to determine how
-/// many divisors has \p n. In order to avoid this, the square of the last prime
-/// of the sieve should be greater than or equal to \p n.
-/// \note A sieve containing all primes numbers less than 66000 is enough if the
-/// value of \p n fits in a 32-bit unsigned integer.
-/// \sa count_divisors
-/// \sa sieve_of_eratosthenes
-template <typename T, typename Range>
-std::vector<T> find_divisors(T n, const Range &sieve) {
-  assert(n > 0);
-
-  std::vector<T> divisors = {1};
-
-  auto add_prime_factor = [&divisors](T prime, size_t begin, size_t end) {
-    for (size_t i = begin; i != end; ++i)
-      divisors.push_back(prime * divisors[i]);
-  };
-
-  for (auto d : sieve) {
-    const size_t size = divisors.size();
-    for (size_t begin = 0; n % d == 0; begin += size) {
-      add_prime_factor(d, begin, begin + size);
-      n /= d;
-    }
-
-    if (d > n / d) {
-      if (n > 1)
-        add_prime_factor(n, 0, divisors.size());
-      return divisors;
-    }
+/// \brief Generates all positive divisors of a positive integer.
+///
+/// \param prime_factors A sorted \c vector containing the prime factors of the
+/// integer to be examined.
+///
+/// \returns A sorted vector containing the generated divisors.
+///
+/// \par Complexity
+/// Linear in the number of divisors.
+///
+template <typename T>
+std::vector<T> generate_divisors(const std::vector<T> &prime_factors) {
+  std::vector<T> divs = {1};
+  size_t size = 1;
+  T last_pf = 0;
+  for (const auto pf : prime_factors) {
+    if (pf != last_pf)
+      size = divs.size(), last_pf = pf;
+    for (size_t end = divs.size(), i = end - size; i != end; ++i)
+      divs.push_back(pf * divs[i]);
   }
-
-  throw std::logic_error("The sieve is too small");
+  std::sort(divs.begin(), divs.end()); // Sorting is optional
+  return divs;
 }
 
 } // end namespace djp

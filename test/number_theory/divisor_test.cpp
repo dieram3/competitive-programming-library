@@ -6,77 +6,125 @@
 #include <djp/number_theory/divisor.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/number_theory/basics.hpp>       // for djp::multiply_less
-#include <djp/number_theory/eratosthenes.hpp> // for djp::sieve_of_eratosthenes
-#include <djp/utility/basics.hpp>             // for djp::repeat
+#include <djp/number_theory/eratosthenes.hpp>
+#include <djp/number_theory/trial_division.hpp>
 
-#include <algorithm> // for std::sort
-#include <random>    // for std::mt19937
-#include <stdexcept> // for std::logic_error
+#include <algorithm> // for std::is_sorted, std::adjacent_find
 #include <vector>    // for std::vector
-#include <cstddef>   // for std::size_t
-#include <cstdint>   //for std::uint32_t
+#include <cstdint>   // for std::uint32_t
 
 using namespace djp;
 
-template <class T>
-static std::size_t naive_count_divisors(T n) {
-  T d = 1;
-  std::size_t ans = 0;
-  for (; multiply_less(d, d, n); ++d) {
-    if (n % d == 0)
-      ans += 2;
-  }
-  if (n / d == d)
-    ++ans;
-  return ans;
-}
+namespace {
+class DivisorTest : public ::testing::Test {
+protected:
+  using int_t = std::uint32_t;
+  using vec_t = std::vector<int_t>;
 
-TEST(count_divisors, WorksWell) {
-  const auto sieve = sieve_of_eratosthenes<uint32_t>(66000);
-
-  for (uint32_t n = 1; n < 1000; ++n) {
-    const auto count0 = naive_count_divisors(n);
-    const auto count1 = count_divisors(n);
-    const auto count2 = count_divisors(n, sieve);
-    EXPECT_EQ(count0, count1) << "n=" << n;
-    EXPECT_EQ(count0, count2) << "n=" << n;
+protected:
+  void set_sieve_limit(const int_t limit) {
+    sieve = sieve_of_eratosthenes(limit);
   }
 
-  std::mt19937 gen;
-  repeat(1000, [&gen, &sieve] {
-    std::uniform_int_distribution<uint32_t> dist;
-    const auto n = dist(gen);
-    const auto count1 = count_divisors(n);
-    const auto count2 = count_divisors(n, sieve);
-    EXPECT_EQ(count1, count2) << "n=" << n;
-  });
+  int_t count_divs(const int_t n) {
+    const vec_t prime_factors = trial_division(n, sieve);
+    return count_divisors(prime_factors);
+  }
 
-  const auto small_sieve = sieve_of_eratosthenes<uint32_t>(30);
-  for (uint32_t n = 1; n < 842; ++n)
-    EXPECT_EQ(naive_count_divisors(n), count_divisors(n, small_sieve));
-  EXPECT_EQ(2, count_divisors(827, small_sieve));
-  EXPECT_EQ(2, count_divisors(829, small_sieve));
-  EXPECT_EQ(2, count_divisors(839, small_sieve));
-  EXPECT_THROW(count_divisors(853, small_sieve), std::logic_error);
+  vec_t gen_divs(const int_t n) {
+    const vec_t prime_factors = trial_division(n, sieve);
+    return generate_divisors(prime_factors);
+  }
+
+  int_t sum_divs(const int_t n) {
+    const vec_t prime_factors = trial_division(n, sieve);
+    return sum_divisors(prime_factors);
+  }
+
+  void check_divisors(const int_t n) {
+    const auto prime_factors = trial_division(n, sieve);
+    const vec_t divs = generate_divisors(prime_factors);
+    EXPECT_EQ(count_divisors(prime_factors), divs.size());
+    EXPECT_TRUE(std::is_sorted(divs.begin(), divs.end()));
+    EXPECT_TRUE(divs.end() == std::adjacent_find(divs.begin(), divs.end()))
+        << "There are repeated divisors";
+    for (const int_t d : divs)
+      EXPECT_EQ(0, n % d) << d << " is not a divisor of " << n;
+  }
+
+private:
+  vec_t sieve;
+};
+} // end anonymous namespace
+
+TEST_F(DivisorTest, CountDivisorsTest) {
+  set_sieve_limit(1000); // Allows factoring integers upto 1,000,000 approx.
+  EXPECT_EQ(1, count_divs(1));
+  EXPECT_EQ(2, count_divs(2));
+  EXPECT_EQ(2, count_divs(3));
+  EXPECT_EQ(3, count_divs(4));
+  EXPECT_EQ(2, count_divs(5));
+  EXPECT_EQ(4, count_divs(6));
+  EXPECT_EQ(2, count_divs(7));
+  EXPECT_EQ(4, count_divs(8));
+
+  // Some highly composite number (HCN)
+  EXPECT_EQ(12, count_divs(60));
+  EXPECT_EQ(90, count_divs(25200));
+  EXPECT_EQ(108, count_divs(50400));
+  EXPECT_EQ(216, count_divs(554400));
+  EXPECT_EQ(240, count_divs(720720));
+
+  // Some primes
+  EXPECT_EQ(2, count_divs(43));
+  EXPECT_EQ(2, count_divs(101));
+  EXPECT_EQ(2, count_divs(6719));
 }
 
-TEST(find_divisors, WorksWell) {
-  auto sieve = sieve_of_eratosthenes<uint32_t>(66000);
-  using vec = std::vector<std::uint32_t>;
+TEST_F(DivisorTest, SumDivisorsTest) {
+  set_sieve_limit(66000); // Allows factoring 32-bit integers.
 
-  auto divisors_of = [&sieve](std::uint32_t n) {
-    auto divs = djp::find_divisors(n, sieve);
-    std::sort(divs.begin(), divs.end());
-    return divs;
-  };
+  EXPECT_EQ(1, sum_divs(1));
+  EXPECT_EQ(3, sum_divs(2));
+  EXPECT_EQ(4, sum_divs(3));
+  EXPECT_EQ(7, sum_divs(4));
+  EXPECT_EQ(6, sum_divs(5));
+  EXPECT_EQ(12, sum_divs(6));
+  EXPECT_EQ(15, sum_divs(8));
+  EXPECT_EQ(28, sum_divs(12));
 
-  EXPECT_EQ(vec({1, 2}), divisors_of(2));
-  EXPECT_EQ(vec({1, 2, 3, 4, 6, 12}), divisors_of(12));
-  EXPECT_EQ(vec({1, 2, 3, 4, 6, 8, 12, 24}), divisors_of(24));
-  EXPECT_EQ(vec({1, 4729, 21379, 101101291}), divisors_of(101101291));
+  EXPECT_EQ(168, sum_divs(60));
+  EXPECT_EQ(99944, sum_divs(25200));
+  EXPECT_EQ(203112, sum_divs(50400));
+  EXPECT_EQ(2437344, sum_divs(554400));
+  EXPECT_EQ(3249792, sum_divs(720720));
 
-  EXPECT_EQ(vec({1, INT32_MAX}), divisors_of(INT32_MAX));
-  EXPECT_EQ(vec({1, 2, 4, 13, 26, 52}), divisors_of(52));
-  EXPECT_EQ(32, divisors_of(UINT32_MAX).size());
+  EXPECT_EQ(44, sum_divs(43));
+  EXPECT_EQ(102, sum_divs(101));
+  EXPECT_EQ(6720, sum_divs(6719));
+
+  EXPECT_EQ(1619766720, sum_divs(1073741822)); // Overflow test 1
+  EXPECT_EQ(1074106440, sum_divs(1073741819)); // Overflow test 2 (2969*361651)
+  EXPECT_EQ(3221224800, sum_divs(2952789389)); // Overflow test 3 (11*268435399)
+}
+
+TEST_F(DivisorTest, GenerateDivisorsTest) {
+  set_sieve_limit(11000); // Allows factoring integers upto 121,000,000 approx.
+
+  EXPECT_EQ(vec_t({1}), gen_divs(1));
+  EXPECT_EQ(vec_t({1, 2}), gen_divs(2));
+  EXPECT_EQ(vec_t({1, 2, 3, 4, 6, 12}), gen_divs(12));
+  EXPECT_EQ(vec_t({1, 2, 3, 4, 6, 8, 12, 24}), gen_divs(24));
+  EXPECT_EQ(vec_t({1, 4729, 21379, 101101291}), gen_divs(101101291));
+  EXPECT_EQ(vec_t({1, 2, 4, 13, 26, 52}), gen_divs(52));
+
+  check_divisors(60);
+  check_divisors(25200);
+  check_divisors(50400);
+  check_divisors(554400);
+  check_divisors(720720);
+
+  EXPECT_EQ(vec_t({1, 43}), gen_divs(43));
+  EXPECT_EQ(vec_t({1, 101}), gen_divs(101));
+  EXPECT_EQ(vec_t({1, 6719}), gen_divs(6719));
 }
