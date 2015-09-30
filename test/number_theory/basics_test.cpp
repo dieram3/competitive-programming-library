@@ -6,10 +6,7 @@
 #include <djp/number_theory/basics.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/utility/basics.hpp> // for djp::repeat
-#include <random>  // for std::mt19937, std::uniform_int_distribution
-#include <cstdint> // for std::uint32_t, std::uint_fast64_t
-#include <cstdio>  // for std::sprintf
+#include <cstdint> // for std::uint_fast64_t, UINT64_MAX, UINT64_C
 
 using namespace djp;
 
@@ -23,47 +20,41 @@ TEST(CeilDivTest, WorksWell) {
 }
 
 TEST(MultiplyLessTest, WorksWell) {
-  EXPECT_FALSE(multiply_less(0, 0, 0));
-  EXPECT_FALSE(multiply_less(0, 1, 0));
-  EXPECT_FALSE(multiply_less(1, 0, 0));
   EXPECT_TRUE(multiply_less(0, 0, 1));
   EXPECT_TRUE(multiply_less(0, 1, 1));
   EXPECT_TRUE(multiply_less(1, 0, 1));
+  EXPECT_TRUE(multiply_less(3, 3, 10));
+  EXPECT_TRUE(multiply_less(5, 5, 26));
+  EXPECT_TRUE(multiply_less(5, 10, 54));
+  EXPECT_TRUE(multiply_less(10, 5, 54));
+
+  EXPECT_FALSE(multiply_less(0, 0, 0));
+  EXPECT_FALSE(multiply_less(0, 1, 0));
+  EXPECT_FALSE(multiply_less(1, 0, 0));
   EXPECT_FALSE(multiply_less(65536u, 65536u, 4294967295u));
   EXPECT_FALSE(multiply_less(3, 3, 9));
-  EXPECT_TRUE(multiply_less(3, 3, 10));
   EXPECT_FALSE(multiply_less(4, 3, 10));
+  EXPECT_FALSE(multiply_less(7, 5, 35));
+  EXPECT_FALSE(multiply_less(5, 7, 35));
 }
 
 TEST(MultiplyGreaterTest, WorksWell) {
+  EXPECT_TRUE(multiply_greater(65536u, 65536u, 4294967295u));
+  EXPECT_TRUE(multiply_greater(4, 3, 10));
+  EXPECT_TRUE(multiply_greater(4, 2, 7));
+  EXPECT_TRUE(multiply_greater(5, 2, 9));
+  EXPECT_TRUE(multiply_greater(2, 5, 9));
+  EXPECT_TRUE(multiply_greater(10, 5, 46));
+  EXPECT_TRUE(multiply_greater(5, 10, 46));
+
   EXPECT_FALSE(multiply_greater(0, 0, 0));
   EXPECT_FALSE(multiply_greater(0, 1, 0));
   EXPECT_FALSE(multiply_greater(1, 0, 0));
   EXPECT_FALSE(multiply_greater(0, 0, 1));
   EXPECT_FALSE(multiply_greater(0, 1, 1));
   EXPECT_FALSE(multiply_greater(1, 0, 1));
-  EXPECT_TRUE(multiply_greater(65536u, 65536u, 4294967295u));
   EXPECT_FALSE(multiply_greater(3, 3, 9));
   EXPECT_FALSE(multiply_greater(3, 3, 10));
-  EXPECT_TRUE(multiply_greater(4, 3, 10));
-}
-
-TEST(MultiplyComparatorsTest, WorksWell) {
-
-  std::mt19937 gen;
-
-  // Pathological cases are difficult to find thereby many repetitions
-  // are needed to check that multiply_greater works well.
-  repeat(12345, [&gen] {
-    std::uniform_int_distribution<uint32_t> dist(0, UINT16_MAX);
-    const auto a = dist(gen);
-    const auto b = dist(gen);
-    const auto c = dist(gen);
-    char info[128];
-    std::sprintf(info, "a=%zu,b=%zu,c=%zu", size_t(a), size_t(b), size_t(c));
-    EXPECT_EQ(a * b > c, multiply_greater(a, b, c)) << info;
-    EXPECT_EQ(a * b < c, multiply_less(a, b, c)) << info;
-  });
 }
 
 TEST(IPowTest, WorksWell) {

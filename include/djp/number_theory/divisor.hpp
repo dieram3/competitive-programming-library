@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez June 2015
+//          Copyright Diego Ramírez June, September 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -9,7 +9,6 @@
 #define DJP_NUMBER_THEORY_DIVISOR_HPP
 
 #include <algorithm> // for std::find_if_not, std::sort
-#include <stdexcept> // for std::logic_error
 #include <vector>    // for std::vector
 #include <cstddef>   // for std::size_t
 
@@ -32,7 +31,7 @@ T count_divisors(const std::vector<T> &prime_factors) {
   while (it != prime_factors.end()) {
     auto is_current_pf = [it](const T &pf) { return pf == *it; };
     auto next_it = std::find_if_not(it, prime_factors.end(), is_current_pf);
-    ans *= 1 + static_cast<T>(next_it - it);
+    ans *= static_cast<T>(1 + (next_it - it));
     it = next_it;
   }
   return ans;

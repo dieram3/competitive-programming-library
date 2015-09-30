@@ -22,7 +22,7 @@ constexpr T ceil_div(T a, T b) {
 /// \pre a, b, c shall not be negative numbers.
 template <typename T>
 constexpr bool multiply_less(T a, T b, T c) {
-  return b == 0 ? a * b < c : a < ceil_div(c, b);
+  return b == 0 ? c > 0 : a < ceil_div(c, b);
 }
 
 /// \brief Safely checks if <tt>a * b > c</tt>
