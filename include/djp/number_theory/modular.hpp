@@ -97,7 +97,9 @@ template <typename T>
 T mod_pow(T base, T exp, T m) {
   assert(base >= 0 && base < m);
   assert(exp >= 0);
-  T result = 1;
+  if (m == 1)
+    return 0;
+  T result = 1; // Since m > 1, then 1 == 1 % m
   while (exp > 0) {
     if (exp % 2 == 1)
       result = mod_mul(result, base, m);
