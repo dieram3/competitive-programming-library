@@ -12,6 +12,7 @@
 using namespace djp;
 
 TEST(ModAddTest, WorksWell) {
+  EXPECT_EQ(0, mod_add(0, 0, 1));
   EXPECT_EQ(0, mod_add(0, 0, 31));
   EXPECT_EQ(1, mod_add(0, 1, 31));
   EXPECT_EQ(2, mod_add(2, 0, 31));
@@ -33,6 +34,7 @@ TEST(ModAddTest, WorksWell) {
 }
 
 TEST(ModSubTest, WorksWell) {
+  EXPECT_EQ(0, mod_sub(0, 0, 1));
   EXPECT_EQ(0, mod_sub(0, 0, 31));
   EXPECT_EQ(0, mod_sub(15, 15, 31));
   EXPECT_EQ(1, mod_sub(0, 30, 31));
@@ -53,6 +55,7 @@ TEST(ModSubTest, WorksWell) {
 }
 
 TEST(ModMulTest, WorksWell) {
+  EXPECT_EQ(0, mod_mul(0, 0, 1));
   EXPECT_EQ(0, mod_mul(0, 0, 19));
   EXPECT_EQ(1, mod_mul(1, 1, 19));
   EXPECT_EQ(18, mod_mul(1, 18, 19));
@@ -83,6 +86,16 @@ TEST(ModPowTest, WorksWell) {
   EXPECT_EQ(90, mod_pow(331, 14233, 2011));
   EXPECT_EQ(10817, mod_pow(2017, 1238912398, 65536));
   EXPECT_EQ(8001, mod_pow(25237, 131312, 65536));
+
+  // Special case 1: modulo 1
+  EXPECT_EQ(0, mod_pow(0, 0, 1));
+  EXPECT_EQ(0, mod_pow(0, 1, 1));
+  EXPECT_EQ(0, mod_pow(0, 2, 1));
+
+  // Special case 2: powers of zero
+  EXPECT_EQ(1, mod_pow(0, 0, 11));
+  EXPECT_EQ(0, mod_pow(0, 1, 11));
+  EXPECT_EQ(0, mod_pow(0, 2, 11));
 }
 
 namespace {
