@@ -1,5 +1,6 @@
 add_unittest("number_theory"
   "basics_test.cpp"
+  "chinese_remainder_theorem_test.cpp"
   "divisor_test.cpp"
   "eratosthenes_test.cpp"
   "euclid_test.cpp"
