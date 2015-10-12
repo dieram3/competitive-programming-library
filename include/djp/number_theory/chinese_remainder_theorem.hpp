@@ -31,6 +31,7 @@ namespace djp {
 /// \param a The sequence of remainders.
 /// \param m The sequence of modulos.
 ///
+/// \pre <tt>a.size() >= 1</tt>
 /// \pre <tt>a.size() == m.size()</tt>
 /// \pre <tt>a[i] >= 0 && a[i] < m[i]</tt>, for all <tt>i</tt>.
 /// \pre The product of the <tt>m<sub>i</sub></tt> will be representable as a

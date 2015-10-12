@@ -40,7 +40,6 @@ protected:
                                 << " m[i]=" << m[i];
     }
     EXPECT_LT(x, prod);
-    // std::cout << "x=" << x << " mod " << prod << '\n';
   }
 };
 } // end anonymous namespace
