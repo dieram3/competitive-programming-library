@@ -7,6 +7,7 @@
 #include <gtest/gtest.h>
 
 #include <cstddef> // For std::size_t
+#include <cstdint> // For std::uint32_t, std::uint64_t
 
 using namespace djp;
 using std::size_t;

@@ -25,8 +25,9 @@ namespace djp {
 /// Quadratic in <tt>n_max</tt>.
 ///
 /// \note
-/// If <tt>n_max <= 34</tt>, all the computed values fit in a 32-bit integer.
-/// If <tt>n_max <= 67</tt>, all the computed values fit in a 64-bit integer.
+/// If <tt>n_max <= 34</tt>, all the computed values fit in an unsigned 32-bit
+/// integer. If <tt>n_max <= 67</tt>, all the computed values fit in an unsigned
+/// 64-bit integer.
 ///
 template <typename T>
 matrix<T> gen_binomial_coefficient_matrix(const T n_max) {
