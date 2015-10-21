@@ -8,84 +8,173 @@
 
 #include <djp/number_theory/euclid.hpp> // For djp::gcd
 #include <algorithm>                    // For std::for_each
-#include <stdexcept>                    // For std::domain_error
 #include <vector>                       // For std::vector
+#include <cassert>                      // For assert
 
 namespace djp {
 
+/// \brief Integer like class to represent rational numbers.
+///
+/// Objects of this class represent a rational number by storing the numerator
+/// and the denominator as separated integers of type <tt>T</tt>. Rational
+/// numbers are kept in its normalized form, that is, the numerator and
+/// the denominator have no common factor other than 1 and the denominator is
+/// positive.
+///
 template <typename T>
 class rational {
   T num, den;
-  struct raw_tag {};
+  struct no_reduction_tag {};
 
 private:
-  rational(const T &num_, const T &den_, raw_tag) : num{num_}, den{den_} {}
+  void set_reduced_values(const T &a, const T &b) {
+    // assert(gcd(a, b) == 1);
+    assert(b != 0 && "Denominator cannot be zero");
+    b < 0 ? (num = -a, den = -b) : (num = a, den = b);
+  }
+  rational(const T &a, const T &b, no_reduction_tag) {
+    set_reduced_values(a, b);
+  }
 
 public:
-  rational(const T &num_ = 0) : num{num_}, den{1} {}
+  /// \brief Constructs a rational number with the given integer.
+  ///
+  /// Uses the given value as the numerator and \c 1 as the denominator.
+  ///
+  /// \param value The input integer.
+  ///
+  rational(const T &value = 0) : num{value}, den{1} {}
+
+  /// \brief Constructs a rational number with the given numerator and
+  /// denominator.
+  ///
+  /// \param a The numerator.
+  /// \param b The denominator.
+  ///
+  /// \pre <tt>b != 0</tt>.
+  ///
   rational(const T &a, const T &b) {
-    if (b == 0)
-      throw std::domain_error("Rational: Denominator cannot be zero");
-    b < 0 ? (num = -a, den = -b) : (num = a, den = b);
-    const T g = gcd(num, den);
-    num /= g;
-    den /= g;
+    assert(b != 0 && "Denominator cannot be zero");
+    const T g = gcd(a, b);
+    set_reduced_values(a / g, b / g);
   }
 
+  /// \brief Returns the stored numerator of <tt>*this</tt>.
+  ///
   T numerator() const { return num; }
+
+  /// \brief Returns the stored denominator of <tt>*this</tt>.
+  ///
   T denominator() const { return den; }
 
-  rational reciprocal() const {
-    if (num == 0)
-      throw std::domain_error("Rational: Zero has no reciprocal");
-    return num < 0 ? rational(-den, -num, raw_tag{})
-                   : rational(den, num, raw_tag{});
+  /// \brief Returns the reciprocal of a rational number.
+  ///
+  /// \param q The input rational number.
+  ///
+  /// \pre <tt>q != 0</tt>
+  ///
+  /// \returns The reciprocal of <tt>q</tt>.
+  ///
+  friend rational reciprocal(const rational &q) {
+    assert(q.num != 0);
+    return rational(q.den, q.num, no_reduction_tag{});
   }
 
-  friend rational operator+(const rational &x, const rational &y) {
-    const T g = gcd(x.den, y.den);
-    const T a = x.num * (y.den / g) + y.num * (x.den / g);
-    const T b = x.den / g * y.den;
+  /// \brief Adds a rational number to another.
+  ///
+  /// \param lhs The left hand side operand.
+  /// \param rhs The right hand side operand.
+  ///
+  /// \returns The result of <tt>(lhs + rhs)</tt>.
+  ///
+  friend rational operator+(const rational &lhs, const rational &rhs) {
+    const T g = gcd(lhs.den, rhs.den);
+    const T a = lhs.num * (rhs.den / g) + rhs.num * (lhs.den / g);
+    const T b = lhs.den / g * rhs.den;
     return rational(a, b);
   }
 
-  friend rational operator-(const rational &x, const rational &y) {
-    const T g = gcd(x.den, y.den);
-    const T a = x.num * (y.den / g) - y.num * (x.den / g);
-    const T b = x.den / g * y.den;
+  /// \brief Subtracts a rational number from another.
+  ///
+  /// \param lhs The left hand side operand.
+  /// \param rhs The right hand side operand.
+  ///
+  /// \returns The result of <tt>(lhs - rhs)</tt>.
+  ///
+  friend rational operator-(const rational &lhs, const rational &rhs) {
+    const T g = gcd(lhs.den, rhs.den);
+    const T a = lhs.num * (rhs.den / g) - rhs.num * (lhs.den / g);
+    const T b = lhs.den / g * rhs.den;
     return rational(a, b);
   }
 
-  friend rational operator*(const rational &x, const rational &y) {
-    const T g1 = gcd(x.num, y.den);
-    const T g2 = gcd(x.den, y.num);
-    const T a = (x.num / g1) * (y.num / g2);
-    const T b = (x.den / g2) * (y.den / g1);
-    return rational(a, b, raw_tag{});
+  /// \brief Multiplies a rational number by another.
+  ///
+  /// \param lhs The left hand side operand.
+  /// \param rhs The right hand side operand.
+  ///
+  /// \returns The result of <tt>(lhs * rhs)</tt>.
+  ///
+  friend rational operator*(const rational &lhs, const rational &rhs) {
+    const T g1 = gcd(lhs.num, rhs.den);
+    const T g2 = gcd(lhs.den, rhs.num);
+    const T a = (lhs.num / g1) * (rhs.num / g2);
+    const T b = (lhs.den / g2) * (rhs.den / g1);
+    return rational(a, b, no_reduction_tag{});
   }
 
-  friend rational operator/(const rational &x, const rational &y) {
-    if (y.num == 0)
-      throw std::domain_error("Rational: Division by zero");
-    const T g1 = gcd(x.num, y.num);
-    const T g2 = gcd(x.den, y.den);
-    T a = (x.num / g1) * (y.den / g2);
-    T b = (x.den / g2) * (y.num / g1);
-    return b < 0 ? rational(-a, -b, raw_tag{}) : rational(a, b, raw_tag{});
+  /// \brief Divides a rational number by another.
+  ///
+  /// \param lhs The left hand side operand.
+  /// \param rhs The right hand side operand.
+  ///
+  /// \pre <tt>rhs != 0</tt>
+  ///
+  /// \returns The result of <tt>(lhs / rhs)</tt>.
+  ///
+  friend rational operator/(const rational &lhs, const rational &rhs) {
+    assert(rhs.num != 0);
+    const T g1 = gcd(lhs.num, rhs.num);
+    const T g2 = gcd(lhs.den, rhs.den);
+    const T a = (lhs.num / g1) * (rhs.den / g2);
+    const T b = (lhs.den / g2) * (rhs.num / g1);
+    return rational(a, b, no_reduction_tag{});
   }
 };
 
+/// \brief Reduces the continued fraction representation of a rational number to
+/// its normal form.
+///
+/// \param coeffs The coefficients of the continued fraction representation.
+///
+/// \pre <tt>vec.size() > 0</tt>.
+///
+/// \returns The reduced rational number.
+///
 template <typename T>
 rational<T> evaluate_continued_fraction(const std::vector<T> &coeffs) {
   rational<T> r = coeffs.back();
   std::for_each(coeffs.rbegin() + 1, coeffs.rend(),
-                [&](const T &ai) { r = rational<T>(ai) + r.reciprocal(); });
+                [&](const T &ai) { r = rational<T>(ai) + reciprocal(r); });
   return r;
 }
 
+/// \brief Finds the continued fraction representation of a rational number.
+///
+/// Uses the Euclidean algorithm to find the coefficients of the continued
+/// fraction representation of <tt>q</tt>. If \p q is a negative number, the
+/// result will be the negative coefficients of <tt>-q</tt>.
+///
+/// \param q The input rational number.
+/// \param[out] out_it The beginning of the destination range. The coefficients
+/// <tt>a<sub>0</sub>, a<sub>1</sub>, ..., a<sub>n</sub></tt> of the continued
+/// fraction representation will be copied to this range.
+///
+/// \returns Output iterator to the element past the last element copied.
+///
 template <typename T, typename OutputIt>
-OutputIt continued_fraction(const rational<T> &r, OutputIt out_it) {
-  T a = r.numerator(), b = r.denominator(), tmp;
+OutputIt continued_fraction(const rational<T> &q, OutputIt out_it) {
+  T a = q.numerator(), b = q.denominator(), tmp;
   while (b != 0) {
     *out_it++ = a / b;
     tmp = b, b = a % b, a = tmp;

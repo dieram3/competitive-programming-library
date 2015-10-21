@@ -70,18 +70,13 @@ TEST_F(RationalTest, RatioConstructorTest) {
   EXPECT_EQ(raw_ratio_t(-2, 1), rational_t(-2, 1));
   EXPECT_EQ(raw_ratio_t(-3, 2), rational_t(12, -8));
   EXPECT_EQ(raw_ratio_t(3, 2), rational_t(-15, -10));
-
-  EXPECT_THROW(rational_t(4, 0), std::domain_error);
-  EXPECT_THROW(rational_t(0, 0), std::domain_error);
 }
 
 TEST_F(RationalTest, ReciprocalTest) {
-  EXPECT_EQ(raw_ratio_t(5, 13), rational_t(13, 5).reciprocal());
-  EXPECT_EQ(raw_ratio_t(-5, 6), rational_t(12, -10).reciprocal());
-  EXPECT_EQ(raw_ratio_t(-2, 1), rational_t(-5, 10).reciprocal());
-  EXPECT_EQ(raw_ratio_t(5, 7), rational_t(-7, -5).reciprocal());
-
-  EXPECT_THROW(rational_t(0).reciprocal(), std::domain_error);
+  EXPECT_EQ(raw_ratio_t(5, 13), reciprocal(rational_t(13, 5)));
+  EXPECT_EQ(raw_ratio_t(-5, 6), reciprocal(rational_t(12, -10)));
+  EXPECT_EQ(raw_ratio_t(-2, 1), reciprocal(rational_t(-5, 10)));
+  EXPECT_EQ(raw_ratio_t(5, 7), reciprocal(rational_t(-7, -5)));
 }
 
 TEST_F(RationalTest, AdditionTest) {
@@ -129,9 +124,6 @@ TEST_F(RationalTest, DivisionTest) {
   EXPECT_EQ(raw_ratio_t(-1, 2), rational_t(49, 60) / rational_t(-49, 30));
   EXPECT_EQ(raw_ratio_t(-15, 1), rational_t(5) / rational_t(-1, 3));
   EXPECT_EQ(raw_ratio_t(5, 4), rational_t(15) / rational_t(12));
-
-  EXPECT_THROW(rational_t(0) / rational_t(0), std::domain_error);
-  EXPECT_THROW(rational_t(3) / rational_t(0), std::domain_error);
 }
 
 TEST_F(RationalTest, EvaluateContinuedFractionTest) {
@@ -168,23 +160,24 @@ TEST_F(RationalTest, ContinuedFractionTest) {
 //#include <chrono>
 //#include <random>
 // TEST_F(RationalTest, Benchmark) {
-//  std::vector<rational_t> rationals(10000);
-//  std::mt19937 engine;
-//  std::uniform_int_distribution<std::uint64_t> gen;
+//  using uint_t = std::uint_fast64_t;
+//  std::vector<rational<uint_t>> rationals(10000);
+//  std::mt19937 engine(234);
+//  std::uniform_int_distribution<uint_t> gen;
 //  for (auto &elem : rationals) {
 //    const auto num = gen(engine);
 //    const auto den = gen(engine);
-//    elem = rational_t(num, den);
+//    elem = rational<uint_t>(num, den);
 //  }
 //  using namespace std::chrono;
-//  std::uint64_t checksum1 = 0;
-//  std::uint64_t checksum2 = 0;
-//  std::vector<std::uint64_t> coeffs;
+//  uint_t checksum1 = 0;
+//  uint_t checksum2 = 0;
+//  std::vector<uint_t> coeffs;
 //  auto start = steady_clock::now();
 //  for (const auto &r : rationals) {
 //    coeffs.clear();
 //    continued_fraction(r, std::back_inserter(coeffs));
-//    checksum1 += std::accumulate(coeffs.begin(), coeffs.end(), UINT64_C(0));
+//    checksum1 += std::accumulate(coeffs.begin(), coeffs.end(), uint_t{0});
 //    checksum2 += coeffs.size();
 //  }
 //  auto end = steady_clock::now();
