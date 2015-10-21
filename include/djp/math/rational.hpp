@@ -39,7 +39,7 @@ private:
 public:
   /// \brief Constructs a rational number with the given integer.
   ///
-  /// Uses the given value as the numerator and \c 1 as the denominator.
+  /// Uses the given integer as the numerator and \c 1 as the denominator.
   ///
   /// \param value The input integer.
   ///
@@ -69,15 +69,15 @@ public:
 
   /// \brief Returns the reciprocal of a rational number.
   ///
-  /// \param q The input rational number.
+  /// \param r The input rational number.
   ///
-  /// \pre <tt>q != 0</tt>
+  /// \pre <tt>r != 0</tt>
   ///
-  /// \returns The reciprocal of <tt>q</tt>.
+  /// \returns The reciprocal of <tt>r</tt>.
   ///
-  friend rational reciprocal(const rational &q) {
-    assert(q.num != 0);
-    return rational(q.den, q.num, no_reduction_tag{});
+  friend rational reciprocal(const rational &r) {
+    assert(r.num != 0);
+    return rational(r.den, r.num, no_reduction_tag{});
   }
 
   /// \brief Adds a rational number to another.
@@ -163,7 +163,8 @@ rational<T> evaluate_continued_fraction(const std::vector<T> &coeffs) {
 ///
 /// Uses the Euclidean algorithm to find the coefficients of the continued
 /// fraction representation of <tt>q</tt>. If \p q is a negative number, the
-/// result will be the negative coefficients of <tt>-q</tt>.
+/// resultant coefficients will be the same of <tt>-q</tt> but with its values
+/// negated.
 ///
 /// \param q The input rational number.
 /// \param[out] out_it The beginning of the destination range. The coefficients

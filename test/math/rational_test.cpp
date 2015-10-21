@@ -6,7 +6,9 @@
 #include <djp/math/rational.hpp>
 #include <gtest/gtest.h>
 
-#include <cstddef> // for std::int_fast64_t
+#include <iterator> // For std::back_inserter
+#include <vector>   // For std::vector
+#include <cstddef>  // for std::int_fast64_t
 
 using namespace djp;
 
@@ -24,15 +26,15 @@ static bool operator==(const raw_ratio<T> &lhs, const rational<T> &rhs) {
 }
 
 template <typename T>
-static std::ostream &operator<<(std::ostream &os, const raw_ratio<T> &q) {
-  return os << q.num << '/' << q.den;
+static std::ostream &operator<<(std::ostream &os, const raw_ratio<T> &r) {
+  return os << r.num << '/' << r.den;
 }
 } // end anonymous namespace
 
 namespace djp {
 template <typename T>
-static std::ostream &operator<<(std::ostream &os, const rational<T> &q) {
-  return os << q.numerator() << '/' << q.denominator();
+static std::ostream &operator<<(std::ostream &os, const rational<T> &r) {
+  return os << r.numerator() << '/' << r.denominator();
 }
 } // end namespace djp
 
@@ -156,33 +158,3 @@ TEST_F(RationalTest, ContinuedFractionTest) {
   EXPECT_EQ(vec_t({3, 14, 1, 19, 1, 1, 1, 1, 3, 1, 1, 5, 1, 92, 1, 3, 5, 6, 4}),
             cfrac(12874195198, 4197810981));
 }
-
-//#include <chrono>
-//#include <random>
-// TEST_F(RationalTest, Benchmark) {
-//  using uint_t = std::uint_fast64_t;
-//  std::vector<rational<uint_t>> rationals(10000);
-//  std::mt19937 engine(234);
-//  std::uniform_int_distribution<uint_t> gen;
-//  for (auto &elem : rationals) {
-//    const auto num = gen(engine);
-//    const auto den = gen(engine);
-//    elem = rational<uint_t>(num, den);
-//  }
-//  using namespace std::chrono;
-//  uint_t checksum1 = 0;
-//  uint_t checksum2 = 0;
-//  std::vector<uint_t> coeffs;
-//  auto start = steady_clock::now();
-//  for (const auto &r : rationals) {
-//    coeffs.clear();
-//    continued_fraction(r, std::back_inserter(coeffs));
-//    checksum1 += std::accumulate(coeffs.begin(), coeffs.end(), uint_t{0});
-//    checksum2 += coeffs.size();
-//  }
-//  auto end = steady_clock::now();
-//  auto elapsed = duration_cast<milliseconds>(end - start);
-//  std::cout << "Ellapsed time: " << elapsed.count() << " ms\n";
-//  std::cout << "Checksum1: " << checksum1 << '\n';
-//  std::cout << "Checksum2: " << checksum2 << '\n';
-//}
