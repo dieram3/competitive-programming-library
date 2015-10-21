@@ -162,11 +162,11 @@ rational<T> evaluate_continued_fraction(const std::vector<T> &coeffs) {
 /// \brief Finds the continued fraction representation of a rational number.
 ///
 /// Uses the Euclidean algorithm to find the coefficients of the continued
-/// fraction representation of <tt>q</tt>. If \p q is a negative number, the
-/// resultant coefficients will be the same of <tt>-q</tt> but with its values
+/// fraction representation of <tt>r</tt>. If \p r is a negative number, the
+/// resultant coefficients will be the same of <tt>-r</tt> but with its values
 /// negated.
 ///
-/// \param q The input rational number.
+/// \param r The input rational number.
 /// \param[out] out_it The beginning of the destination range. The coefficients
 /// <tt>a<sub>0</sub>, a<sub>1</sub>, ..., a<sub>n</sub></tt> of the continued
 /// fraction representation will be copied to this range.
@@ -174,8 +174,8 @@ rational<T> evaluate_continued_fraction(const std::vector<T> &coeffs) {
 /// \returns Output iterator to the element past the last element copied.
 ///
 template <typename T, typename OutputIt>
-OutputIt continued_fraction(const rational<T> &q, OutputIt out_it) {
-  T a = q.numerator(), b = q.denominator(), tmp;
+OutputIt continued_fraction(const rational<T> &r, OutputIt out_it) {
+  T a = r.numerator(), b = r.denominator(), tmp;
   while (b != 0) {
     *out_it++ = a / b;
     tmp = b, b = a % b, a = tmp;
