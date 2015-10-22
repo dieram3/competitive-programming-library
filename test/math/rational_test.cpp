@@ -13,7 +13,6 @@
 using namespace djp;
 
 namespace {
-
 template <typename T>
 struct raw_ratio {
   raw_ratio(T a, T b) : num{a}, den{b} {}
