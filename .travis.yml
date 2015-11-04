@@ -25,9 +25,9 @@ install:
 
 # Install cpp-coveralls if build-type is Debug
   - if [ "$BUILD_TYPE" = "Debug" ]; then
-      sudo pip install cpp-coveralls
-      export CXX_FLAGS='--coverage -O0'
-      export EXE_LINKER_FLAGS='--coverage'
+      sudo pip install cpp-coveralls;
+      export CXX_FLAGS='--coverage -O0';
+      export EXE_LINKER_FLAGS='--coverage';
     fi
 
 before_script:
