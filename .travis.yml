@@ -54,9 +54,4 @@ after_failure:
   - cat Testing/Temporary/LastTest.log
 
 after_success:
-  - >
-      coveralls --root .. --gcov-options '\-lp'
-      -e build/CMakeFiles
-      -e example
-      -e test
-      -e utils
+  - coveralls --root .. --gcov-options '\-lp' --include include
