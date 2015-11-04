@@ -45,6 +45,7 @@ target_compile_features(CP_utils INTERFACE
 
 enable_testing()
 add_subdirectory("test")
+include(CTest)
 
 # ---------------------------------------
 # Add documentation

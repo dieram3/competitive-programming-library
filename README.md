@@ -1,6 +1,7 @@
 # Competitive Programming Utilities
 
 [![Build Status](https://travis-ci.org/dieram3/CP-utils.svg?branch=master)](https://travis-ci.org/dieram3/CP-utils)
+[![Coverage Status](https://coveralls.io/repos/dieram3/CP-utils/badge.svg?branch=master&service=github)](https://coveralls.io/github/dieram3/CP-utils?branch=master)
 
 CP-utils is a header-only library that contains implementations of typical algorithms and data structures used in programming contests. It is intended to be used mainly in online contests, where you can copy and paste code easily. However, by the fact that in some programming contests you have to type everything from scratch, the source code is maintained short (but not so short because generality and ease of use is another important target of the library).
 
