@@ -1,6 +1,4 @@
-set(COMBINATORICS_TEST_SOURCES
-  "basics_test.cpp"
+add_unittest("combinatorics"
   "binomial_coefficient_test.cpp"
-  )
-
-add_unittest("combinatorics" ${COMBINATORICS_TEST_SOURCES})
+  "nth_permutation_test.cpp"
+)
