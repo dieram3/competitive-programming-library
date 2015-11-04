@@ -1,11 +1,9 @@
-set(STRINGS_TEST_SOURCES
+add_unittest("strings"
   "basics_test.cpp"
   "dc3_suffix_array_test.cpp"
   "edit_distance_test.cpp"
   "knuth_morris_pratt_test.cpp"
   "lcp_array_test.cpp"
   "suffix_array_test.cpp"
-  "z_function_test.cpp"
-  )
-
-add_unittest("strings" ${STRINGS_TEST_SOURCES})
+  "z_algorithm_test.cpp"
+)
