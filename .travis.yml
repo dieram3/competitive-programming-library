@@ -27,8 +27,8 @@ install:
   - |
       if [ "$BUILD_TYPE" = "Debug" ]; then
         sudo pip install cpp-coveralls
-        export CXX_FLAGS=--coverage
-        export EXE_LINKER_FLAGS=--coverage
+        export CXX_FLAGS='--coverage'
+        export EXE_LINKER_FLAGS='--coverage'
       fi
 
 before_script:
@@ -54,4 +54,9 @@ after_failure:
   - cat Testing/Temporary/LastTest.log
 
 after_success:
-  - coveralls --root .. --gcov-options '\-lp' --include include
+  - >
+      coveralls --root .. --gcov-options '\-lp'
+      -e build/CMakeFiles
+      -e example
+      -e test
+      -e utils
