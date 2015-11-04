@@ -48,7 +48,7 @@ script:
       -DCMAKE_EXE_LINKER_FLAGS=$EXE_LINKER_FLAGS
       ..
   - make
-  - make test 
+  - ctest
 
 after_failure:
   - cat Testing/Temporary/LastTest.log
