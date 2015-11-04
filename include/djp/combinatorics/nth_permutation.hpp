@@ -2,31 +2,33 @@
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
-/// \file
-/// \brief Defines several classes and algorithms related to combinatorics.
 
-#ifndef DJP_COMBINATORICS_BASICS_HPP
-#define DJP_COMBINATORICS_BASICS_HPP
+#ifndef DJP_COMBINATORICS_NTH_PERMUTATION_HPP
+#define DJP_COMBINATORICS_NTH_PERMUTATION_HPP
 
-#include <vector>
-#include <cstddef>
-#include <cstdint>
-#include <iterator>
-#include <numeric>
+#include <vector>  // for std::vector
+#include <cstddef> // for std::ptrdiff_t
+#include <cstdint> // for std::uint64_t
 
 namespace djp {
 
-/// \brief Computes the nth smallest permutation of [0, 1, ..., len - 1]
+/// \brief Computes the nth smallest permutation of
+/// <tt>[0, 1, ..., len - 1]</tt>
+///
 /// \param len The length of the range to get the permutation. The range will
 /// be an increasing sequence of consecutive integers starting from 0.
 /// \param nth The number of permutation required.
+///
+/// \pre <tt>len > 0</tt>
+/// \pre <tt>factorial(len - 1) < 2<sup>64</sup></tt> i.e <tt>len <= 21</tt>
+/// \pre <tt>nth < factorial(len)</tt>
+///
 /// \returns A \c vector containing the \p nth smallest permutation of the
 /// range.
-/// \pre \p len != 0
-/// \pre factorial(len - 1) < 2^64 i.e len <= 21
-/// \pre nth < factorial(len)
+///
 /// \par Complexity
-/// O(N^2) where N == len
+/// <tt>O(N<sup>2</sup>)</tt> where <tt>N = len</tt>.
+///
 inline std::vector<size_t> nth_permutation(const size_t len, uint64_t nth) {
   std::vector<size_t> perm(len);
   std::vector<uint64_t> fact(len);

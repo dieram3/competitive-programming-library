@@ -24,7 +24,7 @@ namespace djp {
 /// \pre n < 318665857834031151167461 (~3.19E23)
 ///
 /// \par Complexity
-/// At most <tt>O(k * log^2(n))</tt> modular multiplications, where \c k is the
+/// At most <tt>O(k * log(n))</tt> modular multiplications, where \c k is the
 /// number of base numbers to test against \c n (at most 12).
 ///
 template <typename T>
