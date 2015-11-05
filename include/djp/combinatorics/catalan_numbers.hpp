@@ -39,7 +39,7 @@ std::vector<T> generate_catalan_numbers(size_t total) {
   std::vector<T> cat(total);
   cat[0] = 1;
   for (size_t n = 0; n + 1 < total; ++n) {
-    // c[n + 1] = (4 * n + 2) * c[n] / (n + 2); // No overflow control version
+    // c[n + 1] = (4 * n + 2) * c[n] / (n + 2);
     const size_t g1 = gcd(4 * n + 2, n + 2);
     const size_t a = (4 * n + 2) / g1;
     const size_t b = (n + 2) / g1;
