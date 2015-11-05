@@ -34,8 +34,7 @@ static inline std::string generate_random_string(std::size_t size,
                                                  unsigned char char_min = 0,
                                                  unsigned char char_max = 255) {
   std::string str(size, '\0');
-  std::random_device rd;
-  std::mt19937 gen(rd());
+  std::mt19937 gen;
   std::uniform_int_distribution<unsigned char> dist(char_min, char_max);
   std::generate(begin(str), end(str), std::bind(dist, std::ref(gen)));
   return str;
@@ -70,8 +69,7 @@ TEST(lcp_querier, WorksOnBigStrings) {
   const auto sa = djp::make_suffix_array(str);
   const djp::lcp_querier get_lcp(str, sa);
 
-  std::random_device rd;
-  std::default_random_engine gen(rd());
+  std::default_random_engine gen;
   std::uniform_int_distribution<size_t> dist(0, str.size() - 1);
 
   for (size_t i = 0; i < str.size(); ++i) {
