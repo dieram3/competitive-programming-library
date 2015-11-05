@@ -64,6 +64,7 @@ static constexpr bool operator<=(rare_int lhs, rare_int rhs) {
 static constexpr bool operator>(rare_int lhs, rare_int rhs) {
   return lhs.get() > rhs.get();
 }
+
 static double sqrt(rare_int x) {
   if (x.get() < 1000)
     return std::sqrt(x.get());
@@ -75,7 +76,6 @@ static double sqrt(rare_int x) {
 static std::ostream &operator<<(std::ostream &os, rare_int num) {
   return os << num.get();
 }
-
 } // end anonymous namespace
 
 namespace std {
