@@ -23,9 +23,10 @@ namespace djp {
 ///
 template <typename T>
 T isqrt(const T x) {
+  using std::sqrt;
   using U = typename std::make_unsigned<T>::type;
   constexpr U max_ans = (U(1) << (std::numeric_limits<U>::digits / 2)) - 1;
-  U ans = std::min(max_ans, static_cast<U>(std::sqrt(x)));
+  U ans = std::min(max_ans, static_cast<U>(sqrt(x)));
   // At this point, 'ans' is an approximate square root.
   while (ans * ans > U(x))
     --ans;
