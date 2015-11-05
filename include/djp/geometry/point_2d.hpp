@@ -6,13 +6,11 @@
 #ifndef DJP_GEOMETRY_POINT_2D_HPP
 #define DJP_GEOMETRY_POINT_2D_HPP
 
-#include <utility>
-#include <iostream>
-#include <cmath>
-#include <tuple>
-#include <algorithm>
+#include <tuple> // For std::tie
+#include <cmath> // For std::sqrt
 
 namespace djp {
+
 /// 2D Euclidian vector representation.
 template <typename T>
 struct point {
@@ -76,19 +74,8 @@ struct point {
   friend auto distance(const point &p, const point &q) -> decltype(norm(p)) {
     return norm(q - p);
   }
-
-  // I/O utilities
-  friend std::istream &operator>>(std::istream &is, const point &p) {
-    is >> p.x >> p.y;
-    return is;
-  }
-
-  friend std::ostream &operator<<(std::ostream &os, const point &p) {
-    os << '(' << p.x << ", " << p.y << ')';
-    return os;
-  }
 };
 
-} // djp
+} // end namespace djp
 
-#endif // HEADER GUARD
+#endif // Header guard

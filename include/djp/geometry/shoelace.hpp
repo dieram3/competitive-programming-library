@@ -10,8 +10,9 @@
 
 #include <vector>  // For std::vector
 #include <cassert> // For assert
-#include <cmath>   // For std::abs
+#include <cmath>   // For std::abs (float)
 #include <cstddef> // For std::size_t
+#include <cstdlib> // For std::abs (integer)
 
 namespace djp {
 
