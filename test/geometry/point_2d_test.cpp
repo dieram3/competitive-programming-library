@@ -6,12 +6,21 @@
 #include <djp/geometry/point_2d.hpp>
 #include <gtest/gtest.h>
 
+#include <ostream> // For std::ostream
 #include <cmath>   // For std::sqrt
 #include <cstdint> // For std::int32_t
 
 using namespace djp;
 using std::int32_t;
 using point_i = point<int32_t>;
+
+namespace djp {
+template <typename T>
+static std::ostream &operator<<(std::ostream &os, const point<T> &p) {
+  os << '(' << p.x << ", " << p.y << ')';
+  return os;
+}
+} // end namespace djp
 
 TEST(Point2DTest, BasicOperations) {
   point_i lhs = {1, 2};

@@ -23,8 +23,7 @@ static inline std::string generate_random_string(std::size_t size,
                                                  unsigned char char_min = 0,
                                                  unsigned char char_max = 255) {
   std::string str(size, '\0');
-  std::random_device rd;
-  std::mt19937 gen(rd());
+  std::mt19937 gen;
   std::uniform_int_distribution<unsigned char> dist(char_min, char_max);
   std::generate(begin(str), end(str), std::bind(dist, std::ref(gen)));
   return str;

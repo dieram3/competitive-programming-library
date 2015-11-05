@@ -12,7 +12,8 @@
 #include <vector>     // for vector
 #include <cstddef>    // for size_t
 
-using djp::longest_increasing_subsequence;
+using namespace djp;
+
 using std::vector;
 using std::less;
 using std::greater;
@@ -45,6 +46,12 @@ TEST(CalcLisSizeTest, HandlesNonStrict) {
   std::vector<int> seq2 = {130, 150, 150, 140, 120, 100, 30, 50, 50, 5};
   EXPECT_EQ(6u, calc_lis_size(seq2, greater<int>{}));
   EXPECT_EQ(8u, calc_lis_size(seq2, greater_equal<int>{}));
+}
+
+TEST(LongestIncreasingSubsequenceTest, EmptySequenceTest) {
+  const vector<int> seq{};
+  const vector<size_t> lis = longest_increasing_subsequence(seq, less<int>{});
+  EXPECT_EQ(0, lis.size());
 }
 
 TEST(LongestIncreasingSubsequenceTest, UniqueNumbersTest) {

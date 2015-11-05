@@ -7,12 +7,87 @@
 #include <gtest/gtest.h>
 
 #include <initializer_list> // For std::initializer_list
+#include <iostream>         // For std::ostream
 #include <cassert>          // For assert
 #include <cstdint>          // For std::uint_fast32_t, std::uint_fast64_t
 
 using namespace djp;
 using std::uint_fast32_t;
 using std::uint_fast64_t;
+
+namespace {
+class rare_int {
+  unsigned value;
+
+public:
+  constexpr rare_int(unsigned init_value = 0) : value{init_value} {}
+
+  constexpr explicit rare_int(int init_value)
+      : value{static_cast<unsigned>(init_value)} {}
+
+  constexpr explicit rare_int(double init_value)
+      : value{static_cast<unsigned>(init_value)} {}
+
+  constexpr unsigned get() const { return value; }
+
+  rare_int &operator--() {
+    --value;
+    return *this;
+  }
+  rare_int &operator++() {
+    ++value;
+    return *this;
+  }
+};
+
+static constexpr rare_int operator+(rare_int lhs, rare_int rhs) {
+  return lhs.get() + rhs.get();
+}
+static constexpr rare_int operator-(rare_int lhs, rare_int rhs) {
+  return lhs.get() - rhs.get();
+}
+static constexpr rare_int operator*(rare_int lhs, rare_int rhs) {
+  return lhs.get() * rhs.get();
+}
+static constexpr rare_int operator<<(rare_int num, int b) {
+  return num.get() << b;
+}
+static constexpr bool operator==(rare_int lhs, rare_int rhs) {
+  return lhs.get() == rhs.get();
+}
+static constexpr bool operator<(rare_int lhs, rare_int rhs) {
+  return lhs.get() < rhs.get();
+}
+static constexpr bool operator<=(rare_int lhs, rare_int rhs) {
+  return lhs.get() <= rhs.get();
+}
+static constexpr bool operator>(rare_int lhs, rare_int rhs) {
+  return lhs.get() > rhs.get();
+}
+
+static double sqrt(rare_int x) {
+  if (x.get() < 1000)
+    return std::sqrt(x.get());
+  if (x.get() % 2 == 0)
+    return std::sqrt(x.get()) + 5;
+  return std::sqrt(x.get()) - 5;
+}
+
+static std::ostream &operator<<(std::ostream &os, rare_int num) {
+  return os << num.get();
+}
+} // end anonymous namespace
+
+namespace std {
+template <>
+struct numeric_limits<rare_int> {
+  static constexpr int digits = numeric_limits<unsigned>::digits;
+};
+template <>
+struct make_unsigned<rare_int> {
+  using type = rare_int;
+};
+} // end namespace std
 
 namespace {
 class IsqrtTest : public ::testing::Test {
@@ -59,6 +134,15 @@ TEST_F(IsqrtTest, LimitsTest) {
   EXPECT_EQ(4294967295, isqrt(18446744073709551126u));
   EXPECT_EQ(4294967295, isqrt(18446744073709551518u));
   EXPECT_EQ(4294967295, isqrt(18446744073709551615u));
+}
+
+TEST_F(IsqrtTest, SqrtCorrectionTest) {
+  rare_int even_int = 64232;
+  rare_int odd_int = 45981;
+  // Correct a computed sqrt a bit greater than actual.
+  EXPECT_EQ(253, isqrt(even_int));
+  // Correct a computed sqrt a bit smaller than actual.
+  EXPECT_EQ(214, isqrt(odd_int));
 }
 
 //#include <chrono>
