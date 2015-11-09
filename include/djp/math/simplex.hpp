@@ -83,8 +83,9 @@ T simplex_maximize(const matrix<T> &A, const std::vector<T> &b,
   // ===================
   auto is_neg = [eps](const T val) { return val < -eps; };
   auto is_pos = [eps](const T val) { return val > eps; };
-  auto approx =
-      [eps](const T v1, const T v2) { return std::fabs(v1 - v2) <= eps; };
+  auto approx = [eps](const T v1, const T v2) {
+    return std::fabs(v1 - v2) <= eps;
+  };
 
   auto relax_s = [&](const size_t i, const size_t j, size_t &s) {
     const auto dj = D[{i, j}], ds = D[{i, s}];
