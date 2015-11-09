@@ -168,6 +168,22 @@ TEST_F(SimplexTest, ComplexTest) {
   test_current_program(11568, "Complex test");
 }
 
+TEST_F(SimplexTest, EqualityRestrictionTest) {
+  // Test taken from: http://web.stanford.edu/~liszt90/acm/notebook.html#file17
+  set_A(4, 3, {
+                  6, -1, 0,  // row 1
+                  -1, -5, 0, // row 2
+                  1, 5, 1,   // row 3
+                  -1, -5, -1 // row 4
+              });
+
+  set_b({10, -4, 5, -5});
+  set_c({1, -1, 0});
+
+  // In this program: x + 5y + z = 5
+  test_current_program(1.2903225806, "First test");
+}
+
 TEST_F(SimplexTest, SparseMatrixTest) {
   set_A(3, 5, {
                   92, 0, 0, 0, 29, // row 1
