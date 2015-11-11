@@ -88,13 +88,11 @@ std::size_t hopcroft_karp_maximum_matching(const Graph &g) {
       return true;
     for (const auto e : g.out_edges(a)) {
       const auto b = (a == g.source(e)) ? g.target(e) : g.source(e);
-      if (dist[pair_of[b]] != dist[a] + 1)
-        continue;
-      if (!dfs(pair_of[b]))
-        continue;
-      pair_of[b] = a;
-      pair_of[a] = b;
-      return true;
+      if (dist[pair_of[b]] == dist[a] + 1 && dfs(pair_of[b])) {
+        pair_of[b] = a;
+        pair_of[a] = b;
+        return true;
+      }
     }
     dist[a] = SIZE_MAX;
     return false;

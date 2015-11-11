@@ -72,3 +72,21 @@ TEST(HopcroftKarpMaximumMatchingTest, WorksOnLinearGraphs) {
 
   EXPECT_EQ(4, hopcroft_karp_maximum_matching(graph));
 }
+
+TEST(HopcroftKarpMaximumMatchingTest, WorksForSingleOptionPairs) {
+  undirected_graph graph(10);
+  graph.add_edge(0, 5);
+  graph.add_edge(0, 6);
+  graph.add_edge(0, 7);
+  graph.add_edge(1, 5);
+  graph.add_edge(1, 6);
+  graph.add_edge(1, 7);
+  graph.add_edge(1, 8);
+  graph.add_edge(1, 9);
+  graph.add_edge(2, 6);
+  graph.add_edge(3, 7);
+  graph.add_edge(4, 5);
+  graph.add_edge(4, 8);
+  graph.add_edge(4, 9);
+  EXPECT_EQ(5, hopcroft_karp_maximum_matching(graph));
+}
