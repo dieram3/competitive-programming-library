@@ -6,12 +6,13 @@
 #include <djp/data_structure/lazyprop_segtree.hpp>
 #include <gtest/gtest.h>
 
-#include <algorithm>  // For std::max
+#include <algorithm>  // For std::min, std::max
 #include <functional> // For std::plus
 #include <string>     // For std::string
 #include <vector>     // For std::vector
 #include <cassert>    // For assert
 #include <cstddef>    // For std::size_t
+#include <climits>    // For INT_MAX
 
 using namespace djp;
 using std::size_t;
@@ -35,6 +36,29 @@ protected:
 };
 } // end anonymous namespace
 
+TEST_F(LazypropSegtreeTest, IdentityConstructorTest) {
+  class op_list {
+    int value_to_add;
+
+  public:
+    explicit op_list(int val = 0) : value_to_add{val} {}
+    void push(const op_list &op) { value_to_add += op.value_to_add; }
+    int apply(size_t, int reduced_val) { return reduced_val + value_to_add; }
+    bool empty() const { return value_to_add == 0; }
+  };
+
+  auto minimum = [](int x, int y) { return std::min(x, y); };
+
+  using segtree_t = lazyprop_segtree<int, decltype(minimum), op_list>;
+  segtree_t segtree(size_t{35}, INT_MAX, minimum);
+
+  EXPECT_EQ(35, segtree.size());
+  EXPECT_EQ(INT_MAX, segtree.reduce(0, 35));
+  segtree.apply(0, 4, op_list(-2));
+  EXPECT_EQ(INT_MAX, segtree.reduce(4, 20));
+  EXPECT_EQ(INT_MAX - 2, segtree.reduce(3, 20));
+}
+
 TEST_F(LazypropSegtreeTest, AdderSegtreeTest) {
   class add_ops {
     int acc_value;
@@ -46,7 +70,6 @@ TEST_F(LazypropSegtreeTest, AdderSegtreeTest) {
     int apply(size_t rsize, int reduced_val) const {
       return reduced_val + static_cast<int>(rsize) * acc_value;
     }
-    void clear() { acc_value = 0; }
     bool empty() const { return acc_value == 0; }
   };
 
@@ -124,10 +147,6 @@ TEST_F(LazypropSegtreeTest,
     static op_list assign(int val) { return op_list(val, true); }
 
     bool empty() const { return value == 0 && !must_assign; }
-    void clear() {
-      value = 0;
-      must_assign = false;
-    }
     int apply(size_t, int reduced_val) const {
       return must_assign ? value : reduced_val + value;
     }
@@ -212,7 +231,6 @@ TEST_F(LazypropSegtreeTest, AssociativityTest) {
   public:
     explicit op_list(int rot = 0) : rotation_value{rot} {}
     bool empty() const { return rotation_value == 0; }
-    void clear() { rotation_value = 0; }
     void push(const op_list &op) {
       rotation_value = (rotation_value + op.rotation_value) % 26;
     }
@@ -249,3 +267,63 @@ TEST_F(LazypropSegtreeTest, AssociativityTest) {
   EXPECT_EQ("zabyzabcd", segtree.reduce(17, 26));
   EXPECT_EQ("ghijklmnopwxybcxyzabyzabcd", segtree.reduce(0, 26));
 }
+
+//#include <random>
+//#include <chrono>
+// TEST_F(LazypropSegtreeTest, Benchmark) {
+//  using int_t = uint64_t;
+//  class add_ops {
+//    int_t acc_value;
+//
+//  public:
+//    explicit add_ops(int_t val = 0) : acc_value{val} {}
+//    bool empty() const { return acc_value == 0; }
+//    void push(const add_ops &ops) { acc_value += ops.acc_value; }
+//    int_t apply(size_t rsize, int_t reduced_val) const {
+//      return reduced_val + static_cast<int_t>(rsize) * acc_value;
+//    }
+//  };
+//
+//  using segtree_t = lazyprop_segtree<int_t, std::plus<int_t>, add_ops>;
+//
+//  enum class op_type { increase, reduce };
+//  struct query {
+//    op_type op;
+//    size_t beg;
+//    size_t end;
+//    int_t incr_value{};
+//  };
+//  const size_t num_elems = 100000;
+//  const size_t num_queries = 100000;
+//
+//  std::vector<query> queries(num_queries);
+//  {
+//    std::mt19937 engine;
+//    std::bernoulli_distribution do_modification(0.7);
+//    std::uniform_int_distribution<size_t> gen_pos;
+//    std::uniform_int_distribution<int_t> gen_value(0, 1000);
+//    using param_t = decltype(gen_pos)::param_type;
+//    for (auto &q : queries) {
+//      q.op = do_modification(engine) ? op_type::increase : op_type::reduce;
+//      q.beg = gen_pos(engine, param_t(0, num_elems - 1));
+//      q.end = gen_pos(engine, param_t(q.beg + 1, num_elems));
+//      if (q.op == op_type::increase)
+//        q.incr_value = gen_value(engine);
+//    }
+//  }
+//
+//  using namespace std::chrono;
+//  auto start = steady_clock::now();
+//  segtree_t segtree(num_elems, 0); // 0 is the identity value.
+//  int_t checksum = 0;
+//  for (const auto &q : queries) {
+//    if (q.op == op_type::increase)
+//      segtree.apply(q.beg, q.end, add_ops(q.incr_value));
+//    else
+//      checksum += segtree.reduce(q.beg, q.end);
+//  }
+//  auto end = steady_clock::now();
+//  auto elapsed = duration_cast<milliseconds>(end - start);
+//  std::clog << "Elapsed time: " << elapsed.count() << "ms\n";
+//  std::clog << "Checksum: " << checksum << '\n';
+//}

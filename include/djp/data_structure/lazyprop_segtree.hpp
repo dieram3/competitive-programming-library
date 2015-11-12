@@ -6,125 +6,146 @@
 #ifndef DJP_DATA_STRUCTURE_LAZYPROP_SEGTREE_HPP
 #define DJP_DATA_STRUCTURE_LAZYPROP_SEGTREE_HPP
 
-#include <functional> // For std::function
-#include <iterator>   // For std::distance
-#include <vector>     // For std::vector
-#include <cassert>    // For assert
-#include <cstddef>    // For std::size_t
+#include <iterator> // For std::distance
+#include <vector>   // For std::vector
+#include <cassert>  // For assert
+#include <cstddef>  // For std::size_t
 
 namespace djp {
 
-/// \brief Implements a generic segment tree with lazy propagation.
+/// \brief Generic segment tree with lazy propagation.
+///
+/// The memory complexity is linear in the number of elements to be stored.
 ///
 /// \tparam T The value type.
-/// \tparam Combiner Binary functor which combines a pair of values.
+/// \tparam Combine The type of the combiner, a binary functor.
 /// \tparam OpList The type to represent a list of modify-operations.
 ///
-/// The Binary function is required to be associative, but not commutative.
+/// The combiner is required to be associative, but not commutative.
 ///
-/// <tt>OpList</tt> must have the following member functions.
+/// <tt><b>OpList</b></tt> must be copy assignable and default constructible;
+/// the default constructor must create an empty list. Additionaly, \c OpList
+/// must define the following member functions:
 ///
-/// <tt>void push(const OpList& ops)</tt>:
+/// <tt><b>void push(const OpList& ops)</b></tt>:
 /// Appends the operations enqueued in <tt>ops</tt> to <tt>*this</tt>.
 ///
-/// <tt>T apply(size_t range_size, const T& reduced_value)</tt>:
-/// Returns the value of applying the enqueued operations to a range of
-/// <tt>range_size</tt> elements whose reduced value is <tt>reduced_value</tt>.
+/// <tt><b>T apply(size_t range_size, const T& reduced_value)</b></tt>:
+/// Returns the result of applying the enqueued operations in \c *this to an
+/// arbitrary range of size <tt>range_size</tt> whose reduced value after
+/// applying the combiner is <tt>reduced_value</tt>.
 ///
-/// <tt>void clear()</tt>:
-/// Clears the list of operations, so <tt>apply(N, x)</tt> returns <tt>x</tt>.
+/// <tt><b>bool empty()</b></tt>:
+/// Returns \c true if the queue is empty. It guarantees that
+/// <tt>apply(rsize, x)</tt> has no effect and returns <tt>x</tt>.
 ///
-/// <tt>bool empty()</tt>:
-/// Returns \c true if the queue is empty.
-///
-template <typename T, typename Combiner, typename OpList>
+template <typename T, typename Combine, typename OpList>
 class lazyprop_segtree {
   struct node_t {
-    node_t(size_t b, size_t e, size_t pos_ = 1)
-        : beg{b}, end{e}, mid{(b + e) / 2}, pos{pos_} {}
+    node_t(size_t b, size_t e, size_t pos_ = 1) : pos{pos_}, beg{b}, end{e} {}
 
-    size_t beg, end, mid, pos;
+    size_t pos, beg, end;
 
     size_t size() const { return end - beg; }
     size_t lpos() const { return 2 * pos; }
     size_t rpos() const { return 2 * pos + 1; }
-    node_t left() const { return node_t(beg, mid, lpos()); }
-    node_t right() const { return node_t(mid, end, rpos()); }
+    node_t left() const { return node_t(beg, beg + size() / 2, lpos()); }
+    node_t right() const { return node_t(beg + size() / 2, end, rpos()); }
     bool leaf() const { return size() == 1; }
   };
 
   node_t root() const { return node_t(0, num_elems); }
 
 public:
-  // TODO: Document member functions
+  /// \brief Constructs a segment tree initialized with the identity value.
+  ///
+  /// \param count The number of elements to be stored.
+  /// \param identity The identity value for <tt>comb</tt>.
+  /// \param comb The combiner to use.
+  ///
+  /// \pre <tt>identity</tt> must satisfy the identity property for
+  /// <tt>comb</tt>. It means that <tt>comb(x, identity) = comb(identity, x) =
+  /// x</tt> will be true for any valid <tt>x</tt>.
+  ///
+  /// \par Complexity
+  /// Linear in <tt>count</tt>.
+  ///
+  lazyprop_segtree(size_t count, const T &identity,
+                   const Combine &comb = Combine())
+      : num_elems{count}, combine(comb) {
+    node_t nd = root(); // Node to find optimal size.
+    while (!nd.leaf())
+      nd = nd.right();
+    values.resize(nd.pos + 1, identity);
+    ops.resize(nd.pos + 1); // size is 4*(N-1) in the worst case
+  }
 
+  /// \brief Constructs a segment tree initialized with the given range.
+  ///
+  /// \param first The beginning of the range to copy the elements from.
+  /// \param last The end of the range to copy the elements from.
+  /// \param comb The combiner to use.
+  ///
+  /// \par Complexity
+  /// <tt>O(n)</tt> applications of <tt>comb</tt>, where
+  /// <tt>n = std::distance(first, last)</tt>.
+  ///
   template <typename ForwardIt>
-  lazyprop_segtree(ForwardIt first, ForwardIt last, Combiner c = Combiner())
-      : num_elems(std::distance(first, last)), comb(c) {
+  lazyprop_segtree(ForwardIt first, ForwardIt last,
+                   const Combine &comb = Combine())
+      : lazyprop_segtree(std::distance(first, last), T(), comb) {
     assert(first != last);
-    {
-      // Find optimal size
-      node_t nd = root();
-      while (!nd.leaf())
-        nd = nd.right();
-      values.resize(nd.pos + 1); // size is 4*(N-1) in the worst case
-      ops.resize(nd.pos + 1);    // 128 requires 256, 129 requires 512
-    }
-    // Recurse the tree
-    std::function<void(const node_t &)> recurse;
-    recurse = [&](const node_t &nd) {
-      if (nd.leaf()) {
-        values[nd.pos] = *first++;
-        return;
-      }
-      recurse(nd.left());
-      recurse(nd.right());
-      values[nd.pos] = comb(values[nd.lpos()], values[nd.rpos()]);
-    };
-    recurse(root());
+    copy_range(first, root());
     assert(first == last);
   }
 
+  /// \brief Returns the number of elements stored in the tree.
+  ///
+  /// \returns The number of elements stored in the tree.
+  ///
+  /// \par Complexity
+  /// Constant.
+  ///
+  size_t size() const { return num_elems; }
+
+  /// \brief Applies a list of operations to the specified segment.
+  ///
+  /// \param beg Position of the first element to include.
+  /// \param end Position of the element after the last element to include.
+  /// \param op The list of operations to be applied.
+  ///
+  /// \pre <tt>beg < end && end <= size()</tt>.
+  ///
+  /// \par Complexity
+  /// <tt>O(log(n))</tt> applications of the stored combiner and
+  /// <tt>O(log(n))</tt> applications of the stored OpLists,
+  /// where <tt>n = size()</tt>.
+  ///
   void apply(size_t beg, size_t end, const OpList &op) {
     assert(beg < end);
-    std::function<void(const node_t &)> recurse;
-    recurse = [&](const node_t &nd) {
-      if (nd.beg >= beg && nd.end <= end) {
-        ops[nd.pos].push(op);
-        return;
-      }
-      push_down_ops(nd); // Needed because children need updated values.
-      const auto lhs = nd.left();
-      const auto rhs = nd.right();
-      if (lhs.end > beg)
-        recurse(lhs);
-      if (rhs.beg < end)
-        recurse(rhs);
-      push_down_ops(lhs);
-      push_down_ops(rhs);
-      values[nd.pos] = comb(values[lhs.pos], values[rhs.pos]);
-    };
-    recurse(root());
+    query_beg = beg, query_end = end;
+    apply(op, root());
   }
 
-  T reduce(const size_t beg, const size_t end) {
+  /// \brief Reduces the specified segment to a single value by using the stored
+  /// combiner.
+  ///
+  /// \param beg Position of the first element to include.
+  /// \param end Position of the element after the last element to include.
+  ///
+  /// \pre <tt>beg < end && end <= size()</tt>.
+  ///
+  /// \returns The reduced value of the segment <tt>[beg, end)</tt>.
+  ///
+  /// \par Complexity
+  /// <tt>O(log(n))</tt> applications of the stored combiner and
+  /// <tt>O(log(n))</tt> applications of the stored OpLists,
+  /// where <tt>n = size()</tt>.
+  ///
+  T reduce(size_t beg, size_t end) {
     assert(beg < end);
-    std::function<T(const node_t &)> recurse;
-    recurse = [&](const node_t &nd) {
-      push_down_ops(nd);
-
-      if (nd.beg >= beg && nd.end <= end)
-        return values[nd.pos];
-
-      const auto lhs = nd.left();
-      const auto rhs = nd.right();
-      if (end <= lhs.end)
-        return recurse(lhs);
-      if (beg >= rhs.beg)
-        return recurse(rhs);
-      return comb(recurse(lhs), recurse(rhs));
-    };
-    return recurse(root());
+    query_beg = beg, query_end = end;
+    return reduce(root());
   }
 
 private:
@@ -136,14 +157,60 @@ private:
       ops[nd.lpos()].push(ops[nd.pos]);
       ops[nd.rpos()].push(ops[nd.pos]);
     }
-    ops[nd.pos].clear();
+    ops[nd.pos] = OpList(); // clear the queue
+  }
+
+  T reduce(const node_t &nd) {
+    push_down_ops(nd);
+    if (nd.beg >= query_beg && nd.end <= query_end)
+      return values[nd.pos];
+    const auto lhs = nd.left();
+    const auto rhs = nd.right();
+    if (query_end <= lhs.end)
+      return reduce(lhs);
+    if (query_beg >= rhs.beg)
+      return reduce(rhs);
+    return combine(reduce(lhs), reduce(rhs));
+  }
+
+  void apply(const OpList &op, const node_t &nd) {
+    if (nd.beg >= query_beg && nd.end <= query_end) {
+      ops[nd.pos].push(op);
+      return;
+    }
+    push_down_ops(nd);
+    const auto lhs = nd.left();
+    const auto rhs = nd.right();
+    if (lhs.end > query_beg)
+      apply(op, lhs);
+    if (rhs.beg < query_end)
+      apply(op, rhs);
+    push_down_ops(lhs);
+    push_down_ops(rhs);
+    values[nd.pos] = combine(values[lhs.pos], values[rhs.pos]);
+  }
+
+  // This function is optional.
+  template <typename ForwardIt>
+  void copy_range(ForwardIt &iter, const node_t &nd) {
+    if (nd.leaf()) {
+      values[nd.pos] = *iter++;
+      return;
+    }
+    copy_range(iter, nd.left());
+    copy_range(iter, nd.right());
+    values[nd.pos] = combine(values[nd.lpos()], values[nd.rpos()]);
   }
 
 private:
+  // Data variables
   size_t num_elems;
-  Combiner comb;
+  Combine combine;
   std::vector<T> values;
   std::vector<OpList> ops;
+  // Cache variables
+  size_t query_beg{};
+  size_t query_end{};
 };
 
 } // end namespace djp
