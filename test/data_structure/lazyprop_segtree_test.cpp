@@ -11,8 +11,8 @@
 #include <string>     // For std::string
 #include <vector>     // For std::vector
 #include <cassert>    // For assert
-#include <cstddef>    // For std::size_t
 #include <climits>    // For INT_MAX
+#include <cstddef>    // For std::size_t
 
 using namespace djp;
 using std::size_t;
