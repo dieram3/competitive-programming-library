@@ -7,6 +7,7 @@
 #define DJP_DATA_STRUCTURE_EQSM_SEGTREE_HPP
 
 #include <algorithm> // For std::copy
+#include <iterator>  // For std::distance
 #include <vector>    // For std::vector
 #include <cstddef>   // For std::size_t
 
@@ -19,10 +20,11 @@ namespace djp {
 template <typename T, typename Combine>
 class eqsm_segtree {
 public:
-  /// \brief Constructs a segment tree with the given range.
+  /// \brief Constructs a segment tree with the given size.
   ///
-  /// \param first Iterator to the beginning of the range to store.
-  /// \param last Iterator to the end of the range to store.
+  /// The elements of the segment tree are initialized to the identity value.
+  ///
+  /// \param count The number of elements to store.
   /// \param idem The identity value for the combiner.
   /// \param comb The combiner to use.
   ///
@@ -30,16 +32,24 @@ public:
   /// \pre <tt>comb(x,y) = comb(y,x)</tt> for all <tt>x,y</tt>.
   ///
   /// \par Complexity
+  /// Linear in <tt>count</tt>.
+  ///
+  explicit eqsm_segtree(size_t count, const T &idem, Combine comb = Combine())
+      : combine(comb), identity(idem), num_elems{count},
+        tree(2 * num_elems, identity) {}
+
+  /// \brief Replaces the contents of the tree with the those in given range.
+  ///
+  /// \param first Iterator to the beginning of the range to store.
+  /// \param last Iterator to the end of the range to store.
+  ///
+  /// \par Complexity
   /// Exactly <tt>(count - 1)</tt> applications of the combiner.
   ///
   template <typename ForwardIt>
-  eqsm_segtree(ForwardIt first, ForwardIt last, const T &idem,
-               Combine comb = Combine())
-      : combine(comb), identity(idem) {
-    if (first == last)
-      return;
+  void store(ForwardIt first, ForwardIt last) {
     num_elems = std::distance(first, last);
-    tree.resize(2 * num_elems, identity);
+    tree.assign(2 * num_elems, identity);
     std::copy(first, last, tree.begin() + num_elems);
   }
 
@@ -91,9 +101,9 @@ public:
   size_t size() const { return num_elems; }
 
 private:
-  size_t num_elems{};
   Combine combine{};
   T identity{};
+  size_t num_elems{};
   std::vector<T> tree{};
 };
 
