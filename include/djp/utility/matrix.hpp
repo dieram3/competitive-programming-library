@@ -26,7 +26,7 @@ public:
   using reference = typename std::vector<T>::reference;
   using const_reference = typename std::vector<T>::const_reference;
 
-  explicit matrix(index_type bounds, const T &value = T())
+  explicit matrix(index_type bounds = {0, 0}, const T &value = T())
       : bounds_(bounds), data_(rows() * cols(), value) {}
 
   void assign(index_type bounds, const T &value = T()) {

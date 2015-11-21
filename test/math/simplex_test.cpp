@@ -35,7 +35,8 @@ namespace {
 // programs.
 //
 class SimplexTest : public ::testing::Test {
-  matrix<real_t> A = matrix<real_t>({0, 0});
+  simplex_solver<real_t> solver;
+  matrix<real_t> A;
   vec_t b;
   vec_t c;
   vec_t x;
@@ -59,7 +60,7 @@ protected:
 
     real_t opt_value;
     try {
-      opt_value = simplex_maximize(A, b, c, x);
+      opt_value = solver.maximize(A, b, c, x);
     } catch (std::domain_error &) {
       EXPECT_TRUE(may_throw) << " Unexpected thrown exception\n";
       return;
