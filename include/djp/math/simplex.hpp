@@ -134,7 +134,7 @@ private:
     search_result res;
     while ((res = find_pivot(r, c, phase)) == must_pivot)
       pivot(r, c);
-    assert(!(phase == 1 && res == unbounded)); // phase 1 can't be unbounded.
+    assert(!(phase == 1 && res == unbounded)); // Phase 1 can't be unbounded.
     return res == optimized;
   }
 
