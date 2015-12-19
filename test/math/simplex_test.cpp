@@ -144,7 +144,6 @@ TEST_F(SimplexTest, ComplexTest) {
 }
 
 TEST_F(SimplexTest, EqualityRestrictionTest) {
-  // Test taken from: http://web.stanford.edu/~liszt90/acm/notebook.html#file17
   set_A(4, 3, {
                   6, -1, 0,  // row 1
                   -1, -5, 0, // row 2

@@ -25,6 +25,8 @@ namespace djp {
 template <typename T>
 class simplex_solver {
   static_assert(std::is_floating_point<T>::value, "Must be floating-point");
+
+public:
   using vec_t = std::vector<T>;
   using mat_t = matrix2<T>;
 
@@ -39,9 +41,10 @@ public:
 
   /// \brief Finds the optimal value of the given linear program.
   ///
-  /// Uses the simplex algorithm to find the solution of a linear program. The
-  /// implementation is guaranteed to converge. The program must be given as
-  /// follows:
+  /// Uses the simplex algorithm to find the optimal solution of a linear
+  /// program. The implementation is guaranteed to converge.
+  ///
+  /// The program must be given as follows:
   ///
   /// \li Maximize <tt>c^T*x</tt>
   /// \li Subject to <tt>A*x <= b</tt>
@@ -53,15 +56,15 @@ public:
   /// \param[out] x Vector where the optimal solution will be stored.
   ///
   ///
-  /// \returns Value of the optimal solution. If the solution is unbounded
-  /// returns <tt>std::numeric_limits<T>::infinity()</tt>. If no feasible
-  /// solution exists returns <tt>std::numeric_limits<T>::quiet_NaN()</tt>.
+  /// \returns The optimal value. If the objetive function is unbounded, returns
+  /// <tt>std::numeric_limits<T>::infinity()</tt>. If no feasible solution
+  /// exists, returns <tt>std::numeric_limits<T>::quiet_NaN()</tt>.
   ///
   T maximize(const mat_t &A, const vec_t &b, const vec_t &c, vec_t &x) {
     const size_t m = A.rows();
     const size_t n = A.cols();
 
-    // build
+    // build tableau.
     tableau.resize(m + 2, n + 2);
     for (size_t i = 0; i < m; ++i) {
       for (size_t j = 0; j < n; ++j)
@@ -80,7 +83,8 @@ public:
     B.resize(m);     // m slack variables initially.
     std::iota(N.begin(), N.end(), size_t{0});
     std::iota(B.begin(), B.end(), N.size());
-    pivcol.resize(m + 2);
+    pivcol.resize(tableau.rows());
+    // n is the artificial variable.
 
     const size_t min_b = std::min_element(b.begin(), b.end()) - b.begin();
 
@@ -90,9 +94,10 @@ public:
       pivot(min_b, n); // Pivot to make RHS positive.
       simplex(1);
       if (!is_zero(tableau[m + 1][n + 1]))
-        return std::numeric_limits<T>::quiet_NaN();
-      auto it = std::find(B.begin(), B.end(), n); // n is the artificial var.
+        return std::numeric_limits<T>::quiet_NaN(); // infeasible.
+      auto it = std::find(B.begin(), B.end(), n);
       if (it != B.end()) {
+        // make 'n' a nonbasic variable.
         const size_t row = it - B.begin();
         assert(is_zero(tableau[row][n + 1]));
         size_t col;
@@ -123,7 +128,7 @@ public:
 private:
   enum search_result { must_pivot, optimized, unbounded };
 
-  // A feasible solution must exist.
+  // Requires: A feasible solution must exist.
   bool simplex(const int phase) {
     size_t r{}, c{};
     search_result res;
@@ -180,7 +185,6 @@ private:
     }
     tableau[r][c] = 1;
 
-    // Multiply row r by 1 / pivcol[r]
     multiply_row(r, 1 / pivcol[r]);
     for (size_t i = 0; i < tableau.rows(); ++i)
       if (i != r)
@@ -207,7 +211,7 @@ private:
 
 private:
   mat_t tableau;            // Part of the tableau with information.
-  vec_t pivcol;             // Column to pivot.
+  vec_t pivcol;             // Temporal storage to pivot.
   std::vector<size_t> B, N; // Basic and nonbasic variables.
   T eps = std::numeric_limits<T>::epsilon();
 };
