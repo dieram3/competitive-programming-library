@@ -8,9 +8,9 @@
 #ifndef DJP_UTILITY_MATRIX_HPP
 #define DJP_UTILITY_MATRIX_HPP
 
+#include <cstddef> // for std::size_t
 #include <utility> // for std::pair
 #include <vector>  // for std::vector
-#include <cstddef> // for std::size_t
 
 namespace djp {
 
@@ -26,7 +26,7 @@ public:
   using reference = typename std::vector<T>::reference;
   using const_reference = typename std::vector<T>::const_reference;
 
-  explicit matrix(index_type bounds, const T &value = T())
+  explicit matrix(index_type bounds = {0, 0}, const T &value = T())
       : bounds_(bounds), data_(rows() * cols(), value) {}
 
   void assign(index_type bounds, const T &value = T()) {
@@ -43,6 +43,41 @@ public:
 private:
   index_type bounds_;
   std::vector<T> data_;
+};
+
+template <typename T>
+class matrix2 {
+public:
+  using row_iterator = typename std::vector<T>::iterator;
+  using const_row_iterator = typename std::vector<T>::const_iterator;
+
+public:
+  matrix2() {}
+
+  matrix2(size_t r, size_t c, const T &value = T())
+      : data(r * c, value), num_rows{r}, num_cols{c} {}
+
+  void resize(size_t r, size_t c) {
+    data.resize(r * c);
+    num_rows = r;
+    num_cols = c;
+  }
+
+  size_t rows() const { return num_rows; }
+  size_t cols() const { return num_cols; }
+
+  row_iterator operator[](const size_t row) {
+    return data.begin() + row * num_cols;
+  }
+
+  const_row_iterator operator[](const size_t row) const {
+    return data.begin() + row * num_cols;
+  }
+
+private:
+  std::vector<T> data;
+  size_t num_rows{};
+  size_t num_cols{};
 };
 
 } // end namespace djp

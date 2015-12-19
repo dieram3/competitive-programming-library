@@ -8,12 +8,12 @@
 
 #include <djp/utility/matrix.hpp>
 
+#include <cassert>   // for assert
+#include <cmath>     // for std::isfinite, std::isnan, std::fabs, NAN, INFINITY
 #include <limits>    // for std::numeric_limits
 #include <numeric>   // for std::inner_product
 #include <stdexcept> // for std::domain_error
 #include <vector>    // for std::vector, std::initializer_list
-#include <cassert>   // for assert
-#include <cmath>     // for std::isfinite, std::isnan, std::fabs, NAN, INFINITY
 
 using namespace djp;
 using real_t = double;
@@ -29,13 +29,9 @@ static bool float_ge(real_t x, real_t y) { return x >= y || float_eq(x, y); }
 
 namespace {
 
-// Results have been verified in:
-// http://www.zweigmedia.com/RealWorld/simplex.html
-// Note that the implementation of this page does not detect unfeasible
-// programs.
-//
 class SimplexTest : public ::testing::Test {
-  matrix<real_t> A = matrix<real_t>({0, 0});
+  simplex_solver<real_t> solver;
+  matrix2<real_t> A;
   vec_t b;
   vec_t c;
   vec_t x;
@@ -43,27 +39,22 @@ class SimplexTest : public ::testing::Test {
 protected:
   void set_A(const size_t m, const size_t n, const vec_t &vec) {
     assert(vec.size() == m * n);
-    A.assign({m, n});
+    A.resize(m, n);
     for (size_t i = 0; i != m; ++i)
       for (size_t j = 0; j != n; ++j)
-        A[{i, j}] = vec[i * n + j];
+        A[i][j] = vec[i * n + j];
   }
 
   void set_b(std::initializer_list<real_t> il) { b = il; }
   void set_c(std::initializer_list<real_t> il) { c = il; }
 
   void test_current_program(const real_t expected_opt_value,
-                            const char *test_name, bool may_throw = false) {
+                            const char *test_name) {
 
     SCOPED_TRACE(test_name);
 
-    real_t opt_value;
-    try {
-      opt_value = simplex_maximize(A, b, c, x);
-    } catch (std::domain_error &) {
-      EXPECT_TRUE(may_throw) << " Unexpected thrown exception\n";
-      return;
-    }
+    solver.set_eps(1e-11);
+    const real_t opt_value = solver.maximize(A, b, c, x);
 
     if (std::isnan(expected_opt_value))
       EXPECT_TRUE(std::isnan(opt_value));
@@ -83,7 +74,7 @@ protected:
     for (size_t i = 0; i != A.rows(); ++i) {
       real_t sum = 0;
       for (size_t j = 0; j != A.cols(); ++j)
-        sum += A[{i, j}] * x.at(j);
+        sum += A[i][j] * x.at(j);
       EXPECT_TRUE(float_le(sum, b[i])) << "Constraint " << i
                                        << " is not satisfied\n" << sum
                                        << " !<= " << b[i];
@@ -91,25 +82,9 @@ protected:
 
     // Check x >= 0
     for (size_t i = 0; i != x.size(); ++i)
-      EXPECT_TRUE(float_ge(x[i], 0)) << "Variable " << i << " is negative";
+      EXPECT_TRUE(float_ge(x[i], 0)) << "Variable " << i << " is negative: x["
+                                     << i << "] = " << x[i];
   }
-
-  //  void print_current_program() {
-  //    std::cout << "Maximize p = ";
-  //    std::cout << c[0] << "x0 ";
-  //    std::cout << std::showpos;
-  //    for (size_t j = 1; j != c.size(); ++j)
-  //      std::cout << " " << c[j] << "x" << j;
-  //    std::cout << " subject to\n";
-  //    for (size_t i = 0; i != A.rows(); ++i) {
-  //      std::cout << std::noshowpos << A[{i, 0}] << "x0 ";
-  //      std::cout << std::showpos;
-  //      for (size_t j = 1; j != A.cols(); ++j)
-  //        std::cout << A[{i, j}] << "x" << j << " ";
-  //      std::cout << std::noshowpos;
-  //      std::cout << "<= " << b[i] << '\n';
-  //    }
-  //  }
 };
 
 } // end anonymous namespace
@@ -169,7 +144,6 @@ TEST_F(SimplexTest, ComplexTest) {
 }
 
 TEST_F(SimplexTest, EqualityRestrictionTest) {
-  // Test taken from: http://web.stanford.edu/~liszt90/acm/notebook.html#file17
   set_A(4, 3, {
                   6, -1, 0,  // row 1
                   -1, -5, 0, // row 2
@@ -219,8 +193,7 @@ TEST_F(SimplexTest, NoFeasibleSolutionTest) {
   test_current_program(NAN, "Non-trivial test case");
 }
 
-TEST_F(SimplexTest, PossibleInfiniteLoopTest) {
-  // From http://www.math.toronto.edu/mpugh/Teaching/APM236_04/bland
+TEST_F(SimplexTest, AntiCyclingTest) {
   set_A(3, 4, {
                   0.5, -5.5, -2.5, 9.0, // row 1
                   0.5, -1.5, -0.5, 1.0, // row 2
@@ -228,7 +201,7 @@ TEST_F(SimplexTest, PossibleInfiniteLoopTest) {
               });
   set_b({0, 0, 1});
   set_c({10, -57, -9, -24});
-  test_current_program(1, "Test 1", true);
+  test_current_program(1, "Test 1");
 
   set_A(3, 4, {
                   1.0, 1.0, 1.0, 1.0,   // row 1
@@ -237,5 +210,132 @@ TEST_F(SimplexTest, PossibleInfiniteLoopTest) {
               });
   set_b({1, 0, 0});
   set_c({-1, 7, 1, 2});
-  test_current_program(7, "Test 2", true);
+  test_current_program(7, "Test 2");
+
+  set_A(2, 4, {
+                  0.4, 0.2, -1.4, -0.2, // row 1
+                  7.8, 1.4, 7.8, 0.4    // row 2
+              });
+  set_b({0, 0});
+  set_c({2.3, 2.15, -13.55, -0.4});
+  test_current_program(0, "Test 3");
+
+  set_A(3, 4, {
+                  0.5, -5.5, -2.5, 9.0, // row 0
+                  0.5, -1.5, -0.5, 1.0, // row 1
+                  1.0, 0.0, 0.0, 0.0    // row 2
+              });
+  set_b({0, 0, 1});
+  set_c({10, -57, -9, -24});
+  test_current_program(1, "Test 4");
 }
+
+TEST_F(SimplexTest, GreaterThanTest) {
+  set_A(3, 3, {
+                  -1, -1, 0, // row 1
+                  -1, 0, -1, // row2
+                  0, -1, -1  // row 3
+              });
+  set_b({-5, -4, -3});
+  set_c({-2, -2, -2});
+  test_current_program(-12, "Test 1");
+
+  set_A(3, 3, {
+                  3, 2, 1,  // row 1
+                  2, 5, 3,  // row 2
+                  -1, -9, 1 // row 3
+              });
+  set_b({10, 15, -4});
+  set_c({2, 3, 4});
+  test_current_program(16.90625, "Test 2");
+
+  set_A(5, 3, {
+                  3, -1, -1, // row 1
+                  1, 2, -1,  // row 2
+                  2, 1, 0,   // row 3
+                  1, 1, 0,   // row 4
+                  -1, -1, 0  // row 5
+              });
+  set_b({-1, -2, 2, 1, -1});
+  set_c({5, -1, -1});
+  test_current_program(1, "Test 3");
+}
+
+TEST_F(SimplexTest, MinimizationTest) {
+  set_A(3, 2, {
+                  -3, -4, // row 1
+                  -1, 0,  // row 2
+                  0, -1,  // row 3
+              });
+  set_b({-6, -1, -2});
+  set_c({-200, -150});
+  test_current_program(-500, "Test 1");
+}
+
+TEST_F(SimplexTest, ArtificialVariableRemainsBasicTest) {
+  set_A(2, 2, {
+                  -1, -1, // row 1
+                  1, 0    // row 2
+              });
+  set_b({-1, 0});
+  set_c({-1, -1});
+
+  test_current_program(-1, "Test 1");
+
+  set_A(2, 2, {
+                  2, 1,  // row 1
+                  -1, -1 // row 2
+              });
+  set_b({1, -1});
+  set_c({2, 2});
+  test_current_program(2, "Test 3");
+
+  set_A(3, 3, {
+                  -2, -2, -2, // row 1
+                  -2, -2, 1,  // row 2
+                  2, 2, 1     // row 3
+              });
+  set_b({-2, 2, 1});
+  set_c({2, 2, -1});
+  test_current_program(-1, "Test 4");
+}
+
+//#include <chrono>
+//#include <random>
+// TEST_F(SimplexTest, Benchmark) {
+//  simplex_solver<real_t> solver;
+//  solver.set_eps(1e-10);
+//  std::mt19937 engine;
+//  std::uniform_real_distribution<real_t> gen_value;
+//  std::bernoulli_distribution gen_bool(0.4);
+//
+//  const size_t m = 100;
+//  const size_t n = 100;
+//  real_t checksum = 0;
+//  matrix2<real_t> A(m, n);
+//  vec_t b(m), c(n), x;
+//
+//  auto run_test = [&] {
+//    for (size_t i = 0; i < m; ++i)
+//      for (size_t j = 0; j < n; ++j)
+//        if (gen_bool(engine))
+//          A[i][j] = gen_value(engine);
+//
+//    for (size_t i = 0; i < m; ++i)
+//      b[i] = gen_value(engine) * n;
+//
+//    for (size_t j = 0; j < n; ++j)
+//      c[j] = gen_value(engine) * 5;
+//
+//    checksum += solver.maximize(A, b, c, x);
+//  };
+//
+//  using namespace std::chrono;
+//  const auto begin = steady_clock::now();
+//  for (size_t rep = 0; rep < 200; ++rep)
+//    run_test();
+//  const auto end = steady_clock::now();
+//  const auto elapsed = duration_cast<milliseconds>(end - begin);
+//  std::cout << "Elapsed time: " << elapsed.count() << " ms\n";
+//  std::cout << "Checksum: " << checksum << '\n';
+//}
