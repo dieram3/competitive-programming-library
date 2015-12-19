@@ -16,7 +16,7 @@
 #include <vector>      // For std::vector
 
 #include <cassert> // For assert
-#include <cmath>   // For std::fabs
+#include <cmath>   // For std::fabs, std::fma
 #include <cstddef> // For std::size_t
 #include <cstdint> // For SIZE_MAX
 
@@ -89,7 +89,7 @@ public:
       // phase 1 is required
       pivot(min_b, n); // Pivot to make RHS positive.
       simplex(1);
-      if (!is_zero(tableau[m + 1][n]))
+      if (!is_zero(tableau[m + 1][n + 1]))
         return std::numeric_limits<T>::quiet_NaN();
       auto it = std::find(B.begin(), B.end(), n); // n is the artificial var.
       if (it != B.end()) {
@@ -104,7 +104,11 @@ public:
       }
     }
 
-    assert(std::find(N.begin(), N.end(), n) != N.end());
+    const size_t art_pos = std::find(N.begin(), N.end(), n) - N.begin();
+    assert(art_pos < N.size());
+    for (size_t i = 0; i < tableau.rows(); ++i)
+      tableau[i][art_pos] = 0; // Nullify the artificial column.
+
     if (!simplex(2))
       return std::numeric_limits<T>::infinity(); // Unbounded.
 
@@ -139,8 +143,6 @@ private:
     // Find entering variable:
     c = SIZE_MAX;
     for (size_t j = 0; j <= n; ++j) {
-      if (phase == 2 && N[j] == n)
-        continue; // Ignore artificial variable.
       if (!is_neg(tableau[objrow][j]))
         continue;
       if (c == SIZE_MAX || N[j] < N[c])
@@ -194,8 +196,10 @@ private:
 
   void add_row(size_t row_from, const T &mult, size_t row_to) {
     assert(row_from != row_to);
-    for (size_t j = 0; j < tableau.cols(); ++j)
-      tableau[row_to][j] += mult * tableau[row_from][j];
+    for (size_t j = 0; j < tableau.cols(); ++j) {
+      auto &dst = tableau[row_to][j];
+      dst = std::fma(mult, tableau[row_from][j], dst);
+    }
   }
 
   bool is_pos(T val) const { return val > eps; }

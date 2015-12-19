@@ -29,11 +29,6 @@ static bool float_ge(real_t x, real_t y) { return x >= y || float_eq(x, y); }
 
 namespace {
 
-// Results have been verified in:
-// http://www.zweigmedia.com/RealWorld/simplex.html
-// Note that the implementation of this page does not detect unfeasible
-// programs.
-//
 class SimplexTest : public ::testing::Test {
   simplex_solver<real_t> solver;
   matrix2<real_t> A;
@@ -58,6 +53,7 @@ protected:
 
     SCOPED_TRACE(test_name);
 
+    solver.set_eps(1e-11);
     const real_t opt_value = solver.maximize(A, b, c, x);
 
     if (std::isnan(expected_opt_value))
@@ -89,23 +85,6 @@ protected:
       EXPECT_TRUE(float_ge(x[i], 0)) << "Variable " << i << " is negative: x["
                                      << i << "] = " << x[i];
   }
-
-  //  void print_current_program() {
-  //    std::cout << "Maximize p = ";
-  //    std::cout << c[0] << "x0 ";
-  //    std::cout << std::showpos;
-  //    for (size_t j = 1; j != c.size(); ++j)
-  //      std::cout << " " << c[j] << "x" << j;
-  //    std::cout << " subject to\n";
-  //    for (size_t i = 0; i != A.rows(); ++i) {
-  //      std::cout << std::noshowpos << A[{i, 0}] << "x0 ";
-  //      std::cout << std::showpos;
-  //      for (size_t j = 1; j != A.cols(); ++j)
-  //        std::cout << A[{i, j}] << "x" << j << " ";
-  //      std::cout << std::noshowpos;
-  //      std::cout << "<= " << b[i] << '\n';
-  //    }
-  //  }
 };
 
 } // end anonymous namespace
@@ -215,8 +194,7 @@ TEST_F(SimplexTest, NoFeasibleSolutionTest) {
   test_current_program(NAN, "Non-trivial test case");
 }
 
-TEST_F(SimplexTest, PossibleInfiniteLoopTest) {
-  // From http://www.math.toronto.edu/mpugh/Teaching/APM236_04/bland
+TEST_F(SimplexTest, AntiCyclingTest) {
   set_A(3, 4, {
                   0.5, -5.5, -2.5, 9.0, // row 1
                   0.5, -1.5, -0.5, 1.0, // row 2
@@ -234,6 +212,23 @@ TEST_F(SimplexTest, PossibleInfiniteLoopTest) {
   set_b({1, 0, 0});
   set_c({-1, 7, 1, 2});
   test_current_program(7, "Test 2");
+
+  set_A(2, 4, {
+                  0.4, 0.2, -1.4, -0.2, // row 1
+                  7.8, 1.4, 7.8, 0.4    // row 2
+              });
+  set_b({0, 0});
+  set_c({2.3, 2.15, -13.55, -0.4});
+  test_current_program(0, "Test 3");
+
+  set_A(3, 4, {
+                  0.5, -5.5, -2.5, 9.0, // row 0
+                  0.5, -1.5, -0.5, 1.0, // row 1
+                  1.0, 0.0, 0.0, 0.0    // row 2
+              });
+  set_b({0, 0, 1});
+  set_c({10, -57, -9, -24});
+  test_current_program(1, "Test 4");
 }
 
 TEST_F(SimplexTest, GreaterThanTest) {
@@ -244,5 +239,64 @@ TEST_F(SimplexTest, GreaterThanTest) {
               });
   set_b({-5, -4, -3});
   set_c({-2, -2, -2});
-  test_current_program(-12, "GreaterThanTest");
+  test_current_program(-12, "Test 1");
+
+  set_A(3, 3, {
+                  3, 2, 1,  // row 1
+                  2, 5, 3,  // row 2
+                  -1, -9, 1 // row 3
+              });
+  set_b({10, 15, -4});
+  set_c({2, 3, 4});
+  test_current_program(16.90625, "Test 2");
+
+  set_A(5, 3, {
+                  3, -1, -1, // row 1
+                  1, 2, -1,  // row 2
+                  2, 1, 0,   // row 3
+                  1, 1, 0,   // row 4
+                  -1, -1, 0  // row 5
+              });
+  set_b({-1, -2, 2, 1, -1});
+  set_c({5, -1, -1});
+  test_current_program(1, "Test 3");
+}
+
+TEST_F(SimplexTest, MinimizationTest) {
+  set_A(3, 2, {
+                  -3, -4, // row 1
+                  -1, 0,  // row 2
+                  0, -1,  // row 3
+              });
+  set_b({-6, -1, -2});
+  set_c({-200, -150});
+  test_current_program(-500, "Test 1");
+}
+
+TEST_F(SimplexTest, ArtificialVariableRemainsBasicTest) {
+  set_A(2, 2, {
+                  -1, -1, // row 1
+                  1, 0    // row 2
+              });
+  set_b({-1, 0});
+  set_c({-1, -1});
+
+  test_current_program(-1, "Test 1");
+
+  set_A(2, 2, {
+                  2, 1,  // row 1
+                  -1, -1 // row 2
+              });
+  set_b({1, -1});
+  set_c({2, 2});
+  test_current_program(2, "Test 3");
+
+  set_A(3, 3, {
+                  -2, -2, -2, // row 1
+                  -2, -2, 1,  // row 2
+                  2, 2, 1     // row 3
+              });
+  set_b({-2, 2, 1});
+  set_c({2, 2, -1});
+  test_current_program(-1, "Test 4");
 }
