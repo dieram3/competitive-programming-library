@@ -64,7 +64,7 @@ public:
     const size_t m = A.rows();
     const size_t n = A.cols();
 
-    // build tableau.
+    // Build tableau.
     tableau.resize(m + 2, n + 2);
     for (size_t i = 0; i < m; ++i) {
       for (size_t j = 0; j < n; ++j)
@@ -73,8 +73,8 @@ public:
       tableau[i][n + 1] = b[i];
     }
     for (size_t j = 0; j < n; ++j) {
-      tableau[m][j] = -c[j]; // row m is the phase2 problem.
-      tableau[m + 1][j] = 0; // row m+1 is the phase1 problem.
+      tableau[m][j] = -c[j]; // Row m is the phase2 problem.
+      tableau[m + 1][j] = 0; // Row m+1 is the phase1 problem.
     }
     tableau[m][n] = 0, tableau[m][n + 1] = 0;
     tableau[m + 1][n] = 1, tableau[m + 1][n + 1] = 0;
@@ -84,20 +84,20 @@ public:
     std::iota(N.begin(), N.end(), size_t{0});
     std::iota(B.begin(), B.end(), N.size());
     pivcol.resize(tableau.rows());
-    // n is the artificial variable.
+    // 'n' is the artificial variable.
 
     const size_t min_b = std::min_element(b.begin(), b.end()) - b.begin();
 
     // Main invariant: right-hand side is always kept positive.
     if (is_neg(b[min_b])) {
-      // phase 1 is required
+      // Phase 1 is required.
       pivot(min_b, n); // Pivot to make RHS positive.
       simplex(1);
       if (!is_zero(tableau[m + 1][n + 1]))
-        return std::numeric_limits<T>::quiet_NaN(); // infeasible.
+        return std::numeric_limits<T>::quiet_NaN(); // Infeasible.
       auto it = std::find(B.begin(), B.end(), n);
       if (it != B.end()) {
-        // make 'n' a nonbasic variable.
+        // Make 'n' a nonbasic variable.
         const size_t row = it - B.begin();
         assert(is_zero(tableau[row][n + 1]));
         size_t col;
