@@ -8,12 +8,12 @@
 
 #include <djp/utility/matrix.hpp>
 
+#include <cassert>   // for assert
+#include <cmath>     // for std::isfinite, std::isnan, std::fabs, NAN, INFINITY
 #include <limits>    // for std::numeric_limits
 #include <numeric>   // for std::inner_product
 #include <stdexcept> // for std::domain_error
 #include <vector>    // for std::vector, std::initializer_list
-#include <cassert>   // for assert
-#include <cmath>     // for std::isfinite, std::isnan, std::fabs, NAN, INFINITY
 
 using namespace djp;
 using real_t = double;
@@ -36,7 +36,7 @@ namespace {
 //
 class SimplexTest : public ::testing::Test {
   simplex_solver<real_t> solver;
-  matrix<real_t> A;
+  matrix2<real_t> A;
   vec_t b;
   vec_t c;
   vec_t x;
@@ -44,27 +44,21 @@ class SimplexTest : public ::testing::Test {
 protected:
   void set_A(const size_t m, const size_t n, const vec_t &vec) {
     assert(vec.size() == m * n);
-    A.assign({m, n});
+    A.resize(m, n);
     for (size_t i = 0; i != m; ++i)
       for (size_t j = 0; j != n; ++j)
-        A[{i, j}] = vec[i * n + j];
+        A[i][j] = vec[i * n + j];
   }
 
   void set_b(std::initializer_list<real_t> il) { b = il; }
   void set_c(std::initializer_list<real_t> il) { c = il; }
 
   void test_current_program(const real_t expected_opt_value,
-                            const char *test_name, bool may_throw = false) {
+                            const char *test_name) {
 
     SCOPED_TRACE(test_name);
 
-    real_t opt_value;
-    try {
-      opt_value = solver.maximize(A, b, c, x);
-    } catch (std::domain_error &) {
-      EXPECT_TRUE(may_throw) << " Unexpected thrown exception\n";
-      return;
-    }
+    const real_t opt_value = solver.maximize(A, b, c, x);
 
     if (std::isnan(expected_opt_value))
       EXPECT_TRUE(std::isnan(opt_value));
@@ -84,7 +78,7 @@ protected:
     for (size_t i = 0; i != A.rows(); ++i) {
       real_t sum = 0;
       for (size_t j = 0; j != A.cols(); ++j)
-        sum += A[{i, j}] * x.at(j);
+        sum += A[i][j] * x.at(j);
       EXPECT_TRUE(float_le(sum, b[i])) << "Constraint " << i
                                        << " is not satisfied\n" << sum
                                        << " !<= " << b[i];
@@ -92,7 +86,8 @@ protected:
 
     // Check x >= 0
     for (size_t i = 0; i != x.size(); ++i)
-      EXPECT_TRUE(float_ge(x[i], 0)) << "Variable " << i << " is negative";
+      EXPECT_TRUE(float_ge(x[i], 0)) << "Variable " << i << " is negative: x["
+                                     << i << "] = " << x[i];
   }
 
   //  void print_current_program() {
@@ -229,7 +224,7 @@ TEST_F(SimplexTest, PossibleInfiniteLoopTest) {
               });
   set_b({0, 0, 1});
   set_c({10, -57, -9, -24});
-  test_current_program(1, "Test 1", true);
+  test_current_program(1, "Test 1");
 
   set_A(3, 4, {
                   1.0, 1.0, 1.0, 1.0,   // row 1
@@ -238,5 +233,16 @@ TEST_F(SimplexTest, PossibleInfiniteLoopTest) {
               });
   set_b({1, 0, 0});
   set_c({-1, 7, 1, 2});
-  test_current_program(7, "Test 2", true);
+  test_current_program(7, "Test 2");
+}
+
+TEST_F(SimplexTest, GreaterThanTest) {
+  set_A(3, 3, {
+                  -1, -1, 0, // row 1
+                  -1, 0, -1, // row2
+                  0, -1, -1  // row 3
+              });
+  set_b({-5, -4, -3});
+  set_c({-2, -2, -2});
+  test_current_program(-12, "GreaterThanTest");
 }
