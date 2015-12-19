@@ -16,7 +16,7 @@
 #include <vector>      // For std::vector
 
 #include <cassert> // For assert
-#include <cmath>   // For std::fabs, std::fma
+#include <cmath>   // For std::fabs
 #include <cstddef> // For std::size_t
 #include <cstdint> // For SIZE_MAX
 
@@ -189,17 +189,15 @@ private:
     std::swap(B[r], N[c]);
   }
 
-  void multiply_row(size_t i, const T &mult) {
+  void multiply_row(size_t i, const T mult) {
     for (size_t j = 0; j < tableau.cols(); ++j)
       tableau[i][j] *= mult;
   }
 
-  void add_row(size_t row_from, const T &mult, size_t row_to) {
+  void add_row(size_t row_from, const T mult, size_t row_to) {
     assert(row_from != row_to);
-    for (size_t j = 0; j < tableau.cols(); ++j) {
-      auto &dst = tableau[row_to][j];
-      dst = std::fma(mult, tableau[row_from][j], dst);
-    }
+    for (size_t j = 0; j < tableau.cols(); ++j)
+      tableau[row_to][j] += mult * tableau[row_from][j];
   }
 
   bool is_pos(T val) const { return val > eps; }

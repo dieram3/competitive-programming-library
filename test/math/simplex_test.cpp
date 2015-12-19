@@ -300,3 +300,43 @@ TEST_F(SimplexTest, ArtificialVariableRemainsBasicTest) {
   set_c({2, 2, -1});
   test_current_program(-1, "Test 4");
 }
+
+//#include <chrono>
+//#include <random>
+// TEST_F(SimplexTest, Benchmark) {
+//  simplex_solver<real_t> solver;
+//  solver.set_eps(1e-10);
+//  std::mt19937 engine;
+//  std::uniform_real_distribution<real_t> gen_value;
+//  std::bernoulli_distribution gen_bool(0.4);
+//
+//  const size_t m = 100;
+//  const size_t n = 100;
+//  real_t checksum = 0;
+//  matrix2<real_t> A(m, n);
+//  vec_t b(m), c(n), x;
+//
+//  auto run_test = [&] {
+//    for (size_t i = 0; i < m; ++i)
+//      for (size_t j = 0; j < n; ++j)
+//        if (gen_bool(engine))
+//          A[i][j] = gen_value(engine);
+//
+//    for (size_t i = 0; i < m; ++i)
+//      b[i] = gen_value(engine) * n;
+//
+//    for (size_t j = 0; j < n; ++j)
+//      c[j] = gen_value(engine) * 5;
+//
+//    checksum += solver.maximize(A, b, c, x);
+//  };
+//
+//  using namespace std::chrono;
+//  const auto begin = steady_clock::now();
+//  for (size_t rep = 0; rep < 200; ++rep)
+//    run_test();
+//  const auto end = steady_clock::now();
+//  const auto elapsed = duration_cast<milliseconds>(end - begin);
+//  std::cout << "Elapsed time: " << elapsed.count() << " ms\n";
+//  std::cout << "Checksum: " << checksum << '\n';
+//}
