@@ -25,6 +25,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
 add_subdirectory("utils")
 
 # ---------------------------------------
+# Project options
+# ---------------------------------------
+
+option(ENABLE_CLANG_MODULES "Enables clang support for modules" OFF)
+
+# ---------------------------------------
 # Add the CP-utils header-only library
 # ---------------------------------------
 

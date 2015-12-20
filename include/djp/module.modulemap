@@ -1,0 +1,5 @@
+module djp {
+  requires cplusplus11
+  umbrella "."
+  explicit module * {}
+}

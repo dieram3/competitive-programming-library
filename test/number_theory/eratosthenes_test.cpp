@@ -6,12 +6,15 @@
 #include <djp/number_theory/eratosthenes.hpp>
 #include <gtest/gtest.h>
 
+#include <djp/number_theory/basics.hpp> // for ceil_div
+
 #include <algorithm> // for std::binary_search
 #include <iterator>  // fot std::begin
 #include <stdexcept> // for std::logic_error
 #include <vector>    // for std::vector
-#include <cstddef>   // for std::size_t
-#include <cstdint>   // for std::int32_t
+
+#include <cstddef> // for std::size_t
+#include <cstdint> // for std::int32_t
 
 using namespace djp;
 
@@ -57,8 +60,9 @@ TEST(sieve_of_eratosthenes, FindsPrimes) {
 }
 
 TEST(SieveOfEratosthenesTest, FindsAllRequiredPrimes) {
-  auto num_primes_below =
-      [](int32_t number) { return sieve_of_eratosthenes(number).size(); };
+  auto num_primes_below = [](int32_t number) {
+    return sieve_of_eratosthenes(number).size();
+  };
 
   EXPECT_EQ(0, num_primes_below(0));
   EXPECT_EQ(0, num_primes_below(1));

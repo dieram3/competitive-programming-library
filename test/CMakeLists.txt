@@ -17,6 +17,13 @@ function(add_unittest TEST_NAME)
   -Wno-global-constructors
   >)
 
+  if(ENABLE_CLANG_MODULES)
+    target_compile_options(${TARGET_ID} PRIVATE
+    $<$<OR:$<CXX_COMPILER_ID:AppleClang>,$<CXX_COMPILER_ID:Clang>>:
+    -fmodules
+    -fcxx-modules
+    >)
+  endif()
   add_test(NAME ${TEST_NAME} COMMAND ${TARGET_ID})
 endfunction()
 

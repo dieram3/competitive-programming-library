@@ -7,8 +7,10 @@
 #include <djp/geometry/shoelace.hpp>
 #include <gtest/gtest.h>
 
-#include <cstdint>
+#include <djp/geometry/point_2d.hpp>
+
 #include <chrono>
+#include <cstdint>
 
 using namespace djp;
 using std::int32_t;

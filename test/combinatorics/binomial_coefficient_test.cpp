@@ -6,6 +6,8 @@
 #include <djp/combinatorics/binomial_coefficient.hpp>
 #include <gtest/gtest.h>
 
+#include <djp/utility/matrix.hpp>
+
 #include <cstddef> // For std::size_t
 #include <cstdint> // For std::uint32_t, std::uint64_t
 

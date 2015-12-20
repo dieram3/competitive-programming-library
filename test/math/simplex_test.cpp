@@ -332,7 +332,7 @@ TEST_F(SimplexTest, ArtificialVariableRemainsBasicTest) {
 //
 //  using namespace std::chrono;
 //  const auto begin = steady_clock::now();
-//  for (size_t rep = 0; rep < 200; ++rep)
+//  for (size_t rep = 0; rep < 500; ++rep)
 //    run_test();
 //  const auto end = steady_clock::now();
 //  const auto elapsed = duration_cast<milliseconds>(end - begin);

@@ -7,6 +7,7 @@
 #include <gtest/gtest.h>
 
 #include <djp/graph/directed_graph.hpp>
+#include <djp/utility/matrix.hpp>
 
 using namespace djp;
 

@@ -8,8 +8,10 @@
 
 #include <initializer_list> // For std::initializer_list
 #include <iostream>         // For std::ostream
-#include <cassert>          // For assert
-#include <cstdint>          // For std::uint_fast32_t, std::uint_fast64_t
+
+#include <cassert> // For assert
+#include <cmath>   // For std::sqrt
+#include <cstdint> // For std::uint_fast32_t, std::uint_fast64_t
 
 using namespace djp;
 using std::uint_fast32_t;
