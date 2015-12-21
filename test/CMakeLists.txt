@@ -16,7 +16,7 @@ function(add_unittest TEST_NAME)
   -Wno-sign-conversion 
   -Wno-global-constructors
   >)
-  
+
   add_test(NAME ${TEST_NAME} COMMAND ${TARGET_ID})
 endfunction()
 
