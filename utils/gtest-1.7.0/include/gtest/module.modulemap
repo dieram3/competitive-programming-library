@@ -1,0 +1,5 @@
+module gtest {
+  requires cplusplus
+  header "gtest.h"
+  export *
+}

@@ -20,7 +20,25 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # For YouCompleteMe Vim's plugin
 set(CMAKE_EXPORT_COMPILE_COMMANDS "ON")
 
+# ---------------------------------------
+# Project options
+# ---------------------------------------
+
+option(ENABLE_CLANG_MODULES "Enables clang support for modules" OFF)
+
+# ---------------------------------------
+# Handle options
+# ---------------------------------------
+
+if(ENABLE_CLANG_MODULES)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-fmodules -fcxx-modules)
+endif()
+endif()
+
+# ---------------------------------------
 # Integrate utilities
+# ---------------------------------------
 
 add_subdirectory("utils")
 

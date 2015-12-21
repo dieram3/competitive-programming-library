@@ -157,21 +157,19 @@ private:
       return optimized;
 
     // Find leaving variable:
+    auto ratio_less = [&](const size_t r1, const size_t r2) {
+      const auto ratio1 = tableau[r1][n + 1] / tableau[r1][c];
+      const auto ratio2 = tableau[r2][n + 1] / tableau[r2][c];
+      if (approx(ratio1, ratio2))
+        return B[r1] < B[r2];
+      return ratio1 < ratio2;
+    };
     r = SIZE_MAX;
     for (size_t i = 0; i < m; ++i) {
       if (!is_pos(tableau[i][c]))
         continue;
-      if (r == SIZE_MAX)
+      if (r == SIZE_MAX || ratio_less(i, r))
         r = i;
-      else {
-        const auto r_ratio = tableau[r][n + 1] / tableau[r][c];
-        const auto i_ratio = tableau[i][n + 1] / tableau[i][c];
-        if (approx(r_ratio, i_ratio)) {
-          if (B[i] < B[r])
-            r = i;
-        } else if (i_ratio < r_ratio)
-          r = i;
-      }
     }
     if (r == SIZE_MAX)
       return unbounded;

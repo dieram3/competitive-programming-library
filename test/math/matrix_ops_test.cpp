@@ -6,14 +6,16 @@
 #include <djp/math/matrix_ops.hpp>
 #include <gtest/gtest.h>
 
-#include <ostream> // For std::ostream
+#include <djp/utility/matrix.hpp>
+
 #include <cstddef> // For std::size_t
+#include <ostream> // For std::ostream
 
 using namespace djp;
 using std::size_t;
 
 template <typename T, size_t M, size_t N>
-static matrix<T> as_matrix(const T(&mat)[M][N]) {
+static matrix<T> as_matrix(const T (&mat)[M][N]) {
   matrix<T> r({M, N});
   for (size_t i = 0; i < M; ++i)
     for (size_t j = 0; j < N; ++j)
