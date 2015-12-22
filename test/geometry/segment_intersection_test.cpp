@@ -91,8 +91,8 @@ protected:
   std::vector<segment_t> set;
 
 protected:
-  void add(scalar_t p0, scalar_t p1, scalar_t q0, scalar_t q1) {
-    set.emplace_back(point_t(p0, p1), point_t(q0, q1));
+  void add(scalar_t px, scalar_t py, scalar_t qx, scalar_t qy) {
+    set.emplace_back(point_t(px, py), point_t(qx, qy));
   }
 
   bool finds(const size_t s0, const size_t s1) {
@@ -123,7 +123,20 @@ TEST_F(FindIntersectionTest, CommonCrossingTest) {
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds(2, 4));
 
-  // Several crosses
+  // One intersection.
+  set.clear();
+  add(1, 1, 2, 0), add(1, 4, 3, 4), add(3, 3, 4, 5), add(2, 5, 5, 4);
+  ASSERT_EQ(4, set.size());
+  EXPECT_TRUE(finds(2, 3));
+
+  // Two intersections.
+  set.clear();
+  add(0, 0, 2, 3), add(0, 1, 1, 2), add(0, 5, 3, 4);
+  add(1, 0, 3, 0), add(0, 3, 4, 0), add(2, 4, 3, 5);
+  ASSERT_EQ(6, set.size());
+  EXPECT_TRUE(finds(0, 4));
+
+  // Three intersections.
   set.clear();
   add(-2, -1, 0, 1), add(-1, -1, 1, 1), add(0, -1, 2, 1), add(-2, 0, 2, 0);
   ASSERT_EQ(4, set.size());
