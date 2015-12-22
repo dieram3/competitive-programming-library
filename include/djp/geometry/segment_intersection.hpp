@@ -7,28 +7,28 @@
 #define DJP_GEOMETRY_SEGMENT_INTERSECTION_HPP
 
 #include <algorithm> // For std::minmax, std::for_each, std::sort
+#include <cstddef>   // For std::size_t
 #include <iterator>  // For std::iterator_traits, std::next, std::prev
 #include <set>       // For std::set
+#include <tuple>     // For std::tie
 #include <utility>   // For std::pair
 #include <vector>    // For std::vector
-#include <tuple>     // For std::tie
-#include <cstddef>   // For std::size_t
 
 namespace djp {
 
-///  \brief Check if two segments intersect.
+/// \brief Check if two line segments intersect.
 ///
-/// Check if segment formed by \p p0 and \p p1 intersect with the segment formed
-/// by \p q0 and \p q1.
+/// Checks whether the line segment defined by \p p0 and \p p1 intersects with
+/// the line segment defined by \p q0 and \p q1.
 ///
 template <typename Point>
 bool segment_intersect(const Point &p0, const Point &p1, const Point &q0,
                        const Point &q1) {
-  // check bounding box first
-  if ((std::max(p0.x, p1.x) < std::min(q0.x, q1.x) &&
-       std::max(p0.y, p1.y) < std::min(q0.y, q1.y)) ||
-      (std::max(q0.x, q1.x) < std::min(p0.x, p1.x) &&
-       std::max(q0.y, q1.y) < std::min(p0.y, p1.y)))
+  // Check bounding box first.
+  if (std::max(p0.x, p1.x) < std::min(q0.x, q1.x) ||
+      std::max(q0.x, q1.x) < std::min(p0.x, p1.x) ||
+      std::max(p0.y, p1.y) < std::min(q0.y, q1.y) ||
+      std::max(q0.y, q1.y) < std::min(p0.y, p1.y))
     return false;
 
   auto lrot = (p1 - p0) ^ (q0 - p0);
@@ -42,9 +42,10 @@ bool segment_intersect(const Point &p0, const Point &p1, const Point &q0,
   return true;
 }
 
-/// Check if two segments intersect.
+/// Checks if two line segments intersect.
+///
 template <typename Segment>
-bool intersect(const Segment &s0, const Segment &s1) {
+bool segment_intersect(const Segment &s0, const Segment &s1) {
   return segment_intersect(s0.a, s0.b, s1.a, s1.b);
 }
 
@@ -81,7 +82,7 @@ struct segment {
 ///
 /// Uses the Shamos-Hoey algorithm to check if the polygon defined by the range
 /// of segments <tt>[first, last)</tt> is simple. A polygon is simple if no
-/// two segments intersect. The only exception are the vertices that
+/// two line segments intersect. The only exception are the vertices that
 /// connect adjacent segments (otherwise the polygon could not be chained).
 ///
 /// \param first The beginning of range to check.
@@ -99,15 +100,15 @@ struct segment {
 ///  At most <tt>O(n*log(n))</tt> segment-comparisons where
 /// <tt>n = std::distance(first, last)</tt>
 ///
-template <typename Iterator>
-bool simple_polygon(Iterator first, Iterator last) {
-  using segment_t = typename std::iterator_traits<Iterator>::value_type;
+template <typename ForwardIt>
+bool simple_polygon(ForwardIt first, ForwardIt last) {
+  using segment_t = typename std::iterator_traits<ForwardIt>::value_type;
   using event_t = std::pair<bool, segment_t>;
 
   std::vector<event_t> event_queue;
   event_queue.reserve(std::distance(first, last));
 
-  std::for_each(first, last, [&event_queue](segment_t seg) {
+  std::for_each(first, last, [&event_queue](const segment_t &seg) {
     event_queue.emplace_back(true, seg);
     event_queue.emplace_back(false, seg);
   });
@@ -122,7 +123,7 @@ bool simple_polygon(Iterator first, Iterator last) {
   auto edge_intersect = [](const segment_t &s0, const segment_t &s1) {
     if (s0.a == s1.a || s0.a == s1.b || s0.b == s1.a || s0.b == s1.b)
       return false;
-    return intersect(s0, s1);
+    return segment_intersect(s0, s1);
   };
   std::set<segment_t> sweep_line;
 
@@ -196,16 +197,17 @@ std::pair<ForwardIt, ForwardIt> find_intersection(ForwardIt first,
   for (const auto &event : event_queue) {
     if (event.first) { // left event
       auto it = sweep_line.lower_bound(event.second);
-      if (it != sweep_line.end() && intersect(**it, *event.second))
+      if (it != sweep_line.end() && segment_intersect(**it, *event.second))
         return {event.second, *it};
-      if (it != sweep_line.begin() && intersect(**std::prev(it), *event.second))
+      if (it != sweep_line.begin() &&
+          segment_intersect(**std::prev(it), *event.second))
         return {event.second, *std::prev(it)};
       sweep_line.insert(event.second);
     } else { // right event
       auto it = sweep_line.lower_bound(event.second);
       auto has_neighbours =
           std::next(it) != sweep_line.end() && it != sweep_line.begin();
-      if (has_neighbours && intersect(**std::next(it), **std::prev(it)))
+      if (has_neighbours && segment_intersect(**std::next(it), **std::prev(it)))
         return {*std::prev(it), *std::next(it)};
       sweep_line.erase(it);
     }

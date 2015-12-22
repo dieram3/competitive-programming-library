@@ -15,6 +15,69 @@
 using namespace djp;
 
 // ==========================================
+// SegmentIntersectTest
+// ==========================================
+
+namespace {
+class SegmentIntersectTest : public ::testing::Test {
+protected:
+  const point<int> a{0, 1};
+  const point<int> b{2, 0};
+  const point<int> c{3, 2};
+  const point<int> d{1, 3};
+};
+} // end anonymous namespace
+
+TEST_F(SegmentIntersectTest, BoundingBoxTest) {
+  // x case
+  EXPECT_FALSE(segment_intersect(a, d, b, c));
+  EXPECT_FALSE(segment_intersect(b, c, a, d));
+
+  // y case
+  EXPECT_FALSE(segment_intersect(a, b, c, d));
+  EXPECT_FALSE(segment_intersect(c, d, a, b));
+}
+
+TEST_F(SegmentIntersectTest, BasicTest) {
+  EXPECT_TRUE(segment_intersect(a, c, d, b));
+  EXPECT_TRUE(segment_intersect(c, a, d, b));
+  EXPECT_TRUE(segment_intersect(b, d, a, c));
+  EXPECT_TRUE(segment_intersect(b, d, c, a));
+}
+
+TEST_F(SegmentIntersectTest, TouchingSegmentsTest) {
+  EXPECT_TRUE(segment_intersect(a, d, d, c));
+  EXPECT_TRUE(segment_intersect(a, b, c, b));
+  EXPECT_TRUE(segment_intersect(d, b, d, c));
+}
+
+TEST_F(SegmentIntersectTest, ParallelSegmentsTest) {
+  const point<int> e{2, 5}, f{3, 7};
+  EXPECT_TRUE(segment_intersect(a, d, a, e));
+  EXPECT_TRUE(segment_intersect(d, a, e, a));
+  EXPECT_TRUE(segment_intersect(a, d, d, e));
+  EXPECT_TRUE(segment_intersect(a, e, f, d));
+  EXPECT_TRUE(segment_intersect(e, a, d, f));
+
+  EXPECT_FALSE(segment_intersect(a, d, e, f));
+  EXPECT_FALSE(segment_intersect(d, a, f, e));
+}
+
+TEST_F(SegmentIntersectTest, SegmentInterfaceTest) {
+  using segment_t = segment<point<int>>;
+  const segment_t ab(a, b);
+  const segment_t cd(c, d);
+  const segment_t ac(a, c);
+  const segment_t bd(b, d);
+
+  EXPECT_TRUE(segment_intersect(ac, bd));
+  EXPECT_TRUE(segment_intersect(bd, ac));
+
+  EXPECT_FALSE(segment_intersect(ab, cd));
+  EXPECT_FALSE(segment_intersect(cd, ab));
+}
+
+// ==========================================
 // FindIntersectionTest
 // ==========================================
 
@@ -28,8 +91,8 @@ protected:
   std::vector<segment_t> set;
 
 protected:
-  void add(scalar_t p0, scalar_t p1, scalar_t q0, scalar_t q1) {
-    set.emplace_back(point_t(p0, p1), point_t(q0, q1));
+  void add(scalar_t px, scalar_t py, scalar_t qx, scalar_t qy) {
+    set.emplace_back(point_t(px, py), point_t(qx, qy));
   }
 
   bool finds(const size_t s0, const size_t s1) {
@@ -60,7 +123,20 @@ TEST_F(FindIntersectionTest, CommonCrossingTest) {
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds(2, 4));
 
-  // Several crosses
+  // One intersection.
+  set.clear();
+  add(1, 1, 2, 0), add(1, 4, 3, 4), add(3, 3, 4, 5), add(2, 5, 5, 4);
+  ASSERT_EQ(4, set.size());
+  EXPECT_TRUE(finds(2, 3));
+
+  // Two intersections.
+  set.clear();
+  add(0, 0, 2, 3), add(0, 1, 1, 2), add(0, 5, 3, 4);
+  add(1, 0, 3, 0), add(0, 3, 4, 0), add(2, 4, 3, 5);
+  ASSERT_EQ(6, set.size());
+  EXPECT_TRUE(finds(0, 4));
+
+  // Three intersections.
   set.clear();
   add(-2, -1, 0, 1), add(-1, -1, 1, 1), add(0, -1, 2, 1), add(-2, 0, 2, 0);
   ASSERT_EQ(4, set.size());
