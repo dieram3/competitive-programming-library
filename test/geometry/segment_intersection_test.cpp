@@ -15,6 +15,69 @@
 using namespace djp;
 
 // ==========================================
+// SegmentIntersectTest
+// ==========================================
+
+namespace {
+class SegmentIntersectTest : public ::testing::Test {
+protected:
+  const point<int> a{0, 1};
+  const point<int> b{2, 0};
+  const point<int> c{3, 2};
+  const point<int> d{1, 3};
+};
+} // end anonymous namespace
+
+TEST_F(SegmentIntersectTest, BoundingBoxTest) {
+  // x case
+  EXPECT_FALSE(segment_intersect(a, d, b, c));
+  EXPECT_FALSE(segment_intersect(b, c, a, d));
+
+  // y case
+  EXPECT_FALSE(segment_intersect(a, b, c, d));
+  EXPECT_FALSE(segment_intersect(c, d, a, b));
+}
+
+TEST_F(SegmentIntersectTest, BasicTest) {
+  EXPECT_TRUE(segment_intersect(a, c, d, b));
+  EXPECT_TRUE(segment_intersect(c, a, d, b));
+  EXPECT_TRUE(segment_intersect(b, d, a, c));
+  EXPECT_TRUE(segment_intersect(b, d, c, a));
+}
+
+TEST_F(SegmentIntersectTest, TouchingSegmentsTest) {
+  EXPECT_TRUE(segment_intersect(a, d, d, c));
+  EXPECT_TRUE(segment_intersect(a, b, c, b));
+  EXPECT_TRUE(segment_intersect(d, b, d, c));
+}
+
+TEST_F(SegmentIntersectTest, ParallelSegmentsTest) {
+  const point<int> e{2, 5}, f{3, 7};
+  EXPECT_TRUE(segment_intersect(a, d, a, e));
+  EXPECT_TRUE(segment_intersect(d, a, e, a));
+  EXPECT_TRUE(segment_intersect(a, d, d, e));
+  EXPECT_TRUE(segment_intersect(a, e, f, d));
+  EXPECT_TRUE(segment_intersect(e, a, d, f));
+
+  EXPECT_FALSE(segment_intersect(a, d, e, f));
+  EXPECT_FALSE(segment_intersect(d, a, f, e));
+}
+
+TEST_F(SegmentIntersectTest, SegmentInterfaceTest) {
+  using segment_t = segment<point<int>>;
+  const segment_t ab(a, b);
+  const segment_t cd(c, d);
+  const segment_t ac(a, c);
+  const segment_t bd(b, d);
+
+  EXPECT_TRUE(segment_intersect(ac, bd));
+  EXPECT_TRUE(segment_intersect(bd, ac));
+
+  EXPECT_FALSE(segment_intersect(ab, cd));
+  EXPECT_FALSE(segment_intersect(cd, ab));
+}
+
+// ==========================================
 // FindIntersectionTest
 // ==========================================
 
