@@ -7,9 +7,10 @@
 #include <gtest/gtest.h>
 
 #include <djp/number_theory/euclid.hpp> // for djp::gcd
-#include <vector>                       // For std::vector
-#include <cassert>                      // For assert
-#include <cstddef>                      // For std::size_t
+
+#include <cassert> // For assert
+#include <cstddef> // For std::size_t
+#include <vector>  // For std::vector
 
 using namespace djp;
 using std::size_t;
@@ -18,11 +19,11 @@ namespace {
 class ChineseRemainderTheoremTest : public ::testing::Test {
   using int_t = long long;
 
-  static bool pairwise_comprime(const std::vector<int_t> &m) {
+  static bool pairwise_coprime(const std::vector<int_t> &m) {
     const size_t N = m.size();
     for (size_t i = 0; i < N; ++i)
-      for (size_t j = 0; j < N; ++j)
-        if (i != j && gcd(m[i], m[j]) != 1)
+      for (size_t j = i + 1; j < N; ++j)
+        if (gcd(m[i], m[j]) != 1)
           return false;
     return true;
   }
@@ -30,7 +31,7 @@ class ChineseRemainderTheoremTest : public ::testing::Test {
 protected:
   void check(const std::vector<int_t> &a, const std::vector<int_t> &m) {
     assert(a.size() > 0 && a.size() == m.size());
-    ASSERT_TRUE(pairwise_comprime(m));
+    ASSERT_TRUE(pairwise_coprime(m));
     const int_t x = chinese_remainder_theorem(a, m);
     EXPECT_LE(0, x);
     int_t prod = 1;
