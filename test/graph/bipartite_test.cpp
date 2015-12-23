@@ -8,8 +8,8 @@
 
 #include <djp/graph/undirected_graph.hpp>
 
-#include <vector>  // For std::vector
 #include <cstddef> // For std::size_t
+#include <vector>  // For std::vector
 
 using namespace djp;
 using std::vector;
