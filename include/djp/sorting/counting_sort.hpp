@@ -8,9 +8,9 @@
 #ifndef DJP_SORTING_COUNTING_SORT_HPP
 #define DJP_SORTING_COUNTING_SORT_HPP
 
-#include <vector>
-#include <algorithm>
-#include <iterator>
+#include <algorithm> // for_each
+#include <iterator>  // iterator_traits
+#include <vector>    // vector
 
 namespace djp {
 
@@ -28,6 +28,7 @@ void counting_sort_copy(ForwardIt first, ForwardIt last, RandomIt d_first,
 }
 
 /// \brief Stably sorts a range of elements according to a given key.
+///
 /// \param first The beginning of the range to be sorted.
 /// \param last The end of the range to be sorted.
 /// \param num_keys The number of different keys that the key function can
@@ -35,9 +36,11 @@ void counting_sort_copy(ForwardIt first, ForwardIt last, RandomIt d_first,
 /// \param key Function object which returns the key value of its argument (any
 /// element from the range). The returned value must be an integer number
 /// convertible to \c size_t inside the range <tt>[0, num_keys)</tt>.
+///
 /// \par Complexity
 /// O(N + K) where <tt>N = std::distance(first, last)</tt> and
 /// <tt>K = num_keys</tt>.
+///
 template <typename RandomIt, typename Key>
 void counting_sort(RandomIt first, RandomIt last, size_t num_keys, Key key) {
   using T = typename std::iterator_traits<RandomIt>::value_type;
