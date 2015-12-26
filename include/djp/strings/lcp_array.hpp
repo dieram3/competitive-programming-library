@@ -19,7 +19,7 @@ namespace djp {
 /// \brief Generates the LCP array of the given string.
 ///
 /// Generates an array \c lcp of size \c sa.size() where \c lcp[i] is
-/// defined as the longest common prefix between the suffixes \c sa[i]and
+/// defined as the longest common prefix between the suffixes \c sa[i] and
 /// \c sa[i+1]. For convenience, \c lcp[sa.size()-1] is left as zero.
 ///
 /// \param str The string to get the LCP array from.
