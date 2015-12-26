@@ -1,4 +1,4 @@
-//          Copyright Diego Ramirez November 2014
+//          Copyright Diego Ramirez 2014
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,7 +6,9 @@
 #include <djp/strings/basics.hpp>
 #include <gtest/gtest.h>
 
-TEST(split, SplitsWell) {
+#include <string>
+
+TEST(SplitTest, SplitsWell) {
   {
     std::string str("abc,abc,abcd");
     const auto tokens = djp::split(str, ",");
