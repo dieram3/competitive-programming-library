@@ -1,34 +1,34 @@
-//          Copyright Diego Ramírez April 2015
+//          Copyright Diego Ramírez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 /// \file
 /// \brief Defines the function \c make_suffix_array.
-/// \todo Add a linear version of make_suffix_array. It is required for some
-/// contests.
 
 #ifndef DJP_STRINGS_SUFFIX_ARRAY_HPP
 #define DJP_STRINGS_SUFFIX_ARRAY_HPP
 
 #include <djp/sorting/counting_sort.hpp>
-#include <algorithm> // for std::transform
-#include <iterator>  // for std::begin, std::end
-#include <numeric>   // for std::iota
-#include <vector>    // for std::vector
-#include <string>    // for std::string
-#include <cstddef>   // for std::size_t
+
+#include <algorithm> // transform
+#include <cstddef>   // size_t
+#include <iterator>  // begin, end
+#include <numeric>   // iota
+#include <string>    // string
+#include <vector>    // vector
 
 namespace djp {
 
 /// \brief Computes the suffix array of a given string.
 ///
-/// \param str The target string.
+/// \param str The input string.
 ///
-/// \returns A vector containing the all the suffixes of \p str sorted
+/// \returns A vector containing all the suffix indices of \p str sorted
 /// lexicographically i.e the suffix array.
 ///
 /// \par Complexity
-/// <tt>O(n * log(n))</tt> time, <tt>O(n)</tt> space.
+/// <tt>O(n * log(n))</tt> time and <tt>O(n)</tt> space, where
+/// <tt>n = str.size()</tt>.
 ///
 inline std::vector<size_t> make_suffix_array(const std::string &str) {
   if (str.empty())
