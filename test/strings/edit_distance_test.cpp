@@ -1,14 +1,15 @@
-//          Copyright Diego Ramírez November 2014
+//          Copyright Diego Ramírez 2014
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 #include <djp/strings/edit_distance.hpp>
 #include <gtest/gtest.h>
-#include <string>
-#include <algorithm>
 
-TEST(levenshtein_distance, HandlesSmallInput) {
+#include <algorithm> // reverse
+#include <string>    // string
+
+TEST(LevenshteinDistanceTest, HandlesSmallInput) {
   auto lev_dist = [](const std::string &str1, const std::string &str2) {
     return djp::levenshtein_distance(str1.begin(), str1.end(), str2.begin(),
                                      str2.end());
@@ -24,7 +25,7 @@ TEST(levenshtein_distance, HandlesSmallInput) {
   std::string str1 = "kitten";
   std::string str2 = "sitting";
   std::reverse(str2.begin(), str2.end());
-  // This must compile
+  // The following sentence must compile.
   const auto distance = djp::levenshtein_distance(str1.begin(), str1.end(),
                                                   str2.rbegin(), str2.rend());
   EXPECT_EQ(3, distance);

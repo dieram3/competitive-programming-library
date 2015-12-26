@@ -3,9 +3,9 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 //
-// Note: The interface is inspired on C++ Extensions for Library Fundamentals
+// Note: The interface is based on C++ Extensions for Library Fundamentals.
 //
-// Note: The source code is inspired on
+// Note: The source code is based on
 // http://www.inf.fh-flensburg.de/lang/algorithmen/pattern/kmpen.htm
 //
 /// \file
@@ -14,8 +14,9 @@
 #ifndef DJP_STRINGS_KNUTH_MORRIS_PRATT_HPP
 #define DJP_STRINGS_KNUTH_MORRIS_PRATT_HPP
 
-#include <vector>  // for std::vector
-#include <cstddef> // for std::ptrdiff_t
+#include <cassert> // assert
+#include <cstddef> // ptrdiff_t
+#include <vector>  // vector
 
 namespace djp {
 
@@ -41,6 +42,7 @@ public:
   ///
   kmp_searcher(RandomIt1 p_first, RandomIt1 p_last)
       : pattern_{p_first}, mismatch_(p_last - p_first + 1) {
+    assert(p_first != p_last);
     mismatch_[0] = -1;
     for (diff_t p_pos = 0, matched = -1; p_pos < pattern_length();) {
       while (matched >= 0 && pattern_[p_pos] != pattern_[matched])
@@ -49,7 +51,7 @@ public:
     }
   }
 
-  /// \brief Gets the length of the target pattern.
+  /// \brief Gets the length of the preprocessed pattern.
   ///
   /// \returns The length of the pattern used in the constructor.
   ///

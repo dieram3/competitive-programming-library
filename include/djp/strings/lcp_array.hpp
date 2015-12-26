@@ -1,36 +1,41 @@
-//          Copyright Diego Ramírez June 2015
+//          Copyright Diego Ramírez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
-/// \todo Put \c lcp_querier in a different file.
 
 #ifndef DJP_STRINGS_LCP_ARRAY_HPP
 #define DJP_STRINGS_LCP_ARRAY_HPP
 
 #include <djp/data_structure/segment_tree.hpp>
-#include <algorithm>
-#include <string>
-#include <tuple>
-#include <vector>
-#include <cstddef>
+
+#include <algorithm> // max, minmax
+#include <cstddef>   // size_t
+#include <string>    // string
+#include <tuple>     // tie
+#include <vector>    // vector
 
 namespace djp {
 
 /// \brief Generates the LCP array of the given string.
 ///
-/// \param str The string to get the LCP array.
+/// Generates an array \c lcp of size \c sa.size() where \c lcp[i] is
+/// defined as the longest common prefix between the suffixes \c sa[i] and
+/// \c sa[i+1]. For convenience, \c lcp[sa.size()-1] is left as zero.
+///
+/// \param str The string to get the LCP array from.
 /// \param sa The suffix array of \p str.
 ///
-/// \par Complexity
-/// <tt>O(N)</tt> time, <tt>O(N)</tt> space.
+/// \pre <tt>str.size() == sa.size()</tt>.
 ///
-/// \note <tt>lcp[i] :=</tt> longest common prefix between <tt>sa[i]</tt> and
-/// <tt>sa[i + 1]</tt>
+/// \returns The generated LCP array.
+///
+/// \par Complexity
+/// <tt>O(N)</tt> time and <tt>O(N)</tt> space, where <tt>N = sa.size()</tt>.
 ///
 inline std::vector<size_t> make_lcp_array(const std::string &str,
                                           const std::vector<size_t> &sa) {
   const size_t N = str.size();
-  std::vector<size_t> rank(N), lcp(N - 1);
+  std::vector<size_t> rank(N), lcp(N);
 
   for (size_t i = 0; i != N; ++i)
     rank[sa[i]] = i; // inverse suffix array.
@@ -38,8 +43,12 @@ inline std::vector<size_t> make_lcp_array(const std::string &str,
   for (size_t i = 0, len = 0; i < N; ++i) {
     if (rank[i] == N - 1)
       continue;
-    for (size_t j = sa[rank[i] + 1]; str[i + len] == str[j + len];)
-      ++len;
+    {
+      const size_t j = sa[rank[i] + 1];
+      const size_t max_len = str.size() - std::max(i, j);
+      while (len < max_len && str[i + len] == str[j + len])
+        ++len;
+    }
     lcp[rank[i]] = len;
     if (len)
       --len;
@@ -48,17 +57,19 @@ inline std::vector<size_t> make_lcp_array(const std::string &str,
 }
 
 /// \brief Function like class used to compute the longest common prefix between
-///        any two suffixes of a given string.
+///        any pair of suffixes of a given string.
+///
 class lcp_querier {
   struct minimum {
     size_t operator()(size_t x, size_t y) const { return std::min(x, y); }
   };
 
 public:
-  /// \brief Contructs the LCP Querier.
-  /// \param str The target string.
+  /// \brief Constructs the LCP Querier.
+  ///
+  /// \param str The input string.
   /// \param sa The suffix array of the given string.
-  /// \pre The target string \p str shall not be empty.
+  ///
   /// \par Complexity
   /// <tt>O(N)</tt>, where <tt>N = str.size()</tt>
   ///
@@ -73,8 +84,10 @@ public:
   }
 
   /// \brief Computes the LCP between a pair of suffixes.
+  ///
   /// \param i The first suffix.
   /// \param j The second suffix.
+  ///
   /// \par Complexity
   /// <tt>O(log(N))</tt> where <tt>N = </tt>The size of the target string.
   ///

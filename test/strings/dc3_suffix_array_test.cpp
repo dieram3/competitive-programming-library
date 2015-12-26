@@ -7,10 +7,10 @@
 #include <gtest/gtest.h>
 
 #include <algorithm> // For std::sort, std::lexicographical_compare
-#include <numeric>   // For std::iota
-#include <vector>    // For std::vector
-#include <string>    // For std::string
 #include <cstddef>   // For std::size_t
+#include <numeric>   // For std::iota
+#include <string>    // For std::string
+#include <vector>    // For std::vector
 
 using namespace djp;
 
@@ -24,7 +24,7 @@ protected:
     vec_t sa(str.size());
     std::iota(sa.begin(), sa.end(), std::size_t{0});
 
-    auto suffix_less = [&](const size_t lhs, const size_t rhs) {
+    auto suffix_less = [&str](const size_t lhs, const size_t rhs) {
       return std::lexicographical_compare(str.begin() + lhs, str.end(),
                                           str.begin() + rhs, str.end());
     };
