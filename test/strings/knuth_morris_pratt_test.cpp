@@ -1,50 +1,100 @@
-//          Copyright Diego Ramírez April 2015
+//          Copyright Diego Ramírez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-/// \todo Improve test quality.
-
 #include <djp/strings/knuth_morris_pratt.hpp>
 #include <gtest/gtest.h>
 
-#include <algorithm>
-#include <functional>
-#include <iterator>
-#include <random>
-#include <string>
+#include <algorithm> // search
+#include <iterator>  // distance
+#include <string>    // string
 
-TEST(KMPSearcherTest, SearchsQuickly) {
-  std::string pattern(1000, 'a');
-  pattern.back() = 'b';
-  std::string text(1000000, 'a');
-  text.back() = 'b';
-  auto search_on = djp::make_kmp_searcher(pattern.begin(), pattern.end());
-  auto it = search_on(text.begin(), text.end());
-  EXPECT_EQ(pattern.size(), std::distance(it, text.end()));
+using namespace djp;
+
+namespace {
+class KMPSearcherTest : public ::testing::Test {
+public:
+  using iterator_t = std::string::const_iterator;
+
+protected:
+  KMPSearcherTest() : pattern("."), search_on(pattern.begin(), pattern.end()) {}
+
+  void set_pattern(const std::string &new_pattern) {
+    ASSERT_FALSE(new_pattern.empty());
+    pattern = new_pattern;
+    search_on = make_kmp_searcher(pattern.cbegin(), pattern.cend());
+  }
+
+  size_t check_search(const std::string &text, const size_t pos = 0) const {
+    using std::search;
+    using std::distance;
+
+    const auto first = text.begin() + pos;
+    const auto last = text.end();
+    const auto brute_it = search(first, last, pattern.begin(), pattern.end());
+    const auto kmp_it = search_on(first, last);
+    EXPECT_TRUE(brute_it == kmp_it) << "text=" << text.substr(pos)
+                                    << "\npattern=" << pattern
+                                    << "\nbrute-search finds occurrence at: "
+                                    << distance(text.begin(), brute_it)
+                                    << "\nkmp-search finds occurrence at: "
+                                    << distance(text.begin(), kmp_it);
+
+    return distance(text.begin(), brute_it);
+  }
+
+private:
+  std::string pattern;
+  kmp_searcher<iterator_t> search_on;
+};
+} // end anonymous namespace
+
+TEST_F(KMPSearcherTest, SingleCharacterPatternTest) {
+  set_pattern("a");
+  check_search("abc abc");
+  check_search("bad bad");
+  check_search("  jk  a x");
+  check_search("jiiuej");
+  check_search(std::string(5, '\0'));
 }
 
-TEST(KMPSearcherTest, SearchCorrectly) {
-  std::string text(10000, '\0');
-  std::default_random_engine gen;
-  std::uniform_int_distribution<> dist(0, 255);
-  std::generate(text.begin(), text.end(), std::bind(dist, std::ref(gen)));
-  auto p_first = text.begin() + text.size() / 2;
-  auto p_last = p_first + 1000;
-  auto search_on = djp::make_kmp_searcher(p_first, p_last);
-
-  // This search relies on uniform distribution, so mismatch occur quickly.
-  auto expected = std::search(text.begin(), text.end(), p_first, p_last);
-
-  auto actual = search_on(text.begin(), text.end());
-  EXPECT_TRUE(expected == actual);
+TEST_F(KMPSearcherTest, SmallTextTest) {
+  set_pattern("aabbbaa");
+  check_search("aab");
+  check_search("aabbba");
+  check_search("a");
 }
 
-TEST(KMPSearcherTest, ReturnLastIfNoMatch) {
-  std::string pattern(10, 'b');
-  std::string text(1000, 'c');
-  auto search_on = djp::make_kmp_searcher(pattern.begin(), pattern.end());
-  EXPECT_TRUE(search_on(text.begin(), text.end()) == text.end());
-  text.clear();
-  EXPECT_TRUE(search_on(text.begin(), text.end()) == text.end());
+TEST_F(KMPSearcherTest, FullTextPatternTest) {
+  std::string str = "abcabcabc";
+  set_pattern(str);
+  check_search(str);
+
+  str = "123090123";
+  set_pattern(str);
+  check_search(str);
+}
+
+TEST_F(KMPSearcherTest, EmptyTextSearch) {
+  set_pattern("abc");
+  check_search("");
+  set_pattern("aab");
+  check_search("");
+}
+
+TEST_F(KMPSearcherTest, SeveralSearchesTest) {
+  set_pattern("abc");
+  const std::string text("abc, abc,   abc,   abc,  dxa wd abc");
+  size_t pos{};
+  size_t cnt = 0;
+  while (pos < text.size()) {
+    pos = check_search(text, pos);
+    if (pos == text.size())
+      break;
+    ++cnt;
+    ++pos;
+  }
+  EXPECT_EQ(5, cnt)
+      << "The number of occurrences found differs from the expected one.";
 }
