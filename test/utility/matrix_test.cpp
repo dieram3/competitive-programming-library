@@ -3,13 +3,13 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/utility/matrix.hpp>
+#include <cpl/utility/matrix.hpp>
 #include <gtest/gtest.h>
 
 #include <type_traits> // is const, remove_reference
 #include <cstddef>     // size_t
 
-using namespace djp;
+using namespace cpl;
 
 TEST(MatrixTest, ConstrucstWell) {
 

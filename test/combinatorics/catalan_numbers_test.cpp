@@ -3,14 +3,14 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/combinatorics/catalan_numbers.hpp>
+#include <cpl/combinatorics/catalan_numbers.hpp>
 #include <gtest/gtest.h>
 
 #include <vector>  // For std::vector
 #include <cstddef> // For std::size_t
 #include <cstdint> // For std::int32_t, std::uint64_t
 
-using namespace djp;
+using namespace cpl;
 using std::size_t;
 using std::int32_t;
 using std::uint64_t;

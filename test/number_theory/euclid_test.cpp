@@ -3,10 +3,10 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/euclid.hpp>
+#include <cpl/number_theory/euclid.hpp>
 #include <gtest/gtest.h>
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 

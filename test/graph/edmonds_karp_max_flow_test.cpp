@@ -3,15 +3,15 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/edmonds_karp_max_flow.hpp>
+#include <cpl/graph/edmonds_karp_max_flow.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/directed_graph.hpp>
+#include <cpl/graph/directed_graph.hpp>
 #include <functional>
 #include <cassert>
 #include <cstddef>
 
-using namespace djp;
+using namespace cpl;
 
 /// \todo Check residual capacity output.
 

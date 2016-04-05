@@ -3,10 +3,10 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/math/simplex.hpp>
+#include <cpl/math/simplex.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/utility/matrix.hpp>
+#include <cpl/utility/matrix.hpp>
 
 #include <cassert>   // for assert
 #include <cmath>     // for std::isfinite, std::isnan, std::fabs, NAN, INFINITY
@@ -15,7 +15,7 @@
 #include <stdexcept> // for std::domain_error
 #include <vector>    // for std::vector, std::initializer_list
 
-using namespace djp;
+using namespace cpl;
 using real_t = double;
 using vec_t = std::vector<real_t>;
 

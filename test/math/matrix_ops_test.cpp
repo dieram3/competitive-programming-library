@@ -3,15 +3,15 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/math/matrix_ops.hpp>
+#include <cpl/math/matrix_ops.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/utility/matrix.hpp>
+#include <cpl/utility/matrix.hpp>
 
 #include <cstddef> // For std::size_t
 #include <ostream> // For std::ostream
 
-using namespace djp;
+using namespace cpl;
 using std::size_t;
 
 template <typename T, size_t M, size_t N>
@@ -41,7 +41,7 @@ static bool is_identity(const matrix<T> &mat) {
   return true;
 }
 
-namespace djp {
+namespace cpl {
 
 template <typename T>
 static bool operator==(const matrix<T> &a, const matrix<T> &b) {
@@ -63,7 +63,7 @@ static std::ostream &operator<<(std::ostream &os, const matrix<T> &mat) {
   return os;
 }
 
-} // end namespace djp
+} // end namespace cpl
 
 TEST(MatrixOpsTest, MatMulTest) {
   {

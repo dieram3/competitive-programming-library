@@ -3,14 +3,14 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/strings/knuth_morris_pratt.hpp>
+#include <cpl/strings/knuth_morris_pratt.hpp>
 #include <gtest/gtest.h>
 
 #include <algorithm> // search
 #include <iterator>  // distance
 #include <string>    // string
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 class KMPSearcherTest : public ::testing::Test {

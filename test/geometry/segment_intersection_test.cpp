@@ -3,16 +3,16 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/geometry/segment_intersection.hpp>
+#include <cpl/geometry/segment_intersection.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/geometry/point_2d.hpp>
+#include <cpl/geometry/point_2d.hpp>
 
 #include <algorithm> // For std::count
 #include <utility>   // For std::make_pair
 #include <vector>    // For std::vector
 
-using namespace djp;
+using namespace cpl;
 
 // ==========================================
 // SegmentIntersectTest

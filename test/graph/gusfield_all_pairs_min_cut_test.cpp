@@ -3,13 +3,13 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/gusfield_all_pairs_min_cut.hpp>
+#include <cpl/graph/gusfield_all_pairs_min_cut.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/directed_graph.hpp>
-#include <djp/utility/matrix.hpp>
+#include <cpl/graph/directed_graph.hpp>
+#include <cpl/utility/matrix.hpp>
 
-using namespace djp;
+using namespace cpl;
 
 TEST(GusfieldAllPairsMinCutTest, SmallGraphTest) {
   directed_graph graph(6);

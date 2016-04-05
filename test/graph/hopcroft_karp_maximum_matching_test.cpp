@@ -3,11 +3,11 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/hopcroft_karp_maximum_matching.hpp>
+#include <cpl/graph/hopcroft_karp_maximum_matching.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/undirected_graph.hpp>
-using namespace djp;
+#include <cpl/graph/undirected_graph.hpp>
+using namespace cpl;
 
 TEST(HopcroftKarpMaximumMatchingTest, WorksOnDisconnectedGraphs) {
   undirected_graph graph(20);

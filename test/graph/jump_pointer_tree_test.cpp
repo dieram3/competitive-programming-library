@@ -3,13 +3,13 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/jump_pointer_tree.hpp>
+#include <cpl/graph/jump_pointer_tree.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/undirected_graph.hpp>
+#include <cpl/graph/undirected_graph.hpp>
 #include <cassert> // For assert
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 class JumpPointerTreeTest : public ::testing::Test {

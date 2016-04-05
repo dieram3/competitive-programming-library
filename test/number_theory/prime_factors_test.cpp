@@ -3,17 +3,17 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/prime_factors.hpp>
+#include <cpl/number_theory/prime_factors.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/number_theory/miller_rabin.hpp>
-#include <djp/number_theory/shanks_factorization.hpp>
+#include <cpl/number_theory/miller_rabin.hpp>
+#include <cpl/number_theory/shanks_factorization.hpp>
 #include <algorithm>        // For std::is_sorted
 #include <initializer_list> // For std::initializer_list
 #include <vector>           // For std::vector
 #include <cstdint>          // For std::int_fast64_t
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 class PrimeFactorsTest : public ::testing::Test {

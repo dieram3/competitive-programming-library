@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/combinatorics/nth_permutation.hpp>
+#include <cpl/combinatorics/nth_permutation.hpp>
 #include <gtest/gtest.h>
 
 #include <algorithm>  // for std::is_sorted
@@ -12,7 +12,7 @@
 #include <cstddef>    // for std::size_t
 #include <cstdint>    // for std::uint64_t, UINT64_MAX
 
-using namespace djp;
+using namespace cpl;
 using std::size_t;
 using std::uint64_t;
 

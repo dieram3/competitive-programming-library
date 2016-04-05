@@ -3,15 +3,15 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/search/binary_search.hpp>
+#include <cpl/search/binary_search.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/number_theory/basics.hpp> // for multiply_less, multiply_greater.
+#include <cpl/number_theory/basics.hpp> // for multiply_less, multiply_greater.
 
 #include <climits> // for INT_MAX
 #include <cstdint> // for uint32_t
 
-using namespace djp;
+using namespace cpl;
 
 static int ceil_sqrt(uint32_t num) {
   return int_binary_search<uint32_t>(0, num + 1, [num](uint32_t x) {

@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/strings/dc3_suffix_array.hpp>
+#include <cpl/strings/dc3_suffix_array.hpp>
 #include <gtest/gtest.h>
 
 #include <algorithm> // For std::sort, std::lexicographical_compare
@@ -12,7 +12,7 @@
 #include <string>    // For std::string
 #include <vector>    // For std::vector
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 class DC3SuffixArrayTest : public ::testing::Test {

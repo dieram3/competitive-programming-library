@@ -3,18 +3,18 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/geometry/convex_hull.hpp>
+#include <cpl/geometry/convex_hull.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/geometry/point_2d.hpp>
-#include <djp/geometry/point_order.hpp>
+#include <cpl/geometry/point_2d.hpp>
+#include <cpl/geometry/point_order.hpp>
 
 #include <algorithm> // For std::sort
 #include <iterator>  // For std::begin, std::end
 #include <cstddef>   // For std::size_t
 #include <cstdint>   // For std::int32_t
 
-using namespace djp;
+using namespace cpl;
 using std::int32_t;
 
 template <class ForwardIt, class Point>

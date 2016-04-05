@@ -3,10 +3,10 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/eratosthenes.hpp>
+#include <cpl/number_theory/eratosthenes.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/number_theory/basics.hpp> // for ceil_div
+#include <cpl/number_theory/basics.hpp> // for ceil_div
 
 #include <algorithm> // for std::binary_search
 #include <iterator>  // fot std::begin
@@ -16,7 +16,7 @@
 #include <cstddef> // for std::size_t
 #include <cstdint> // for std::int32_t
 
-using namespace djp;
+using namespace cpl;
 
 /// \brief Checks if a number is prime by using the given sieve.
 /// \pre \p sieve shall not be empty.

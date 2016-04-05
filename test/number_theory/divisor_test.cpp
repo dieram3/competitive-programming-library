@@ -3,17 +3,17 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/divisor.hpp>
+#include <cpl/number_theory/divisor.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/number_theory/eratosthenes.hpp>
-#include <djp/number_theory/trial_division.hpp>
+#include <cpl/number_theory/eratosthenes.hpp>
+#include <cpl/number_theory/trial_division.hpp>
 
 #include <algorithm> // for std::is_sorted, std::adjacent_find
 #include <vector>    // for std::vector
 #include <cstdint>   // for std::uint32_t
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 class DivisorTest : public ::testing::Test {

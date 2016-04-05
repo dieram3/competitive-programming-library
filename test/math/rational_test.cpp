@@ -3,14 +3,14 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/math/rational.hpp>
+#include <cpl/math/rational.hpp>
 #include <gtest/gtest.h>
 
 #include <iterator> // For std::back_inserter
 #include <vector>   // For std::vector
 #include <cstddef>  // for std::int_fast64_t
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 template <typename T>
@@ -30,12 +30,12 @@ static std::ostream &operator<<(std::ostream &os, const raw_ratio<T> &r) {
 }
 } // end anonymous namespace
 
-namespace djp {
+namespace cpl {
 template <typename T>
 static std::ostream &operator<<(std::ostream &os, const rational<T> &r) {
   return os << r.numerator() << '/' << r.denominator();
 }
-} // end namespace djp
+} // end namespace cpl
 
 namespace {
 class RationalTest : public ::testing::Test {

@@ -3,15 +3,15 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/dag_shortest_paths.hpp>
+#include <cpl/graph/dag_shortest_paths.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/directed_graph.hpp>
+#include <cpl/graph/directed_graph.hpp>
 
 #include <limits> // For std::numeric_limits
 #include <vector> // For std::vector
 
-using namespace djp;
+using namespace cpl;
 using std::vector;
 
 static constexpr int inf = std::numeric_limits<int>::max();

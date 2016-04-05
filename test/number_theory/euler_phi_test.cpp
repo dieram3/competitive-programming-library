@@ -3,15 +3,15 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/euler_phi.hpp>
+#include <cpl/number_theory/euler_phi.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/number_theory/eratosthenes.hpp>
-#include <djp/number_theory/trial_division.hpp>
+#include <cpl/number_theory/eratosthenes.hpp>
+#include <cpl/number_theory/trial_division.hpp>
 #include <vector>  // For std::vector
 #include <cstdint> // For std::uint_fast32_t
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 class EulerPhiTest : public ::testing::Test {

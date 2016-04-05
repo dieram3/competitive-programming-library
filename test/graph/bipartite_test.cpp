@@ -3,15 +3,15 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/bipartite.hpp>
+#include <cpl/graph/bipartite.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/undirected_graph.hpp>
+#include <cpl/graph/undirected_graph.hpp>
 
 #include <cstddef> // For std::size_t
 #include <vector>  // For std::vector
 
-using namespace djp;
+using namespace cpl;
 using std::vector;
 
 static void check_colors(const undirected_graph &g, const vector<bool> &color) {

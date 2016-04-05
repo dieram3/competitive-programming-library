@@ -3,14 +3,14 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/search/brent_find_cycle.hpp>
+#include <cpl/search/brent_find_cycle.hpp>
 #include <gtest/gtest.h>
 
 #include <utility> // For std::pair
 #include <cstddef> // For std::size_t
 #include <cstdint> // For std::uint32_t
 
-using namespace djp;
+using namespace cpl;
 using pair = std::pair<size_t, size_t>;
 using std::uint32_t;
 

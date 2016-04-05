@@ -3,10 +3,10 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/bits/gray_code.hpp>
+#include <cpl/bits/gray_code.hpp>
 #include <gtest/gtest.h>
 
-using namespace djp;
+using namespace cpl;
 
 TEST(GrayCodeTest, NthGrayCodeTest) {
   EXPECT_EQ(0, nth_gray_code(0));

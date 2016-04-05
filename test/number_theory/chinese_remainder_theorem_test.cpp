@@ -3,16 +3,16 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/chinese_remainder_theorem.hpp>
+#include <cpl/number_theory/chinese_remainder_theorem.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/number_theory/euclid.hpp> // for djp::gcd
+#include <cpl/number_theory/euclid.hpp> // for cpl::gcd
 
 #include <cassert> // For assert
 #include <cstddef> // For std::size_t
 #include <vector>  // For std::vector
 
-using namespace djp;
+using namespace cpl;
 using std::size_t;
 
 namespace {

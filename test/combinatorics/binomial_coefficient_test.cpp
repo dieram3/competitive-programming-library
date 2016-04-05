@@ -3,15 +3,15 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/combinatorics/binomial_coefficient.hpp>
+#include <cpl/combinatorics/binomial_coefficient.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/utility/matrix.hpp>
+#include <cpl/utility/matrix.hpp>
 
 #include <cstddef> // For std::size_t
 #include <cstdint> // For std::uint32_t, std::uint64_t
 
-using namespace djp;
+using namespace cpl;
 using std::size_t;
 
 TEST(BinomialCoefficientTest, SimpleTest) {

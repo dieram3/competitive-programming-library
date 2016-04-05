@@ -3,15 +3,15 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/geometry/point_in_polygon.hpp>
+#include <cpl/geometry/point_in_polygon.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/geometry/point_2d.hpp>
+#include <cpl/geometry/point_2d.hpp>
 
 #include <vector>  // For std::vector
 #include <cassert> // For assert
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 
@@ -34,7 +34,7 @@ protected:
   std::vector<point_t> poly;
 };
 
-} // end namespace djp
+} // end namespace cpl
 
 TEST_F(PointInPolygonTest, TriangleTest) {
   add(1, 1), add(4, 3), add(2, 4);

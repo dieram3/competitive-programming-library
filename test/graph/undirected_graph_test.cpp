@@ -3,12 +3,12 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/undirected_graph.hpp>
+#include <cpl/graph/undirected_graph.hpp>
 #include <gtest/gtest.h>
 
 #include <algorithm> // for std::any_of
 #include <iterator>  // for std::begin, std::end
-using namespace djp;
+using namespace cpl;
 using std::size_t;
 
 TEST(UndirectedGraphTest, ConstructWell) {

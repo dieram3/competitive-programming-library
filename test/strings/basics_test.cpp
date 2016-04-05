@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/strings/basics.hpp>
+#include <cpl/strings/basics.hpp>
 #include <gtest/gtest.h>
 
 #include <string>
@@ -11,7 +11,7 @@
 TEST(SplitTest, SplitsWell) {
   {
     std::string str("abc,abc,abcd");
-    const auto tokens = djp::split(str, ",");
+    const auto tokens = cpl::split(str, ",");
     ASSERT_EQ(3u, tokens.size());
     EXPECT_EQ("abc", tokens[0]);
     EXPECT_EQ("abc", tokens[1]);
@@ -19,7 +19,7 @@ TEST(SplitTest, SplitsWell) {
   }
   {
     std::string str(",abc,bac, cba; gaga, blah, da;;");
-    const auto tokens = djp::split(str, " ,;");
+    const auto tokens = cpl::split(str, " ,;");
     ASSERT_EQ(6u, tokens.size());
     EXPECT_EQ("abc", tokens[0]);
     EXPECT_EQ("bac", tokens[1]);
