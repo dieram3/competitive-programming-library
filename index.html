@@ -2,41 +2,43 @@
 <html lang="en-us">
   <head>
     <meta charset="UTF-8">
-    <title>CP Utils by dieram3</title>
+    <title>Competitive Programming Library by dieram3</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
     <section class="page-header">
-      <h1 class="project-name">CP Utils</h1>
-      <h2 class="project-tagline">Competitive Programming Utilities</h2>
-      <a href="https://github.com/dieram3/CP-utils" class="btn">View on GitHub</a>
-      <a href="https://github.com/dieram3/CP-utils/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/dieram3/CP-utils/tarball/master" class="btn">Download .tar.gz</a>
+      <h1 class="project-name">Competitive Programming Library</h1>
+      <h2 class="project-tagline">A library designed to improve your competitive programming performance</h2>
+      <a href="https://github.com/dieram3/competitive-programming-library" class="btn">View on GitHub</a>
+      <a href="https://github.com/dieram3/competitive-programming-library/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/dieram3/competitive-programming-library/tarball/master" class="btn">Download .tar.gz</a>
     </section>
 
     <section class="main-content">
       <h1>
-<a id="competitive-programming-utilities" class="anchor" href="#competitive-programming-utilities" aria-hidden="true"><span class="octicon octicon-link"></span></a>Competitive Programming Utilities</h1>
+<a id="competitive-programming-library" class="anchor" href="#competitive-programming-library" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Competitive Programming Library</h1>
 
-<p><a href="https://travis-ci.org/dieram3/CP-utils"><img src="https://travis-ci.org/dieram3/CP-utils.svg?branch=master" alt="Build Status"></a></p>
+<p><a href="https://travis-ci.org/dieram3/competitive-programming-library"><img src="https://travis-ci.org/dieram3/competitive-programming-library.svg?branch=master" alt="Build Status"></a>
+<a href="https://coveralls.io/github/dieram3/competitive-programming-library?branch=master"><img src="https://coveralls.io/repos/github/dieram3/competitive-programming-library/badge.svg?branch=master" alt="Coverage Status"></a></p>
 
-<p>CP-utils is a header-only library that contains implementations of typical algorithms and data structures used in programming contests. It is intended to be used mainly in online contests, where you can copy and paste code easily. However, by the fact that in some programming contests you have to type everything from scratch, the source code is maintained short (but not so short because generality and ease of use is another important target of the library).</p>
+<p>CPL is a header-only library that contains implementations of typical algorithms and data structures used in programming contests. It is intended to be used mainly in online contests, where you can copy and paste code easily. However, by the fact that in some programming contests you have to type everything from scratch, the source code is maintained short (but not so short because generality and ease of use is another important target of the library).</p>
 
 <h2>
-<a id="modules" class="anchor" href="#modules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Modules</h2>
+<a id="modules" class="anchor" href="#modules" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Modules</h2>
 
-<p>Currently CP-utils has the following modules:</p>
+<p>Currently CPL has the following modules:</p>
 
 <ul>
+<li>Bits</li>
 <li>Combinatorics</li>
 <li>Data Structure</li>
 <li>Geometry</li>
 <li>Graph</li>
-<li>Miscellaneous</li>
+<li>Math</li>
 <li>Number Theory</li>
 <li>Search</li>
 <li>Sorting</li>
@@ -45,65 +47,64 @@
 </ul>
 
 <h2>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
-<p>If you want to download CP-utils for running the tests and/or compiling the examples, do the following:</p>
+<p>If you want to download CPL for running the tests and/or compiling the examples, do the following:</p>
 
 <p>First, you need <a href="http://www.cmake.org">cmake</a> installed on your system.</p>
 
 <p>Then, run the following commands on the root directory of the project:</p>
 
-<div class="highlight highlight-Shell"><pre>mkdir build <span class="pl-k">&amp;&amp;</span> <span class="pl-c1">cd</span> build
+<div class="highlight highlight-source-shell"><pre>mkdir build <span class="pl-k">&amp;&amp;</span> <span class="pl-c1">cd</span> build
 cmake -DCMAKE_BUILD_TYPE=Release ..
 make <span class="pl-k">&amp;&amp;</span> make <span class="pl-c1">test</span></pre></div>
 
 <p>The generated executable files will be put on a sub-directory of the build folder called <em>bin</em>.</p>
 
 <h2>
-<a id="compatibility" class="anchor" href="#compatibility" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compatibility</h2>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h2>
 
-<p>CP-utils needs a compliant C++11 compiler.</p>
-
-<p>It has been tested with the following compilers:</p>
+<p>CPL requires full C++11 support:</p>
 
 <ul>
-<li>clang 3.5 on OS X</li>
-<li>gcc 4.9 on Linux</li>
+<li>A fully compliant compiler.</li>
+<li>And a fully implemented standard library.</li>
 </ul>
 
 <h2>
-<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h2>
-
-<p>CP-utils only depends on the Standard C++ Library.</p>
-
-<h2>
-<a id="simple-usage-example" class="anchor" href="#simple-usage-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Simple usage example</h2>
+<a id="simple-usage-example" class="anchor" href="#simple-usage-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simple usage example</h2>
 
 <p>The following code snippet shows how to generate a suffix array and using it.</p>
 
-<div class="highlight highlight-C++"><pre>#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>iostream<span class="pl-pds">&gt;</span></span>
+<div class="highlight highlight-source-c++"><pre>#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>iostream<span class="pl-pds">&gt;</span></span>
 #<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>string<span class="pl-pds">&gt;</span></span>
-#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>djp/strings/suffix_array.hpp<span class="pl-pds">&gt;</span></span>  <span class="pl-c">// for djp::make_suffix_array</span>
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>cpl/strings/suffix_array.hpp<span class="pl-pds">&gt;</span></span>
 
 <span class="pl-k">int</span> <span class="pl-en">main</span>() {
-  <span class="pl-c">// We have a text</span>
+  <span class="pl-c">// Given a text.</span>
   std::string text = <span class="pl-s"><span class="pl-pds">"</span>mississippi<span class="pl-pds">"</span></span>;
 
-  <span class="pl-c">// We generate the suffix array</span>
-  <span class="pl-k">auto</span> sa = <span class="pl-c1">djp::make_suffix_array</span>(text);
+  <span class="pl-c">// Generate its suffix array.</span>
+  <span class="pl-k">auto</span> sa = <span class="pl-c1">cpl::make_suffix_array</span>(text);
 
-  <span class="pl-c">// And then, we use it to show the suffixes sorted lexicographically.</span>
-  <span class="pl-k">for</span> (<span class="pl-c1">size_t</span> suffix : sa) std::cout &lt;&lt; text.<span class="pl-c1">substr</span>(suffix) &lt;&lt; <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\n</span><span class="pl-pds">'</span></span>;
+  <span class="pl-c">// And use it to show the suffixes sorted lexicographically.</span>
+  <span class="pl-k">for</span> (<span class="pl-c1">size_t</span> suffix : sa) 
+    std::cout &lt;&lt; text.<span class="pl-c1">substr</span>(suffix) &lt;&lt; <span class="pl-s"><span class="pl-pds">'</span><span class="pl-cce">\n</span><span class="pl-pds">'</span></span>;
 }
 </pre></div>
 
 <h2>
-<a id="how-to-contribute" class="anchor" href="#how-to-contribute" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to contribute</h2>
+<a id="how-to-contribute" class="anchor" href="#how-to-contribute" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to contribute</h2>
 
-<p>You can submit a pull request to improve the library. The code must be well documented, easily legible and independent of global variables. Use Issues for feedback. Thanks!</p>
+<p>You can submit a pull request to improve the library. The code must be well documented, easily legible and independent of global variables.</p>
+
+<h2>
+<a id="read-the-docs" class="anchor" href="#read-the-docs" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Read the docs</h2>
+
+<p>See <a href="http://dieram3.github.io/competitive-programming-library">http://dieram3.github.io/competitive-programming-library</a></p>
 
       <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/dieram3/CP-utils">CP Utils</a> is maintained by <a href="https://github.com/dieram3">dieram3</a>.</span>
+        <span class="site-footer-owner"><a href="https://github.com/dieram3/competitive-programming-library">Competitive Programming Library</a> is maintained by <a href="https://github.com/dieram3">dieram3</a>.</span>
 
         <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
@@ -113,4 +114,3 @@ make <span class="pl-k">&amp;&amp;</span> make <span class="pl-c1">test</span></
   
   </body>
 </html>
-
