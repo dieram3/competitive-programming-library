@@ -3,11 +3,11 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/kruskal_minimum_spanning_tree.hpp>
+#include <cpl/graph/kruskal_minimum_spanning_tree.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/undirected_graph.hpp>
-using namespace djp;
+#include <cpl/graph/undirected_graph.hpp>
+using namespace cpl;
 using std::vector;
 
 TEST(KruskalMinimumSpanningTreeTest, WorksOnEmptyGraph) {

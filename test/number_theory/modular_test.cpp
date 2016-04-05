@@ -3,13 +3,13 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/modular.hpp>
+#include <cpl/number_theory/modular.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/number_theory/euclid.hpp> // for djp:gcd
+#include <cpl/number_theory/euclid.hpp> // for cpl:gcd
 #include <cstdint>                      // For INT64_MAX, UINT64_MAX
 
-using namespace djp;
+using namespace cpl;
 
 TEST(ModAddTest, WorksWell) {
   EXPECT_EQ(0, mod_add(0, 0, 1));

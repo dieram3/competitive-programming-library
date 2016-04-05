@@ -4,15 +4,15 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <djp/geometry/shoelace.hpp>
+#include <cpl/geometry/shoelace.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/geometry/point_2d.hpp>
+#include <cpl/geometry/point_2d.hpp>
 
 #include <chrono>
 #include <cstdint>
 
-using namespace djp;
+using namespace cpl;
 using std::int32_t;
 using point_i = point<int32_t>;
 

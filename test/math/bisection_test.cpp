@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/math/bisection.hpp>
+#include <cpl/math/bisection.hpp>
 #include <gtest/gtest.h>
 
 #include <limits>      // For std::numeric_limits
@@ -12,7 +12,7 @@
 #include <cstddef>     // For std::size_t
 #include <cmath>       // For fabs, fmin, fmax, sin, acos
 
-using namespace djp;
+using namespace cpl;
 using std::fmin;
 using std::fmax;
 using std::fabs;

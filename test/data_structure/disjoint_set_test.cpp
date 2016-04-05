@@ -3,10 +3,10 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/data_structure/disjoint_set.hpp>
+#include <cpl/data_structure/disjoint_set.hpp>
 #include <gtest/gtest.h>
 
-using namespace djp;
+using namespace cpl;
 
 TEST(disjoint_set, WorksWell) {
   disjoint_set d(8);

@@ -3,12 +3,12 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/basics.hpp>
+#include <cpl/number_theory/basics.hpp>
 #include <gtest/gtest.h>
 
 #include <cstdint> // for std::uint_fast64_t, UINT64_MAX, UINT64_C
 
-using namespace djp;
+using namespace cpl;
 
 TEST(CeilDivTest, WorksWell) {
   EXPECT_EQ(0, ceil_div(0, 1));

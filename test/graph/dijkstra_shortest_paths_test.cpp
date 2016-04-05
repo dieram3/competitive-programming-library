@@ -3,17 +3,17 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/dijkstra_shortest_paths.hpp>
+#include <cpl/graph/dijkstra_shortest_paths.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/directed_graph.hpp>
+#include <cpl/graph/directed_graph.hpp>
 #include <vector>
 #include <random>
 #include <numeric>
 #include <functional>
 #include <cassert>
 
-using namespace djp;
+using namespace cpl;
 
 // Complexity: O(V*avg_degree)
 // It might generate parallel edges.
@@ -67,7 +67,7 @@ TEST(DijkstraShortestPathsTest, WorksOnDirectedGraphs) {
   add_bidir_edge(3, 4, 6);
   add_bidir_edge(4, 5, 9);
 
-  const auto spaths = djp::dijkstra_shortest_paths(graph, 0, weight_of);
+  const auto spaths = cpl::dijkstra_shortest_paths(graph, 0, weight_of);
   const std::vector<unsigned> expected = {0, 7, 9, 20, 20, 11};
 
   EXPECT_EQ(expected, spaths);

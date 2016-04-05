@@ -3,17 +3,17 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/biconnected_components.hpp>
+#include <cpl/graph/biconnected_components.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/undirected_graph.hpp>
+#include <cpl/graph/undirected_graph.hpp>
 
 #include <algorithm>     // for std::sort, std::max_element
 #include <vector>        // for std::vector
 #include <unordered_map> // for std::unordered_map
 #include <cstddef>       // for std::size_t
 
-using namespace djp;
+using namespace cpl;
 using std::max_element;
 using std::size_t;
 using std::vector;

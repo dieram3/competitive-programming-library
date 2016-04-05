@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/strings/edit_distance.hpp>
+#include <cpl/strings/edit_distance.hpp>
 #include <gtest/gtest.h>
 
 #include <algorithm> // reverse
@@ -11,7 +11,7 @@
 
 TEST(LevenshteinDistanceTest, HandlesSmallInput) {
   auto lev_dist = [](const std::string &str1, const std::string &str2) {
-    return djp::levenshtein_distance(str1.begin(), str1.end(), str2.begin(),
+    return cpl::levenshtein_distance(str1.begin(), str1.end(), str2.begin(),
                                      str2.end());
   };
 
@@ -26,7 +26,7 @@ TEST(LevenshteinDistanceTest, HandlesSmallInput) {
   std::string str2 = "sitting";
   std::reverse(str2.begin(), str2.end());
   // The following sentence must compile.
-  const auto distance = djp::levenshtein_distance(str1.begin(), str1.end(),
+  const auto distance = cpl::levenshtein_distance(str1.begin(), str1.end(),
                                                   str2.rbegin(), str2.rend());
   EXPECT_EQ(3, distance);
 }
@@ -48,7 +48,7 @@ TEST(LevenshteinDistanceTest, HandlesSmallInput) {
 //
 //  using namespace std::chrono;
 //  auto start = steady_clock::now();
-//  auto distance = djp::levenshtein_distance(str1.begin(), str1.end(),
+//  auto distance = cpl::levenshtein_distance(str1.begin(), str1.end(),
 //                                            str2.begin(), str2.end());
 //  auto end = steady_clock::now();
 //  duration<double, std::milli> elapsed = end - start;

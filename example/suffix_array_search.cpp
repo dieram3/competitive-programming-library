@@ -1,6 +1,6 @@
 #include <string>
 #include <iostream>
-#include <djp/strings/suffix_array.hpp>
+#include <cpl/strings/suffix_array.hpp>
 
 struct compare {
   const std::string* text;
@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
 
   std::string text = "The quick brown fox jumps over the lazy dog";
   std::cout << "Text: \"" << text << "\"\n\n";
-  auto sa = djp::make_suffix_array(text);
+  auto sa = cpl::make_suffix_array(text);
 
   std::string pattern = argv[1];
   auto p = std::equal_range(sa.begin(), sa.end(), pattern, compare{&text});

@@ -3,17 +3,17 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/topological_sort.hpp>
+#include <cpl/graph/topological_sort.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/directed_graph.hpp> // for djp::directed_graph
+#include <cpl/graph/directed_graph.hpp> // for cpl::directed_graph
 
 #include <algorithm>  // for std::find
 #include <functional> // for std::greater
 #include <stdexcept>  // for std::logic_error
 #include <vector>     // for std::vector
 
-using namespace djp;
+using namespace cpl;
 using std::vector;
 
 static void check_toposort(const directed_graph &g) {

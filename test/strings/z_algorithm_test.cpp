@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/strings/z_algorithm.hpp>
+#include <cpl/strings/z_algorithm.hpp>
 #include <gtest/gtest.h>
 
 #include <algorithm> // mismatch
@@ -12,7 +12,7 @@
 #include <string>    // for string
 #include <vector>    // vector
 
-using namespace djp;
+using namespace cpl;
 using std::size_t;
 
 namespace {

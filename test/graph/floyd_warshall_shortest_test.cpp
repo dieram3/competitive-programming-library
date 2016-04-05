@@ -3,18 +3,18 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/floyd_warshall_shortest.hpp>
+#include <cpl/graph/floyd_warshall_shortest.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/directed_graph.hpp>
-#include <djp/utility/matrix.hpp>
+#include <cpl/graph/directed_graph.hpp>
+#include <cpl/utility/matrix.hpp>
 
 #include <iterator> // For std::back_inserter
 #include <limits>   // For std::numeric_limits
 #include <vector>   // For std::vector
 #include <cstddef>  // For std::size_t
 
-using namespace djp;
+using namespace cpl;
 using std::vector;
 using std::size_t;
 

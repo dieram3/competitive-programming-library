@@ -3,13 +3,13 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/connected_components.hpp>
+#include <cpl/graph/connected_components.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/undirected_graph.hpp>
+#include <cpl/graph/undirected_graph.hpp>
 #include <algorithm> // for std::max_element
 #include <vector>    // for std::vector
-using namespace djp;
+using namespace cpl;
 
 static void check_labels(const undirected_graph &graph,
                          const std::vector<size_t> &expected) {

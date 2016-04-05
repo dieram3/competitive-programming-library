@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/square_root.hpp>
+#include <cpl/number_theory/square_root.hpp>
 #include <gtest/gtest.h>
 
 #include <initializer_list> // For std::initializer_list
@@ -13,7 +13,7 @@
 #include <cmath>   // For std::sqrt
 #include <cstdint> // For std::uint_fast32_t, std::uint_fast64_t
 
-using namespace djp;
+using namespace cpl;
 using std::uint_fast32_t;
 using std::uint_fast64_t;
 

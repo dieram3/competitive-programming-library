@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/shanks_factorization.hpp>
+#include <cpl/number_theory/shanks_factorization.hpp>
 #include <gtest/gtest.h>
 
 #include <initializer_list> // For std::initializer_list
@@ -11,7 +11,7 @@
 #include <cassert>          // For assert
 #include <cstdint>          // For std::int_fast64_t, std::int64_t
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 class ShanksFactorTest : public ::testing::Test {
@@ -112,7 +112,7 @@ TEST_F(ShanksFactorTest, OverflowDetectionTest) {
 
 //#include <chrono>
 //#include <random>
-//#include <djp/number_theory/miller_rabin.hpp>
+//#include <cpl/number_theory/miller_rabin.hpp>
 // TEST_F(ShanksFactorTest, Benchmark) {
 //  std::mt19937 gen(234872);
 //  std::uniform_int_distribution<int_t> dist(2, (1LL << 58) - 1);

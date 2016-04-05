@@ -3,24 +3,24 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/geometry/point_2d.hpp>
+#include <cpl/geometry/point_2d.hpp>
 #include <gtest/gtest.h>
 
 #include <ostream> // For std::ostream
 #include <cmath>   // For std::sqrt
 #include <cstdint> // For std::int32_t
 
-using namespace djp;
+using namespace cpl;
 using std::int32_t;
 using point_i = point<int32_t>;
 
-namespace djp {
+namespace cpl {
 template <typename T>
 static std::ostream &operator<<(std::ostream &os, const point<T> &p) {
   os << '(' << p.x << ", " << p.y << ')';
   return os;
 }
-} // end namespace djp
+} // end namespace cpl
 
 TEST(Point2DTest, BasicOperations) {
   point_i lhs = {1, 2};

@@ -3,12 +3,12 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/bellman_ford_shortest_paths.hpp>
+#include <cpl/graph/bellman_ford_shortest_paths.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/directed_graph.hpp> // for djp::directed_graph
+#include <cpl/graph/directed_graph.hpp> // for cpl::directed_graph
 #include <vector>                       // for std::vector
-using namespace djp;
+using namespace cpl;
 
 using dist_vec = std::vector<long>;
 using weight_vec = std::vector<long>;

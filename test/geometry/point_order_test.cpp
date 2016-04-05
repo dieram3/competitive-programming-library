@@ -3,16 +3,16 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/geometry/point_order.hpp>
+#include <cpl/geometry/point_order.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/geometry/point_2d.hpp>
+#include <cpl/geometry/point_2d.hpp>
 
 #include <algorithm> // For std::sort, std::is_sorted
 #include <vector>    // For std::vector
 #include <cstdint>   // For std::int32_t
 
-using namespace djp;
+using namespace cpl;
 using point_i = point<std::int32_t>;
 
 namespace {
@@ -54,10 +54,10 @@ static bool cw_sorted(const point_i &center,
   const point_i rev_start = points.back() - center;
 
   auto cw_less = [=](const point_i &lhs, const point_i &rhs) {
-    return djp::cw_less(center, start, lhs, rhs);
+    return cpl::cw_less(center, start, lhs, rhs);
   };
   auto ccw_less = [=](const point_i &lhs, const point_i &rhs) {
-    return djp::ccw_less(center, rev_start, lhs, rhs);
+    return cpl::ccw_less(center, rev_start, lhs, rhs);
   };
 
   const bool result = std::is_sorted(points.begin(), points.end(), cw_less);

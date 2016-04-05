@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/search/longest_increasing_subsequence.hpp>
+#include <cpl/search/longest_increasing_subsequence.hpp>
 #include <gtest/gtest.h>
 
 #include <functional> // for less, greater, less_equal, greater_equal
@@ -12,7 +12,7 @@
 #include <vector>     // for vector
 #include <cstddef>    // for size_t
 
-using namespace djp;
+using namespace cpl;
 
 using std::vector;
 using std::less;
@@ -22,7 +22,7 @@ using std::greater_equal;
 
 template <typename InputRange, typename Compare>
 static std::size_t calc_lis_size(const InputRange &range, Compare comp) {
-  return djp::calc_lis_size(std::begin(range), std::end(range), comp);
+  return cpl::calc_lis_size(std::begin(range), std::end(range), comp);
 }
 
 TEST(CalcLisSizeTest, HandlesSmallRanges) {

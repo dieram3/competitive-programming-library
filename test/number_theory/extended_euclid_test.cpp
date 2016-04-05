@@ -3,12 +3,12 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/extended_euclid.hpp>
+#include <cpl/number_theory/extended_euclid.hpp>
 #include <gtest/gtest.h>
 
 #include <tuple> // For std::tuple
 
-using namespace djp;
+using namespace cpl;
 using triple = std::tuple<long, long, long>;
 
 TEST(ExtendedEuclidTest, InputWithZeroTest) {

@@ -3,14 +3,14 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/miller_rabin.hpp>
+#include <cpl/number_theory/miller_rabin.hpp>
 #include <gtest/gtest.h>
 
 #include <initializer_list> // For std::initializer_list
 #include <cstdint>          // For std::uint64_t, UINT64_C
 
 using std::uint64_t;
-using namespace djp;
+using namespace cpl;
 
 template <typename T>
 static void test_prime(const T x) {

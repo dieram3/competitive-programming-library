@@ -3,21 +3,21 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/data_structure/fenwick_tree.hpp>
+#include <cpl/data_structure/fenwick_tree.hpp>
 #include <gtest/gtest.h>
 
 TEST(fenwick_tree, IsSizeable) {
-  djp::fenwick_tree<unsigned> ftree(23);
+  cpl::fenwick_tree<unsigned> ftree(23);
   ASSERT_EQ(23u, ftree.size());
 }
 
 TEST(fenwick_tree, IsZeroConstructed) {
-  djp::fenwick_tree<int> ftree(20);
+  cpl::fenwick_tree<int> ftree(20);
   EXPECT_EQ(0, ftree.sum(ftree.size() - 1));
 }
 
 TEST(fenwick_tree, SumPrefixAndIsMutable) {
-  djp::fenwick_tree<long> ftree(10);
+  cpl::fenwick_tree<long> ftree(10);
   for (size_t i = 0; i < ftree.size(); ++i)
     ftree.increase(i, 10 * i);
   for (size_t i = 0, acc = 0; i < ftree.size(); ++i, acc += i * 10)
@@ -33,12 +33,12 @@ TEST(fenwick_tree, SumPrefixAndIsMutable) {
 }
 
 TEST(prefix_adder, IsSizeable) {
-  djp::prefix_adder<int> adder(17);
+  cpl::prefix_adder<int> adder(17);
   EXPECT_EQ(17u, adder.size());
 }
 
 TEST(prefix_adder, SumPrefixAndIsMutable) {
-  djp::prefix_adder<int> adder(10);
+  cpl::prefix_adder<int> adder(10);
   adder.increase(0, -10);
   adder.increase(1, -5);
   EXPECT_EQ(-15, adder.sum(0, 1));
@@ -47,7 +47,7 @@ TEST(prefix_adder, SumPrefixAndIsMutable) {
 }
 
 TEST(prefix_adder, HasFastAccessToSingleElements) {
-  djp::prefix_adder<int> adder(10);
+  cpl::prefix_adder<int> adder(10);
   EXPECT_EQ(0, adder.at(5));
   adder.increase(5, 30);
   EXPECT_EQ(30, adder.at(5));

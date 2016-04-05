@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/sorting/counting_sort.hpp>
+#include <cpl/sorting/counting_sort.hpp>
 #include <gtest/gtest.h>
 
 #include <algorithm> // minmax_element
@@ -11,7 +11,7 @@
 #include <utility>   // pair
 #include <vector>    // vector
 
-using namespace djp;
+using namespace cpl;
 using std::size_t;
 
 TEST(CountingSortTest, Sorts) {

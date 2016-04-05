@@ -3,12 +3,12 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/lowest_common_ancestor.hpp>
+#include <cpl/graph/lowest_common_ancestor.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/undirected_graph.hpp>
+#include <cpl/graph/undirected_graph.hpp>
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 

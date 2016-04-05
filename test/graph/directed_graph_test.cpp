@@ -3,12 +3,12 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/directed_graph.hpp>
+#include <cpl/graph/directed_graph.hpp>
 #include <gtest/gtest.h>
 
 #include <cstddef> // for std::size_t
 
-using namespace djp;
+using namespace cpl;
 
 TEST(DirectedGraphTest, ConstructWell) {
   directed_graph graph(15);

@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/strings/suffix_array.hpp>
+#include <cpl/strings/suffix_array.hpp>
 #include <gtest/gtest.h>
 
 #include <algorithm> // sort, lexicographical_compare
@@ -12,7 +12,7 @@
 #include <string>    // string
 #include <vector>    // vector
 
-using namespace djp;
+using namespace cpl;
 using std::size_t;
 
 namespace {

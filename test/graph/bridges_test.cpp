@@ -3,16 +3,16 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/bridges.hpp>
+#include <cpl/graph/bridges.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/undirected_graph.hpp>
+#include <cpl/graph/undirected_graph.hpp>
 
 #include <algorithm> // for std::sort
 #include <vector>    // For std::vector
 #include <cstddef>   // For std::size_t
 
-using namespace djp;
+using namespace cpl;
 using std::vector;
 using std::size_t;
 

@@ -3,15 +3,15 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/graph/min_st_cut.hpp>
+#include <cpl/graph/min_st_cut.hpp>
 #include <gtest/gtest.h>
 
-#include <djp/graph/directed_graph.hpp>
+#include <cpl/graph/directed_graph.hpp>
 
 #include <vector>  // for std::vector
 #include <cstddef> // for std::size_t
 
-using namespace djp;
+using namespace cpl;
 
 using bool_vec = std::vector<bool>;
 

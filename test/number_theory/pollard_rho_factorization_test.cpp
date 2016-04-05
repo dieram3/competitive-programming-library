@@ -3,14 +3,14 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/number_theory/pollard_rho_factorization.hpp>
+#include <cpl/number_theory/pollard_rho_factorization.hpp>
 #include <gtest/gtest.h>
 
 #include <initializer_list> // For std::initializer_list
 #include <cassert>          // For assert
 #include <cstdint>          // For std::uint64_t, UINT64_MAX
 
-using namespace djp;
+using namespace cpl;
 
 namespace {
 class PollardRhoFactorTest : public ::testing::Test {
@@ -111,7 +111,7 @@ TEST_F(PollardRhoFactorTest, DifferentBitsTest) {
 
 //#include <chrono>
 //#include <random>
-//#include <djp/number_theory/miller_rabin.hpp>
+//#include <cpl/number_theory/miller_rabin.hpp>
 // TEST_F(PollardRhoFactorTest, Benchmark) {
 //  std::vector<int_t> values;
 //

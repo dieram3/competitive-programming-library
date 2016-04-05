@@ -1,7 +1,7 @@
-#include <djp/utility/matrix.hpp>
+#include <cpl/utility/matrix.hpp>
 #include <iostream>
 
-using djp::matrix;
+using cpl::matrix;
 
 int main() {
   matrix<int> mat({5, 4});

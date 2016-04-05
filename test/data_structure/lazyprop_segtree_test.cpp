@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <djp/data_structure/lazyprop_segtree.hpp>
+#include <cpl/data_structure/lazyprop_segtree.hpp>
 #include <gtest/gtest.h>
 
 #include <algorithm>  // For std::min, std::max
@@ -14,7 +14,7 @@
 #include <climits>    // For INT_MAX
 #include <cstddef>    // For std::size_t
 
-using namespace djp;
+using namespace cpl;
 using std::size_t;
 
 namespace {
