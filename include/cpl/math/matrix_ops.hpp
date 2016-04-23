@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez November 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,9 @@
 #ifndef CPL_MATH_MATRIX_OPS_HPP
 #define CPL_MATH_MATRIX_OPS_HPP
 
-#include <cpl/utility/matrix.hpp>
-#include <cassert> // For assert
-#include <cstddef> // For std::size_t
+#include <cpl/utility/matrix.hpp> // matrix
+#include <cassert>                // assert
+#include <cstddef>                // size_t
 
 namespace cpl {
 
@@ -23,7 +23,7 @@ namespace cpl {
 /// Exactly <tt>A.rows()*B.cols()*A.cols()</tt> scalar multiplications.
 ///
 template <typename T>
-matrix<T> mat_mul(const matrix<T> &a, const matrix<T> &b) {
+matrix<T> mat_mul(const matrix<T>& a, const matrix<T>& b) {
   assert(a.cols() == b.rows() && "Matrices cannot be multiplied");
   matrix<T> r({a.rows(), b.cols()});
   for (size_t i = 0; i < r.rows(); ++i)

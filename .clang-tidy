@@ -6,6 +6,7 @@ clang-analyzer-*,\
 -clang-analyzer-alpha*,
 cppcoreguidelines-*,\
 -cppcoreguidelines-pro-bounds-array-to-pointer-decay,\
+-cppcoreguidelines-pro-bounds-constant-array-index,\
 -cppcoreguidelines-pro-type-vararg,
 google-*,\
 -google-runtime-int,\
