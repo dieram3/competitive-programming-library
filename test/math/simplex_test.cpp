@@ -6,14 +6,13 @@
 #include <cpl/math/simplex.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/utility/matrix.hpp>
-
-#include <cassert>   // assert
-#include <cmath>     // isfinite, isnan, fabs
-#include <limits>    // numeric_limits
-#include <numeric>   // inner_product
-#include <stdexcept> // domain_error
-#include <vector>    // vector, initializer_list
+#include <cpl/utility/matrix.hpp> // matrix2
+#include <cassert>                // assert
+#include <cmath>                  // isfinite, isnan, fabs
+#include <limits>                 // numeric_limits
+#include <numeric>                // inner_product
+#include <stdexcept>              // domain_error
+#include <vector>                 // vector, initializer_list
 
 using namespace cpl;
 using real_t = double;
@@ -23,9 +22,13 @@ static bool float_eq(const real_t x, const real_t y) {
   return std::fabs(x - y) < 1e-7;
 }
 
-static bool float_le(real_t x, real_t y) { return x <= y || float_eq(x, y); }
+static bool float_le(real_t x, real_t y) {
+  return x < y || float_eq(x, y);
+}
 
-static bool float_ge(real_t x, real_t y) { return x >= y || float_eq(x, y); }
+static bool float_ge(real_t x, real_t y) {
+  return x > y || float_eq(x, y);
+}
 
 namespace {
 
@@ -41,7 +44,7 @@ protected:
   static constexpr real_t nan = std::numeric_limits<real_t>::quiet_NaN();
 
 protected:
-  void set_A(const size_t m, const size_t n, const vec_t &vec) {
+  void set_A(const size_t m, const size_t n, const vec_t& vec) {
     assert(vec.size() == m * n);
     A.resize(m, n);
     for (size_t i = 0; i != m; ++i)
@@ -49,11 +52,15 @@ protected:
         A[i][j] = vec[i * n + j];
   }
 
-  void set_b(std::initializer_list<real_t> il) { b = il; }
-  void set_c(std::initializer_list<real_t> il) { c = il; }
+  void set_b(std::initializer_list<real_t> il) {
+    b = il;
+  }
+  void set_c(std::initializer_list<real_t> il) {
+    c = il;
+  }
 
   void test_current_program(const real_t expected_opt_value,
-                            const char *test_name) {
+                            const char* test_name) {
 
     SCOPED_TRACE(test_name);
 

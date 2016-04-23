@@ -1,2 +1,16 @@
 BasedOnStyle: LLVM
+AllowShortFunctionsOnASingleLine: Empty
 AlwaysBreakTemplateDeclarations: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+IncludeCategories:
+  - Regex:           '^".+"$'           # Local headers
+    Priority:        1
+  - Regex:           '^<cpl/.+>$'       # CPL headers
+    Priority:        2
+  - Regex:           '^<.+/.+>$'        # Non-standard library headers.
+    Priority:        3
+  - Regex:           '^<[_[:alnum:]+>$' # Standard C++ library headers.
+    Priority:        4
+  - Regex:           '.*'               # Anything else (like <stdio.h>)
+    Priority:        5
+PointerAlignment: Left
