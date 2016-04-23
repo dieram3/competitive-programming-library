@@ -26,14 +26,19 @@ AnalyzeTemporaryDtors: true
 CheckOptions:
   - key:             llvm-namespace-comment.ShortNamespaceLines
     value:           '20'
+# readability-identifier-naming:
   - key:             readability-identifier-naming.ClassCase
     value:           lower_case
   - key:             readability-identifier-naming.EnumCase
     value:           lower_case
   - key:             readability-identifier-naming.FunctionCase
     value:           lower_case
-  - key:             readability-identifier-naming.UnionCase
+  - key:             readability-identifier-naming.MemberCase
     value:           lower_case
+  - key:             readability-identifier-naming.ParameterCase
+    value:           lower_case
+  - key:             readability-identifier-naming.TemplateParameterCase
+    value:           CamelCase
   - key:             readability-identifier-naming.VariableCase
     value:           lower_case
 ...
