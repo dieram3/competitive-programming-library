@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez June 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,10 @@
 #include <cpl/utility/matrix.hpp>
 #include <gtest/gtest.h>
 
-#include <type_traits> // is const, remove_reference
 #include <cstddef>     // size_t
+#include <type_traits> // is const, remove_reference
 
-using namespace cpl;
+using cpl::matrix;
 
 TEST(MatrixTest, ConstrucstWell) {
 
@@ -47,7 +47,7 @@ TEST(MatrixTest, IndexesWell) {
 
 TEST(MatrixTest, IsConstAware) {
   matrix<int> mat({1, 1});
-  const auto &cmat = mat;
+  const auto& cmat = mat;
 
   using ref = decltype(mat[{0, 0}]);
   using cref = decltype(cmat[{0, 0}]);
