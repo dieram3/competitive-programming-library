@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,13 +6,11 @@
 #include <cpl/math/bisection.hpp>
 #include <gtest/gtest.h>
 
-#include <limits>      // For std::numeric_limits
-#include <type_traits> // For std::is_floating_point
-#include <cassert>     // For assert
-#include <cstddef>     // For std::size_t
-#include <cmath>       // For fabs, fmin, fmax, sin, acos
+#include <cassert> // assert
+#include <cmath>   // fabs, fmin, fmax, sin, acos
+#include <limits>  // numeric_limits
 
-using namespace cpl;
+using cpl::bisect;
 using std::fmin;
 using std::fmax;
 using std::fabs;
@@ -22,7 +20,7 @@ TEST(BisectTest, SquareRootTest) {
     assert(x >= 0);
     auto func = [x](double y) { return y * y - x; };
     const double tol = std::numeric_limits<double>::epsilon();
-    const size_t max_iter = 150;
+    const int max_iter = 150;
     return bisect(func, 0.0, fmax(1.0, x), tol, max_iter);
   };
 
@@ -48,7 +46,7 @@ TEST(BisectTest, CubeRootTest) {
   auto cbrt = [](double x) {
     auto func = [x](double y) { return y * y * y - x; };
     const double tol = std::numeric_limits<double>::epsilon();
-    const size_t max_iter = 150;
+    const int max_iter = 150;
     const double x_min = fmin(-1.0, -fabs(x));
     const double x_max = fmax(1.0, fabs(x));
     return bisect(func, x_min, x_max, tol, max_iter);

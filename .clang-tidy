@@ -1,0 +1,39 @@
+---
+Checks: "-*,\
+cert-*,
+clang-diagnostic-*,
+clang-analyzer-*,\
+-clang-analyzer-alpha*,
+cppcoreguidelines-*,\
+-cppcoreguidelines-pro-bounds-array-to-pointer-decay,\
+-cppcoreguidelines-pro-type-vararg,
+google-*,\
+-google-runtime-int,\
+-google-runtime-references,\
+-google-readability-braces-around-statements,
+llvm-*,\
+-llvm-include-order,
+misc-*,
+modernize-*,
+performance-*,
+readability-*,\
+-readability-braces-around-statements"
+
+HeaderFilterRegex: '.*'
+
+AnalyzeTemporaryDtors: true
+
+CheckOptions:
+  - key:             llvm-namespace-comment.ShortNamespaceLines
+    value:           '20'
+  - key:             readability-identifier-naming.ClassCase
+    value:           lower_case
+  - key:             readability-identifier-naming.EnumCase
+    value:           lower_case
+  - key:             readability-identifier-naming.FunctionCase
+    value:           lower_case
+  - key:             readability-identifier-naming.UnionCase
+    value:           lower_case
+  - key:             readability-identifier-naming.VariableCase
+    value:           lower_case
+...
