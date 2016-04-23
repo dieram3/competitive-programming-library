@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez October 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,10 @@
 #ifndef CPL_MATH_RATIONAL_HPP
 #define CPL_MATH_RATIONAL_HPP
 
-#include <cpl/number_theory/euclid.hpp> // For cpl::gcd
-#include <algorithm>                    // For std::for_each
-#include <vector>                       // For std::vector
-#include <cassert>                      // For assert
+#include <cpl/number_theory/euclid.hpp> // gcd
+#include <algorithm>                    // for_each
+#include <cassert>                      // assert
+#include <vector>                       // vector
 
 namespace cpl {
 
@@ -27,12 +27,12 @@ class rational {
   struct no_reduction_tag {};
 
 private:
-  void set_reduced_values(const T &a, const T &b) {
+  void set_reduced_values(const T& a, const T& b) {
     // assert(gcd(a, b) == 1);
     assert(b != 0 && "Denominator cannot be zero");
     b < 0 ? (num = -a, den = -b) : (num = a, den = b);
   }
-  rational(const T &a, const T &b, no_reduction_tag) {
+  rational(const T& a, const T& b, no_reduction_tag /*unused*/) {
     set_reduced_values(a, b);
   }
 
@@ -43,7 +43,7 @@ public:
   ///
   /// \param value The input integer.
   ///
-  rational(const T &value = 0) : num{value}, den{1} {}
+  explicit rational(const T& value = 0) : num{value}, den{1} {}
 
   /// \brief Constructs a rational number with the given numerator and
   /// denominator.
@@ -53,7 +53,7 @@ public:
   ///
   /// \pre <tt>b != 0</tt>.
   ///
-  rational(const T &a, const T &b) {
+  rational(const T& a, const T& b) {
     assert(b != 0 && "Denominator cannot be zero");
     const T g = gcd(a, b);
     set_reduced_values(a / g, b / g);
@@ -61,11 +61,15 @@ public:
 
   /// \brief Returns the stored numerator of <tt>*this</tt>.
   ///
-  T numerator() const { return num; }
+  T numerator() const {
+    return num;
+  }
 
   /// \brief Returns the stored denominator of <tt>*this</tt>.
   ///
-  T denominator() const { return den; }
+  T denominator() const {
+    return den;
+  }
 
   /// \brief Returns the reciprocal of a rational number.
   ///
@@ -75,7 +79,7 @@ public:
   ///
   /// \returns The reciprocal of <tt>r</tt>.
   ///
-  friend rational reciprocal(const rational &r) {
+  friend rational reciprocal(const rational& r) {
     assert(r.num != 0);
     return rational(r.den, r.num, no_reduction_tag{});
   }
@@ -87,7 +91,7 @@ public:
   ///
   /// \returns The result of <tt>(lhs + rhs)</tt>.
   ///
-  friend rational operator+(const rational &lhs, const rational &rhs) {
+  friend rational operator+(const rational& lhs, const rational& rhs) {
     const T g = gcd(lhs.den, rhs.den);
     const T a = lhs.num * (rhs.den / g) + rhs.num * (lhs.den / g);
     const T b = lhs.den / g * rhs.den;
@@ -101,7 +105,7 @@ public:
   ///
   /// \returns The result of <tt>(lhs - rhs)</tt>.
   ///
-  friend rational operator-(const rational &lhs, const rational &rhs) {
+  friend rational operator-(const rational& lhs, const rational& rhs) {
     const T g = gcd(lhs.den, rhs.den);
     const T a = lhs.num * (rhs.den / g) - rhs.num * (lhs.den / g);
     const T b = lhs.den / g * rhs.den;
@@ -115,7 +119,7 @@ public:
   ///
   /// \returns The result of <tt>(lhs * rhs)</tt>.
   ///
-  friend rational operator*(const rational &lhs, const rational &rhs) {
+  friend rational operator*(const rational& lhs, const rational& rhs) {
     const T g1 = gcd(lhs.num, rhs.den);
     const T g2 = gcd(lhs.den, rhs.num);
     const T a = (lhs.num / g1) * (rhs.num / g2);
@@ -132,7 +136,7 @@ public:
   ///
   /// \returns The result of <tt>(lhs / rhs)</tt>.
   ///
-  friend rational operator/(const rational &lhs, const rational &rhs) {
+  friend rational operator/(const rational& lhs, const rational& rhs) {
     assert(rhs.num != 0);
     const T g1 = gcd(lhs.num, rhs.num);
     const T g2 = gcd(lhs.den, rhs.den);
@@ -141,23 +145,6 @@ public:
     return rational(a, b, no_reduction_tag{});
   }
 };
-
-/// \brief Reduces the continued fraction representation of a rational number to
-/// its normal form.
-///
-/// \param coeffs The coefficients of the continued fraction representation.
-///
-/// \pre <tt>vec.size() > 0</tt>.
-///
-/// \returns The reduced rational number.
-///
-template <typename T>
-rational<T> evaluate_continued_fraction(const std::vector<T> &coeffs) {
-  rational<T> r = coeffs.back();
-  std::for_each(coeffs.rbegin() + 1, coeffs.rend(),
-                [&](const T &ai) { r = rational<T>(ai) + reciprocal(r); });
-  return r;
-}
 
 /// \brief Finds the continued fraction representation of a rational number.
 ///
@@ -174,13 +161,31 @@ rational<T> evaluate_continued_fraction(const std::vector<T> &coeffs) {
 /// \returns Output iterator to the element past the last element copied.
 ///
 template <typename T, typename OutputIt>
-OutputIt continued_fraction(const rational<T> &r, OutputIt out_it) {
+OutputIt continued_fraction(const rational<T>& r, OutputIt out_it) {
   T a = r.numerator(), b = r.denominator(), tmp;
   while (b != 0) {
     *out_it++ = a / b;
     tmp = b, b = a % b, a = tmp;
   }
   return out_it;
+}
+
+/// \brief Reduces the continued fraction representation of a rational number to
+/// its normal form.
+///
+/// \param coeffs The coefficients of the continued fraction representation.
+///
+/// \pre <tt>coeffs.size() > 0</tt>.
+///
+/// \returns The reduced rational number.
+///
+template <typename T>
+rational<T> evaluate_continued_fraction(const std::vector<T>& coeffs) {
+  assert(coeffs.size() > 0);
+  rational<T> r{coeffs.back()};
+  std::for_each(coeffs.rbegin() + 1, coeffs.rend(),
+                [&](const T& ai) { r = rational<T>(ai) + reciprocal(r); });
+  return r;
 }
 
 } // end namespace cpl

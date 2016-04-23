@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez October 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,11 +6,13 @@
 #include <cpl/math/rational.hpp>
 #include <gtest/gtest.h>
 
-#include <iterator> // For std::back_inserter
-#include <vector>   // For std::vector
-#include <cstddef>  // for std::int_fast64_t
+#include <cstddef>  // int_fast64_t
+#include <iterator> // back_inserter
+#include <vector>   // vector
 
-using namespace cpl;
+using cpl::rational;
+using cpl::continued_fraction;
+using cpl::evaluate_continued_fraction;
 
 namespace {
 template <typename T>
@@ -20,19 +22,19 @@ struct raw_ratio {
 };
 
 template <typename T>
-static bool operator==(const raw_ratio<T> &lhs, const rational<T> &rhs) {
+static bool operator==(const raw_ratio<T>& lhs, const rational<T>& rhs) {
   return lhs.num == rhs.numerator() && lhs.den == rhs.denominator();
 }
 
 template <typename T>
-static std::ostream &operator<<(std::ostream &os, const raw_ratio<T> &r) {
+static std::ostream& operator<<(std::ostream& os, const raw_ratio<T>& r) {
   return os << r.num << '/' << r.den;
 }
 } // end anonymous namespace
 
 namespace cpl {
 template <typename T>
-static std::ostream &operator<<(std::ostream &os, const rational<T> &r) {
+static std::ostream& operator<<(std::ostream& os, const rational<T>& r) {
   return os << r.numerator() << '/' << r.denominator();
 }
 } // end namespace cpl
@@ -127,20 +129,6 @@ TEST_F(RationalTest, DivisionTest) {
   EXPECT_EQ(raw_ratio_t(5, 4), rational_t(15) / rational_t(12));
 }
 
-TEST_F(RationalTest, EvaluateContinuedFractionTest) {
-  auto evaluate = [](const std::vector<int_t> &coeffs) {
-    return evaluate_continued_fraction(coeffs);
-  };
-  EXPECT_EQ(raw_ratio_t(0, 1), evaluate({0}));
-  EXPECT_EQ(raw_ratio_t(15, 1), evaluate({15}));
-  EXPECT_EQ(raw_ratio_t(14, 5), evaluate({2, 1, 4}));
-  EXPECT_EQ(raw_ratio_t(93, 101), evaluate({0, 1, 11, 1, 1, 1, 2}));
-  EXPECT_EQ(raw_ratio_t(513, 254), evaluate({2, 50, 1, 4}));
-  EXPECT_EQ(raw_ratio_t(70, 13), evaluate({5, 2, 1, 1, 2}));
-  EXPECT_EQ(raw_ratio_t(-513, 254), evaluate({-2, -50, -1, -4}));
-  EXPECT_EQ(raw_ratio_t(-70, 13), evaluate({-5, -2, -1, -1, -2}));
-}
-
 TEST_F(RationalTest, ContinuedFractionTest) {
   EXPECT_EQ(vec_t({0}), cfrac(0));
   EXPECT_EQ(vec_t({5}), cfrac(5));
@@ -156,4 +144,18 @@ TEST_F(RationalTest, ContinuedFractionTest) {
             cfrac(-98178, 129899));
   EXPECT_EQ(vec_t({3, 14, 1, 19, 1, 1, 1, 1, 3, 1, 1, 5, 1, 92, 1, 3, 5, 6, 4}),
             cfrac(12874195198, 4197810981));
+}
+
+TEST_F(RationalTest, EvaluateContinuedFractionTest) {
+  auto evaluate = [](const std::vector<int_t>& coeffs) {
+    return evaluate_continued_fraction(coeffs);
+  };
+  EXPECT_EQ(raw_ratio_t(0, 1), evaluate({0}));
+  EXPECT_EQ(raw_ratio_t(15, 1), evaluate({15}));
+  EXPECT_EQ(raw_ratio_t(14, 5), evaluate({2, 1, 4}));
+  EXPECT_EQ(raw_ratio_t(93, 101), evaluate({0, 1, 11, 1, 1, 1, 2}));
+  EXPECT_EQ(raw_ratio_t(513, 254), evaluate({2, 50, 1, 4}));
+  EXPECT_EQ(raw_ratio_t(70, 13), evaluate({5, 2, 1, 1, 2}));
+  EXPECT_EQ(raw_ratio_t(-513, 254), evaluate({-2, -50, -1, -4}));
+  EXPECT_EQ(raw_ratio_t(-70, 13), evaluate({-5, -2, -1, -1, -2}));
 }
