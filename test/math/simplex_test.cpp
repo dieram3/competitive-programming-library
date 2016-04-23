@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,12 +8,12 @@
 
 #include <cpl/utility/matrix.hpp>
 
-#include <cassert>   // for assert
-#include <cmath>     // for std::isfinite, std::isnan, std::fabs, NAN, INFINITY
-#include <limits>    // for std::numeric_limits
-#include <numeric>   // for std::inner_product
-#include <stdexcept> // for std::domain_error
-#include <vector>    // for std::vector, std::initializer_list
+#include <cassert>   // assert
+#include <cmath>     // isfinite, isnan, fabs
+#include <limits>    // numeric_limits
+#include <numeric>   // inner_product
+#include <stdexcept> // domain_error
+#include <vector>    // vector, initializer_list
 
 using namespace cpl;
 using real_t = double;
@@ -35,6 +35,10 @@ class SimplexTest : public ::testing::Test {
   vec_t b;
   vec_t c;
   vec_t x;
+
+protected:
+  static constexpr real_t infinity = std::numeric_limits<real_t>::infinity();
+  static constexpr real_t nan = std::numeric_limits<real_t>::quiet_NaN();
 
 protected:
   void set_A(const size_t m, const size_t n, const vec_t &vec) {
@@ -76,8 +80,8 @@ protected:
       for (size_t j = 0; j != A.cols(); ++j)
         sum += A[i][j] * x.at(j);
       EXPECT_TRUE(float_le(sum, b[i])) << "Constraint " << i
-                                       << " is not satisfied\n" << sum
-                                       << " !<= " << b[i];
+                                       << " is not satisfied\n"
+                                       << sum << " !<= " << b[i];
     }
 
     // Check x >= 0
@@ -100,12 +104,12 @@ TEST_F(SimplexTest, UnboundedSolutionTest) {
   set_A(1, 2, {1, -1});
   set_b({-5});
   set_c({1, 1});
-  test_current_program(INFINITY, "First test");
+  test_current_program(infinity, "First test");
 
   set_A(1, 2, {2, 0});
   set_b({6});
   set_c({-1, 1});
-  test_current_program(INFINITY, "Second test");
+  test_current_program(infinity, "Second test");
 }
 
 TEST_F(SimplexTest, SimpleTest) {
@@ -125,16 +129,16 @@ TEST_F(SimplexTest, SimpleTest) {
 
 TEST_F(SimplexTest, ComplexTest) {
   set_A(10, 7, {
-                   19, 33, 81, 1, 23, 13, -12,        // row 1
-                   32, 23, 12, 99, -2, 42, 3,         // row 2
-                   91, 12, -23, 23, 18, 18, 4,        // row 3
-                   18, 14, 41, 82, 23, 82, 19,        // row 4
-                   34, 98, -5, 18, 82, 92, 23,        // row 5
-                   123, 40, 71, 23, 89, 38, 123,      // row 6
-                   198, 28, -42, 28, 238, 82, 812,    // row 7
-                   98, 239, -123, 89, 23, 28, 192,    // row 8
-                   -12, -124, -23, -48, -12, -89, 12, // row 9
-                   18, 124, 88, 89, 218, 32, 223      // row 10
+                   19,  33,   81,   1,   23,  13,  -12, // row 1
+                   32,  23,   12,   99,  -2,  42,  3,   // row 2
+                   91,  12,   -23,  23,  18,  18,  4,   // row 3
+                   18,  14,   41,   82,  23,  82,  19,  // row 4
+                   34,  98,   -5,   18,  82,  92,  23,  // row 5
+                   123, 40,   71,   23,  89,  38,  123, // row 6
+                   198, 28,   -42,  28,  238, 82,  812, // row 7
+                   98,  239,  -123, 89,  23,  28,  192, // row 8
+                   -12, -124, -23,  -48, -12, -89, 12,  // row 9
+                   18,  124,  88,   89,  218, 32,  223  // row 10
                });
   set_b({1412, 12319, 9812, 8912, 8723, 1928, 8912, 8322, -1298, 47818});
 
@@ -180,7 +184,7 @@ TEST_F(SimplexTest, NoFeasibleSolutionTest) {
 
   set_b({-5, 4, 36});
   set_c({3, 2});
-  test_current_program(NAN, "Trivial test case");
+  test_current_program(nan, "Trivial test case");
 
   set_A(4, 2, {
                   -2, -4, // row 1
@@ -190,7 +194,7 @@ TEST_F(SimplexTest, NoFeasibleSolutionTest) {
               });
   set_b({-20, 10, 6, 12});
   set_c({3, 3});
-  test_current_program(NAN, "Non-trivial test case");
+  test_current_program(nan, "Non-trivial test case");
 }
 
 TEST_F(SimplexTest, AntiCyclingTest) {
