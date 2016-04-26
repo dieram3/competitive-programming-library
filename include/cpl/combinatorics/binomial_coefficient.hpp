@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez October 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -31,14 +31,14 @@ namespace cpl {
 ///
 template <typename T>
 matrix<T> gen_binomial_coefficient_matrix(const T n_max) {
-  matrix<T> C({n_max + 1, n_max + 1});
+  matrix<T> coeff({n_max + 1, n_max + 1});
   for (T n = 0; n <= n_max; ++n) {
-    C[{n, 0}] = 1;
-    C[{n, n}] = 1;
+    coeff[{n, 0}] = 1;
+    coeff[{n, n}] = 1;
     for (T k = 1; k < n; ++k)
-      C[{n, k}] = C[{n - 1, k - 1}] + C[{n - 1, k}];
+      coeff[{n, k}] = coeff[{n - 1, k - 1}] + coeff[{n - 1, k}];
   }
-  return C;
+  return coeff;
 }
 
 } // end namespace cpl

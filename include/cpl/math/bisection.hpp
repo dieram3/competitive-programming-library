@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,11 +6,11 @@
 #ifndef CPL_MATH_BISECTION_HPP
 #define CPL_MATH_BISECTION_HPP
 
-#include <limits>      // For std::numeric_limits
-#include <stdexcept>   // For std::runtime_error
-#include <type_traits> // For std::is_floating_point
-#include <cassert>     // For assert
-#include <cmath>       // For std::fabs, std::signbit
+#include <cassert>     // assert
+#include <cmath>       // fabs, signbit
+#include <limits>      // numeric_limits
+#include <stdexcept>   // runtime_error
+#include <type_traits> // is_floating_point
 
 namespace cpl {
 
@@ -44,11 +44,12 @@ namespace cpl {
 /// of the method is linear.
 ///
 template <typename T, typename F>
-T bisect(F f, T a, T b, T tol, size_t max_iter) {
+T bisect(const F f, T a, T b, const T tol, const int max_iter) {
   static_assert(std::is_floating_point<T>::value, "Must be floating-point");
 
-  auto is_zero =
-      [](T x) { return std::fabs(x) < std::numeric_limits<T>::min(); };
+  auto is_zero = [](const T x) {
+    return std::fabs(x) < std::numeric_limits<T>::min();
+  };
   T fa = f(a);
   T fb = f(b);
   if (is_zero(fa))
@@ -58,9 +59,9 @@ T bisect(F f, T a, T b, T tol, size_t max_iter) {
   assert(std::signbit(fa) != std::signbit(fb));
   assert(a <= b);
 
-  while (max_iter--) {
-    T c = (a + b) / 2;
-    T fc = f(c);
+  for (int iter = 0; iter < max_iter; ++iter) {
+    const T c = (a + b) / 2;
+    const T fc = f(c);
     if (is_zero(fc) || (b - a) / 2 <= tol)
       return c;
     if (std::signbit(fc) == std::signbit(fa))

@@ -11,7 +11,7 @@
 #include <utility>   // pair
 #include <vector>    // vector
 
-using namespace cpl;
+using cpl::counting_sort;
 using std::size_t;
 
 TEST(CountingSortTest, Sorts) {
@@ -46,7 +46,7 @@ TEST(CountingSortTest, SortsStably) {
       {5, 'a'}, {6, 'h'}, {7, 'd'}, {9, 'c'}, {9, 'p'}, {9, 'f'},
   };
 
-  auto get_key = [](const value_t &val) -> size_t { return val.first; };
+  auto get_key = [](const value_t& val) -> size_t { return val.first; };
   const size_t num_keys = 10;
 
   ASSERT_NE(expected, vec);

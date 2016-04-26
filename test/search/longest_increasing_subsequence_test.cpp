@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez March 2015, August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,14 +6,13 @@
 #include <cpl/search/longest_increasing_subsequence.hpp>
 #include <gtest/gtest.h>
 
-#include <functional> // for less, greater, less_equal, greater_equal
-#include <iterator>   // for begin, end
-#include <numeric>    // for iota
-#include <vector>     // for vector
-#include <cstddef>    // for size_t
+#include <cstddef>    // size_t
+#include <functional> // less, greater, less_equal, greater_equal
+#include <iterator>   // begin, end
+#include <numeric>    // iota
+#include <vector>     // vector
 
-using namespace cpl;
-
+using cpl::longest_increasing_subsequence;
 using std::vector;
 using std::less;
 using std::greater;
@@ -21,7 +20,7 @@ using std::less_equal;
 using std::greater_equal;
 
 template <typename InputRange, typename Compare>
-static std::size_t calc_lis_size(const InputRange &range, Compare comp) {
+static std::size_t calc_lis_size(const InputRange& range, Compare comp) {
   return cpl::calc_lis_size(std::begin(range), std::end(range), comp);
 }
 

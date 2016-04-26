@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -17,23 +17,23 @@ namespace cpl {
 ///
 /// \param a The inclusive lower bound.
 /// \param b The exclusive upper bound.
-/// \param p The unary predicate.
+/// \param pred The unary predicate.
 ///
 /// \returns The first integer that does not satisfy the predicate, or \p b if
 /// no such integer is found.
 ///
 /// \pre <tt>a <= b</tt>.
-/// \pre The given range is partitioned by the predicate \p p.
+/// \pre The given range is partitioned by the predicate \p pred.
 /// \pre The result of <tt>(b - a)</tt> fits in the type \c T.
 ///
 /// \par Complexity
 /// <tt>O(log(N))</tt>, where <tt>N = b - a</tt>.
 ///
 template <typename T, typename Pred>
-T int_binary_search(T a, T b, Pred p) {
+T int_binary_search(T a, T b, Pred pred) {
   while (a != b) {
     const T mid = a + (b - a) / 2;
-    if (p(mid))
+    if (pred(mid))
       a = mid + 1;
     else
       b = mid;

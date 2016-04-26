@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez November 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,12 +6,14 @@
 #include <cpl/math/matrix_ops.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/utility/matrix.hpp>
+#include <cpl/utility/matrix.hpp> // matrix
+#include <cstddef>                // size_t
+#include <ostream>                // ostream
 
-#include <cstddef> // For std::size_t
-#include <ostream> // For std::ostream
-
-using namespace cpl;
+using cpl::mat_mul;
+using cpl::mat_identity;
+using cpl::mat_pow;
+using cpl::matrix;
 using std::size_t;
 
 template <typename T, size_t M, size_t N>
@@ -24,12 +26,12 @@ static matrix<T> as_matrix(const T (&mat)[M][N]) {
 }
 
 template <typename T>
-static bool is_square(const matrix<T> &mat) {
+static bool is_square(const matrix<T>& mat) {
   return mat.rows() == mat.cols();
 }
 
 template <typename T>
-static bool is_identity(const matrix<T> &mat) {
+static bool is_identity(const matrix<T>& mat) {
   if (!is_square(mat))
     return false;
   for (size_t i = 0; i < mat.rows(); ++i)
@@ -44,7 +46,7 @@ static bool is_identity(const matrix<T> &mat) {
 namespace cpl {
 
 template <typename T>
-static bool operator==(const matrix<T> &a, const matrix<T> &b) {
+static bool operator==(const matrix<T>& a, const matrix<T>& b) {
   if (a.rows() != b.rows() || a.cols() != b.cols())
     return false;
   for (size_t i = 0; i < a.rows(); ++i)
@@ -55,7 +57,7 @@ static bool operator==(const matrix<T> &a, const matrix<T> &b) {
 }
 
 template <typename T>
-static std::ostream &operator<<(std::ostream &os, const matrix<T> &mat) {
+static std::ostream& operator<<(std::ostream& os, const matrix<T>& mat) {
   os << "A " << mat.rows() << 'x' << mat.cols() << " matrix\n";
   for (size_t i = 0; i < mat.rows(); ++i)
     for (size_t j = 0; j < mat.cols(); ++j)

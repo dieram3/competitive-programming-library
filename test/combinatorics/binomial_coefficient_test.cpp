@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez October 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,13 +6,14 @@
 #include <cpl/combinatorics/binomial_coefficient.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/utility/matrix.hpp>
+#include <cpl/utility/matrix.hpp> // matrix
+#include <cstddef>                // size_t
+#include <cstdint>                // uint32_t, uint64_t
 
-#include <cstddef> // For std::size_t
-#include <cstdint> // For std::uint32_t, std::uint64_t
-
-using namespace cpl;
+using cpl::gen_binomial_coefficient_matrix;
 using std::size_t;
+using std::uint32_t;
+using std::uint64_t;
 
 TEST(BinomialCoefficientTest, SimpleTest) {
   const auto dp = gen_binomial_coefficient_matrix(10);
@@ -39,7 +40,7 @@ TEST(BinomialCoefficientTest, SimpleTest) {
 }
 
 TEST(BinomialCoefficientTest, Uint32Test) {
-  const auto dp = gen_binomial_coefficient_matrix<std::uint32_t>(34);
+  const auto dp = gen_binomial_coefficient_matrix<uint32_t>(34);
   auto C = [&](size_t n, size_t k) { return dp[{n, k}]; };
   EXPECT_EQ(278256u, C(34, 5));
   EXPECT_EQ(131128140u, C(34, 10));
@@ -51,7 +52,7 @@ TEST(BinomialCoefficientTest, Uint32Test) {
 }
 
 TEST(BinomialCoefficientTest, Uint64Test) {
-  const auto dp = gen_binomial_coefficient_matrix<std::uint64_t>(67);
+  const auto dp = gen_binomial_coefficient_matrix<uint64_t>(67);
   auto C = [&](size_t n, size_t k) { return dp[{n, k}]; };
   EXPECT_EQ(9364899127970100u, C(67, 18));
   EXPECT_EQ(9989690752182277136u, C(67, 30));

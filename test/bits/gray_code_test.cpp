@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,7 +6,8 @@
 #include <cpl/bits/gray_code.hpp>
 #include <gtest/gtest.h>
 
-using namespace cpl;
+using cpl::nth_gray_code;
+using cpl::rank_gray_code;
 
 TEST(GrayCodeTest, NthGrayCodeTest) {
   EXPECT_EQ(0, nth_gray_code(0));

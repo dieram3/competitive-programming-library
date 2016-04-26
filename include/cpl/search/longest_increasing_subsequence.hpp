@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez March 2015, August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,13 +8,13 @@
 #ifndef CPL_SEARCH_LONGEST_INCREASING_SUBSEQUENCE_HPP
 #define CPL_SEARCH_LONGEST_INCREASING_SUBSEQUENCE_HPP
 
-#include <vector>     // for std::vector
-#include <algorithm>  // for std::for_each, std::lower_bound, std::is_sorted
-#include <iterator>   // for std::iterator_traits
-#include <functional> // for std::less
-#include <cassert>    // for assert
-#include <cstddef>    // for std::size_t
-#include <cstdint>    // for SIZE_MAX
+#include <algorithm>  // for_each, lower_bound, is_sorted
+#include <cassert>    // assert
+#include <cstddef>    // size_t
+#include <cstdint>    // SIZE_MAX
+#include <functional> // less
+#include <iterator>   // iterator_traits
+#include <vector>     // vector
 
 namespace cpl {
 
@@ -39,7 +39,7 @@ std::size_t calc_lis_size(InputIt first, InputIt last, Compare comp) {
   using T = typename std::iterator_traits<InputIt>::value_type;
   std::vector<T> tail; // tail[i] := last element of the list with size i + 1
 
-  std::for_each(first, last, [&tail, comp](const T &elem) {
+  std::for_each(first, last, [&tail, comp](const T& elem) {
     auto it = std::lower_bound(tail.begin(), tail.end(), elem, comp);
     if (it == tail.end())
       tail.push_back(elem);
@@ -79,7 +79,7 @@ std::size_t calc_lis_size(InputIt first, InputIt last) {
 /// <tt>O(N * log(N))</tt> comparisons, where <tt>N = seq.size()</tt>.
 ///
 template <class T, class Compare>
-std::vector<size_t> longest_increasing_subsequence(const std::vector<T> &seq,
+std::vector<size_t> longest_increasing_subsequence(const std::vector<T>& seq,
                                                    Compare comp) {
   if (seq.empty())
     return {};
