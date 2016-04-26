@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez April 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,9 @@
 #ifndef CPL_COMBINATORICS_NTH_PERMUTATION_HPP
 #define CPL_COMBINATORICS_NTH_PERMUTATION_HPP
 
-#include <vector>  // for std::vector
-#include <cstddef> // for std::ptrdiff_t
-#include <cstdint> // for std::uint64_t
+#include <cstddef> // size_t, ptrdiff_t
+#include <cstdint> // uint64_t
+#include <vector>  // vector
 
 namespace cpl {
 
