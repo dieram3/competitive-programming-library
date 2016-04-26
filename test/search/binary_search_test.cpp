@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,12 +6,14 @@
 #include <cpl/search/binary_search.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/number_theory/basics.hpp> // for multiply_less, multiply_greater.
+#include <cpl/number_theory/basics.hpp> // multiply_less, multiply_greater
+#include <climits>                      // INT_MAX
+#include <cstdint>                      // uint32_t
 
-#include <climits> // for INT_MAX
-#include <cstdint> // for uint32_t
-
-using namespace cpl;
+using cpl::int_binary_search;
+using cpl::multiply_less;
+using cpl::multiply_greater;
+using std::uint32_t;
 
 static int ceil_sqrt(uint32_t num) {
   return int_binary_search<uint32_t>(0, num + 1, [num](uint32_t x) {

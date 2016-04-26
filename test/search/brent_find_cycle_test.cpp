@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,13 +6,13 @@
 #include <cpl/search/brent_find_cycle.hpp>
 #include <gtest/gtest.h>
 
-#include <utility> // For std::pair
-#include <cstddef> // For std::size_t
-#include <cstdint> // For std::uint32_t
+#include <cstddef> // size_t
+#include <cstdint> // uint32_t
+#include <utility> // pair
 
-using namespace cpl;
-using pair = std::pair<size_t, size_t>;
+using cpl::brent_find_cycle;
 using std::uint32_t;
+using pair = std::pair<std::size_t, std::size_t>;
 
 TEST(BrentFindCycleTest, TableFunctionTest) {
   int table[9] = {6, 6, 0, 1, 4, 3, 3, 4, 0};

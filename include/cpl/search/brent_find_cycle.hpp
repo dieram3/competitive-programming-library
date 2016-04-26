@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,8 +6,8 @@
 #ifndef CPL_SEARCH_BRENT_FIND_CYCLE_HPP
 #define CPL_SEARCH_BRENT_FIND_CYCLE_HPP
 
-#include <utility> // for std::pair
-#include <cstddef> // for std::size_t
+#include <cstddef> // size_t
+#include <utility> // pair
 
 namespace cpl {
 
