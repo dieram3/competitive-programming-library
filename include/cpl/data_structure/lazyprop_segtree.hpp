@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez November 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,11 @@
 #ifndef CPL_DATA_STRUCTURE_LAZYPROP_SEGTREE_HPP
 #define CPL_DATA_STRUCTURE_LAZYPROP_SEGTREE_HPP
 
-#include <iterator> // For std::distance
-#include <vector>   // For std::vector
-#include <cassert>  // For assert
-#include <cstddef>  // For std::size_t
+#include <cassert>  // assert
+#include <cstddef>  // size_t
+#include <iterator> // distance
+#include <utility>  // move
+#include <vector>   // vector
 
 namespace cpl {
 
@@ -46,15 +47,29 @@ class lazyprop_segtree {
 
     size_t pos, beg, end;
 
-    size_t size() const { return end - beg; }
-    size_t lpos() const { return 2 * pos; }
-    size_t rpos() const { return 2 * pos + 1; }
-    node_t left() const { return node_t(beg, beg + size() / 2, lpos()); }
-    node_t right() const { return node_t(beg + size() / 2, end, rpos()); }
-    bool leaf() const { return size() == 1; }
+    size_t size() const {
+      return end - beg;
+    }
+    size_t lpos() const {
+      return 2 * pos;
+    }
+    size_t rpos() const {
+      return 2 * pos + 1;
+    }
+    node_t left() const {
+      return node_t(beg, beg + size() / 2, lpos());
+    }
+    node_t right() const {
+      return node_t(beg + size() / 2, end, rpos());
+    }
+    bool leaf() const {
+      return size() == 1;
+    }
   };
 
-  node_t root() const { return node_t(0, num_elems); }
+  node_t root() const {
+    return node_t(0, num_elems);
+  }
 
 public:
   /// \brief Constructs a segment tree initialized with the identity value.
@@ -70,9 +85,9 @@ public:
   /// \par Complexity
   /// Linear in <tt>count</tt>.
   ///
-  lazyprop_segtree(size_t count, const T &identity,
-                   const Combine &comb = Combine())
-      : num_elems{count}, combine(comb) {
+  lazyprop_segtree(size_t count, const T& identity,
+                   const Combine& comb = Combine())
+      : num_elems{count}, combine(std::move(comb)) {
     node_t nd = root(); // Node to find optimal size.
     while (!nd.leaf())
       nd = nd.right();
@@ -92,7 +107,7 @@ public:
   ///
   template <typename ForwardIt>
   lazyprop_segtree(ForwardIt first, ForwardIt last,
-                   const Combine &comb = Combine())
+                   const Combine& comb = Combine())
       : lazyprop_segtree(std::distance(first, last), T(), comb) {
     assert(first != last);
     copy_range(first, root());
@@ -106,7 +121,9 @@ public:
   /// \par Complexity
   /// Constant.
   ///
-  size_t size() const { return num_elems; }
+  size_t size() const {
+    return num_elems;
+  }
 
   /// \brief Applies a list of operations to the specified segment.
   ///
@@ -121,7 +138,7 @@ public:
   /// <tt>O(log(n))</tt> applications of the stored OpLists,
   /// where <tt>n = size()</tt>.
   ///
-  void apply(size_t beg, size_t end, const OpList &op) {
+  void apply(size_t beg, size_t end, const OpList& op) {
     assert(beg < end);
     query_beg = beg, query_end = end;
     apply(op, root());
@@ -149,7 +166,7 @@ public:
   }
 
 private:
-  void push_down_ops(const node_t &nd) {
+  void push_down_ops(const node_t& nd) {
     if (ops[nd.pos].empty())
       return;
     values[nd.pos] = ops[nd.pos].apply(nd.size(), values[nd.pos]);
@@ -160,7 +177,7 @@ private:
     ops[nd.pos] = OpList(); // clear the queue
   }
 
-  T reduce(const node_t &nd) {
+  T reduce(const node_t& nd) {
     push_down_ops(nd);
     if (nd.beg >= query_beg && nd.end <= query_end)
       return values[nd.pos];
@@ -173,7 +190,7 @@ private:
     return combine(reduce(lhs), reduce(rhs));
   }
 
-  void apply(const OpList &op, const node_t &nd) {
+  void apply(const OpList& op, const node_t& nd) {
     if (nd.beg >= query_beg && nd.end <= query_end) {
       ops[nd.pos].push(op);
       return;
@@ -192,7 +209,7 @@ private:
 
   // This function is optional.
   template <typename ForwardIt>
-  void copy_range(ForwardIt &iter, const node_t &nd) {
+  void copy_range(ForwardIt& iter, const node_t& nd) {
     if (nd.leaf()) {
       values[nd.pos] = *iter++;
       return;

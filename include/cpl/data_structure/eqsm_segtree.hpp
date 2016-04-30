@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez November 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,11 @@
 #ifndef CPL_DATA_STRUCTURE_EQSM_SEGTREE_HPP
 #define CPL_DATA_STRUCTURE_EQSM_SEGTREE_HPP
 
-#include <algorithm> // For std::copy
-#include <iterator>  // For std::distance
-#include <vector>    // For std::vector
-#include <cstddef>   // For std::size_t
+#include <algorithm> // copy
+#include <cstddef>   // size_t
+#include <iterator>  // distance
+#include <utility>   // move
+#include <vector>    // vector
 
 namespace cpl {
 
@@ -34,8 +35,10 @@ public:
   /// \par Complexity
   /// Linear in <tt>count</tt>.
   ///
-  explicit eqsm_segtree(size_t count, const T &idem, Combine comb = Combine())
-      : combine(comb), identity(idem), num_elems{count},
+  explicit eqsm_segtree(size_t count, const T& idem, Combine comb = Combine())
+      : combine(std::move(comb)),
+        identity(idem),
+        num_elems{count},
         tree(2 * num_elems, identity) {}
 
   /// \brief Replaces the contents of the tree with the those in given range.
@@ -65,11 +68,11 @@ public:
   /// <tt>O(log(n))</tt> applications of the stored combiner, where
   /// <tt>n = size()</tt>.
   ///
-  void combine_with(const T &value, size_t l, size_t r) {
+  void combine_with(const T& value, size_t l, size_t r) {
     for (l += num_elems, r += num_elems; l < r; l >>= 1, r >>= 1) {
-      if (l & 1)
+      if ((l & 1) != 0)
         tree[l] = combine(tree[l], value), ++l;
-      if (r & 1)
+      if ((r & 1) != 0)
         --r, tree[r] = combine(tree[r], value);
     }
   }
@@ -98,7 +101,9 @@ public:
   /// \par Complexity
   /// Constant.
   ///
-  size_t size() const { return num_elems; }
+  size_t size() const {
+    return num_elems;
+  }
 
 private:
   Combine combine{};

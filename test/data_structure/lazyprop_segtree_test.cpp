@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez November 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,15 +6,15 @@
 #include <cpl/data_structure/lazyprop_segtree.hpp>
 #include <gtest/gtest.h>
 
-#include <algorithm>  // For std::min, std::max
-#include <functional> // For std::plus
-#include <string>     // For std::string
-#include <vector>     // For std::vector
-#include <cassert>    // For assert
-#include <climits>    // For INT_MAX
-#include <cstddef>    // For std::size_t
+#include <algorithm>  // min, max
+#include <cassert>    // assert
+#include <climits>    // INT_MAX
+#include <cstddef>    // size_t
+#include <functional> // plus
+#include <string>     // string
+#include <vector>     // vector
 
-using namespace cpl;
+using cpl::lazyprop_segtree;
 using std::size_t;
 
 namespace {
@@ -42,9 +42,15 @@ TEST_F(LazypropSegtreeTest, IdentityConstructorTest) {
 
   public:
     explicit op_list(int val = 0) : value_to_add{val} {}
-    void push(const op_list &op) { value_to_add += op.value_to_add; }
-    int apply(size_t, int reduced_val) { return reduced_val + value_to_add; }
-    bool empty() const { return value_to_add == 0; }
+    void push(const op_list& op) {
+      value_to_add += op.value_to_add;
+    }
+    int apply(size_t /*unused*/, int reduced_val) {
+      return reduced_val + value_to_add;
+    }
+    bool empty() const {
+      return value_to_add == 0;
+    }
   };
 
   auto minimum = [](int x, int y) { return std::min(x, y); };
@@ -66,11 +72,15 @@ TEST_F(LazypropSegtreeTest, AdderSegtreeTest) {
   public:
     explicit add_ops(int val = 0) : acc_value{val} {}
 
-    void push(const add_ops &ops) { acc_value += ops.acc_value; }
+    void push(const add_ops& ops) {
+      acc_value += ops.acc_value;
+    }
     int apply(size_t rsize, int reduced_val) const {
       return reduced_val + static_cast<int>(rsize) * acc_value;
     }
-    bool empty() const { return acc_value == 0; }
+    bool empty() const {
+      return acc_value == 0;
+    }
   };
 
   using adder_segtree = lazyprop_segtree<int, std::plus<int>, add_ops>;
@@ -143,14 +153,20 @@ TEST_F(LazypropSegtreeTest,
   public:
     explicit op_list(int v = 0, bool ma = false) : value{v}, must_assign{ma} {}
 
-    static op_list add(int val) { return op_list(val); }
-    static op_list assign(int val) { return op_list(val, true); }
+    static op_list add(int val) {
+      return op_list(val);
+    }
+    static op_list assign(int val) {
+      return op_list(val, true);
+    }
 
-    bool empty() const { return value == 0 && !must_assign; }
-    int apply(size_t, int reduced_val) const {
+    bool empty() const {
+      return value == 0 && !must_assign;
+    }
+    int apply(size_t /*unused*/, int reduced_val) const {
       return must_assign ? value : reduced_val + value;
     }
-    op_list &push(const op_list &op) {
+    op_list& push(const op_list& op) {
       if (op.must_assign)
         value = op.value, must_assign = true;
       else
@@ -159,7 +175,9 @@ TEST_F(LazypropSegtreeTest,
     }
   };
   struct maximum {
-    int operator()(int x, int y) const { return std::max(x, y); }
+    int operator()(int x, int y) const {
+      return std::max(x, y);
+    }
   };
 
   using segtree_t = lazyprop_segtree<int, maximum, op_list>;
@@ -226,15 +244,19 @@ TEST_F(LazypropSegtreeTest, AssociativityTest) {
 
   class op_list {
     int rotation_value;
-    char rotate(char c) { return ((c - 'a') + rotation_value) % 26 + 'a'; }
+    char rotate(char c) {
+      return ((c - 'a') + rotation_value) % 26 + 'a';
+    }
 
   public:
     explicit op_list(int rot = 0) : rotation_value{rot} {}
-    bool empty() const { return rotation_value == 0; }
-    void push(const op_list &op) {
+    bool empty() const {
+      return rotation_value == 0;
+    }
+    void push(const op_list& op) {
       rotation_value = (rotation_value + op.rotation_value) % 26;
     }
-    string apply(size_t, const string &str) {
+    string apply(size_t /*unused*/, const string& str) {
       string outstr;
       for (char c : str)
         outstr.push_back(rotate(c));

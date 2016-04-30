@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez October 2014, August 2015
+//          Copyright Diego Ramirez 2014-2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,9 @@
 #ifndef CPL_DATA_STRUCTURE_SEGMENT_TREE_HPP
 #define CPL_DATA_STRUCTURE_SEGMENT_TREE_HPP
 
-#include <algorithm> // for std::copy
-#include <vector>    // for std::vector
-#include <cstddef>   // for std::size_t
+#include <algorithm> // copy
+#include <cstddef>   // size_t
+#include <vector>    // vector
 
 namespace cpl {
 
@@ -57,7 +57,7 @@ public:
   /// \par Complexity
   /// Logarithmic in <tt>size()</tt>.
   ///
-  void modify(size_t pos, const T &new_value) {
+  void modify(size_t pos, const T& new_value) {
     tree[pos += num_elems] = new_value;
     for (; pos > 1; pos >>= 1)
       tree[pos >> 1] = op(tree[pos], tree[pos ^ 1]);
@@ -79,9 +79,9 @@ public:
   T accumulate(size_t l, size_t r) const {
     T ans = at(l++);
     for (l += num_elems, r += num_elems; l < r; l >>= 1, r >>= 1) {
-      if (l & 1)
+      if ((l & 1) != 0)
         ans = op(ans, tree[l++]);
-      if (r & 1)
+      if ((r & 1) != 0)
         ans = op(ans, tree[--r]);
     }
     return ans;
@@ -96,7 +96,9 @@ public:
   /// \par Complexity
   /// Constant.
   ///
-  const T &at(size_t pos) const { return tree[num_elems + pos]; }
+  const T& at(size_t pos) const {
+    return tree[num_elems + pos];
+  }
 
   /// \brief Returns the number of elements in the segment tree.
   ///
@@ -105,9 +107,11 @@ public:
   /// \par Complexity
   /// Constant.
   ///
-  size_t size() const { return num_elems; }
+  size_t size() const {
+    return num_elems;
+  }
 };
 
 } // end namespace cpl
 
-#endif // header guard
+#endif // Header guard
