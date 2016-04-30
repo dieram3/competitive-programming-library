@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,8 +6,8 @@
 #ifndef CPL_NUMBER_THEORY_POLLARD_RHO_FACTORIZATION_HPP
 #define CPL_NUMBER_THEORY_POLLARD_RHO_FACTORIZATION_HPP
 
-#include <cpl/number_theory/euclid.hpp>  // For gcd
-#include <cpl/number_theory/modular.hpp> // For mod_add, mod_mul
+#include <cpl/number_theory/euclid.hpp>  // gcd
+#include <cpl/number_theory/modular.hpp> // mod_add, mod_mul
 
 namespace cpl {
 

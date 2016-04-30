@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,9 @@
 #include <cpl/number_theory/extended_euclid.hpp>
 #include <gtest/gtest.h>
 
-#include <tuple> // For std::tuple
+#include <tuple> // tuple
 
-using namespace cpl;
+using cpl::extended_euclid;
 using triple = std::tuple<long, long, long>;
 
 TEST(ExtendedEuclidTest, InputWithZeroTest) {

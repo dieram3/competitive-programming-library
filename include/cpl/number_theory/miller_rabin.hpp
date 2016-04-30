@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,11 +6,11 @@
 #ifndef CPL_NUMBER_THEORY_MILLER_RABIN_HPP
 #define CPL_NUMBER_THEORY_MILLER_RABIN_HPP
 
-#include <cpl/number_theory/modular.hpp> // For mod_mul, mod_pow
-#include <algorithm>                     // For std::none_of
-#include <initializer_list>              // For std::initializer_list
-#include <cassert>                       // For assert
-#include <cstddef>                       // For std::size_t
+#include <cpl/number_theory/modular.hpp> // mod_mul, mod_pow
+#include <algorithm>                     // none_of
+#include <cassert>                       // assert
+#include <cstddef>                       // size_t
+#include <initializer_list>              // initializer_list
 
 namespace cpl {
 

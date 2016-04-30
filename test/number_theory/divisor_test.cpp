@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez June 2015, September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,12 +8,15 @@
 
 #include <cpl/number_theory/eratosthenes.hpp>
 #include <cpl/number_theory/trial_division.hpp>
+#include <algorithm> // is_sorted, adjacent_find
+#include <cstdint>   // uint32_t
+#include <vector>    // vector
 
-#include <algorithm> // for std::is_sorted, std::adjacent_find
-#include <vector>    // for std::vector
-#include <cstdint>   // for std::uint32_t
-
-using namespace cpl;
+using cpl::count_divisors;
+using cpl::sum_divisors;
+using cpl::generate_divisors;
+using cpl::sieve_of_eratosthenes;
+using cpl::trial_division;
 
 namespace {
 class DivisorTest : public ::testing::Test {

@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,12 +6,12 @@
 #include <cpl/number_theory/shanks_factorization.hpp>
 #include <gtest/gtest.h>
 
-#include <initializer_list> // For std::initializer_list
-#include <stdexcept>        // For std::overflow_error
-#include <cassert>          // For assert
-#include <cstdint>          // For std::int_fast64_t, std::int64_t
+#include <cassert>          // assert
+#include <cstdint>          // int_fast64_t, int64_t
+#include <initializer_list> // initializer_list
+#include <stdexcept>        // overflow_error
 
-using namespace cpl;
+using cpl::shanks_factor;
 
 namespace {
 class ShanksFactorTest : public ::testing::Test {
@@ -19,18 +19,19 @@ protected:
   using int_t = std::int_fast64_t;
 
 protected:
-  static void check(int_t N) {
-    assert(N > 1);
-    assert(N < (int_t(1) << 58));
-    const int_t factor = shanks_factor(N);
+  static void check(const int_t value) {
+    assert(value > 1);
+    assert(value < (int_t(1) << 58));
+    const int_t factor = shanks_factor(value);
     EXPECT_LT(1, factor);
-    EXPECT_GT(N, factor);
-    EXPECT_EQ(0, N % factor) << "N=" << N << ", found_factor=" << factor;
+    EXPECT_GT(value, factor);
+    EXPECT_EQ(0, value % factor) << "value=" << value
+                                 << ", found_factor=" << factor;
   }
   static void check(unsigned bits, int_t delta) {
     assert(delta > 0);
-    const int_t N = (int_t(1) << bits) - delta;
-    check(N);
+    const int_t value = (int_t(1) << bits) - delta;
+    check(value);
   }
   static void check(unsigned bits, std::initializer_list<int_t> deltas) {
     for (const auto delta : deltas)

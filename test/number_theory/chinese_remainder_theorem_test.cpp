@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez October 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,30 +6,32 @@
 #include <cpl/number_theory/chinese_remainder_theorem.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/number_theory/euclid.hpp> // for cpl::gcd
+#include <cpl/number_theory/euclid.hpp> // gcd
+#include <cassert>                      // assert
+#include <cstddef>                      // size_t
+#include <vector>                       // vector
 
-#include <cassert> // For assert
-#include <cstddef> // For std::size_t
-#include <vector>  // For std::vector
-
-using namespace cpl;
+using cpl::chinese_remainder_theorem;
+using cpl::gcd;
 using std::size_t;
 
 namespace {
 class ChineseRemainderTheoremTest : public ::testing::Test {
   using int_t = long long;
 
-  static bool pairwise_coprime(const std::vector<int_t> &m) {
-    const size_t N = m.size();
-    for (size_t i = 0; i < N; ++i)
-      for (size_t j = i + 1; j < N; ++j)
+  static bool pairwise_coprime(const std::vector<int_t>& m) {
+    const size_t n = m.size();
+    for (size_t i = 0; i < n; ++i) {
+      for (size_t j = i + 1; j < n; ++j) {
         if (gcd(m[i], m[j]) != 1)
           return false;
+      }
+    }
     return true;
   }
 
 protected:
-  void check(const std::vector<int_t> &a, const std::vector<int_t> &m) {
+  void check(const std::vector<int_t>& a, const std::vector<int_t>& m) {
     assert(a.size() > 0 && a.size() == m.size());
     ASSERT_TRUE(pairwise_coprime(m));
     const int_t x = chinese_remainder_theorem(a, m);

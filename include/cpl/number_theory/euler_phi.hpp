@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,7 +6,7 @@
 #ifndef CPL_NUMBER_THEORY_EULER_PHI_HPP
 #define CPL_NUMBER_THEORY_EULER_PHI_HPP
 
-#include <vector> // For std::vector
+#include <vector> // vector
 
 namespace cpl {
 
@@ -27,7 +27,7 @@ namespace cpl {
 /// Linear in <tt>prime_factors.size()</tt>.
 ///
 template <typename T>
-T euler_phi(const T n, const std::vector<T> &prime_factors) {
+T euler_phi(const T n, const std::vector<T>& prime_factors) {
   T ans = n;
   T last_pf = 0;
   for (const T pf : prime_factors) {

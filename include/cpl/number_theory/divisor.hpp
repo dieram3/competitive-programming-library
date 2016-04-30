@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez June, September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,9 +8,9 @@
 #ifndef CPL_NUMBER_THEORY_DIVISOR_HPP
 #define CPL_NUMBER_THEORY_DIVISOR_HPP
 
-#include <algorithm> // for std::find_if_not, std::sort
-#include <vector>    // for std::vector
-#include <cstddef>   // for std::size_t
+#include <algorithm> // find_if_not, sort
+#include <cstddef>   // size_t
+#include <vector>    // vector
 
 namespace cpl {
 
@@ -25,11 +25,11 @@ namespace cpl {
 /// Linear in <tt>prime_factors.size()</tt>.
 ///
 template <typename T>
-T count_divisors(const std::vector<T> &prime_factors) {
+T count_divisors(const std::vector<T>& prime_factors) {
   T ans = 1;
   auto it = prime_factors.begin();
   while (it != prime_factors.end()) {
-    auto is_current_pf = [it](const T &pf) { return pf == *it; };
+    auto is_current_pf = [it](const T& pf) { return pf == *it; };
     auto next_it = std::find_if_not(it, prime_factors.end(), is_current_pf);
     ans *= static_cast<T>(1 + (next_it - it));
     it = next_it;
@@ -48,7 +48,7 @@ T count_divisors(const std::vector<T> &prime_factors) {
 /// Linear in <tt>prime_factors.size()</tt>.
 ///
 template <typename T>
-T sum_divisors(const std::vector<T> &prime_factors) {
+T sum_divisors(const std::vector<T>& prime_factors) {
   T ans = 1;
   auto it = prime_factors.begin();
   while (it != prime_factors.end()) {
@@ -74,7 +74,7 @@ T sum_divisors(const std::vector<T> &prime_factors) {
 /// Linear in the number of divisors.
 ///
 template <typename T>
-std::vector<T> generate_divisors(const std::vector<T> &prime_factors) {
+std::vector<T> generate_divisors(const std::vector<T>& prime_factors) {
   std::vector<T> divs = {1};
   size_t size = 1;
   T last_pf = 0;

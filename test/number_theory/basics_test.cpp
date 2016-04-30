@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2014
+//          Copyright Diego Ramirez 2014
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,12 @@
 #include <cpl/number_theory/basics.hpp>
 #include <gtest/gtest.h>
 
-#include <cstdint> // for std::uint_fast64_t, UINT64_MAX, UINT64_C
+#include <cstdint> // uint_fast64_t, UINT64_MAX, UINT64_C
 
-using namespace cpl;
+using cpl::ceil_div;
+using cpl::multiply_less;
+using cpl::multiply_greater;
+using cpl::ipow;
 
 TEST(CeilDivTest, WorksWell) {
   EXPECT_EQ(0, ceil_div(0, 1));

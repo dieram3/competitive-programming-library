@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,12 +8,14 @@
 
 #include <cpl/number_theory/miller_rabin.hpp>
 #include <cpl/number_theory/shanks_factorization.hpp>
-#include <algorithm>        // For std::is_sorted
-#include <initializer_list> // For std::initializer_list
-#include <vector>           // For std::vector
-#include <cstdint>          // For std::int_fast64_t
+#include <algorithm>        // is_sorted
+#include <cstdint>          // int_fast64_t
+#include <initializer_list> // initializer_list
+#include <vector>           // vector
 
-using namespace cpl;
+using cpl::find_prime_factors;
+using cpl::miller_rabin_primality_test;
+using cpl::shanks_factor;
 
 namespace {
 class PrimeFactorsTest : public ::testing::Test {
@@ -22,22 +24,23 @@ protected:
   using vec_t = std::vector<int_t>;
 
 protected:
-  static vec_t factor(int_t N) {
+  static vec_t factor(const int_t value) {
     auto is_prime = [](int_t n) { return miller_rabin_primality_test(n); };
     auto get_factor = [](int_t n) { return shanks_factor(n); };
-    vec_t primes = find_prime_factors(N, is_prime, get_factor);
+    vec_t primes = find_prime_factors(value, is_prime, get_factor);
     EXPECT_TRUE(std::is_sorted(primes.begin(), primes.end()));
     return primes;
   }
 
-  static void check(int_t N) {
-    int_t rem = N;
-    for (const auto p : factor(N)) {
+  static void check(const int_t value) {
+    int_t rem = value;
+    for (const auto p : factor(value)) {
       EXPECT_EQ(0, rem % p);
       EXPECT_TRUE(miller_rabin_primality_test(p)) << p << " is not a prime";
       rem /= p;
     }
-    EXPECT_EQ(1, rem) << "N was not totally factored, where N=" << N;
+    EXPECT_EQ(1, rem) << "'value' was not totally factored, where value="
+                      << value;
   }
 
   static void check(std::initializer_list<int_t> ilist) {
