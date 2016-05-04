@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez June 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,8 +8,8 @@
 #ifndef CPL_STRING_BASICS_HPP
 #define CPL_STRING_BASICS_HPP
 
-#include <string>
-#include <vector>
+#include <string> // string
+#include <vector> // vector
 
 namespace cpl {
 
@@ -30,8 +30,8 @@ namespace cpl {
 ///
 /// \note Be aware that this function could generate allocation overhead.
 ///
-inline std::vector<std::string> split(const std::string &str,
-                                      const std::string &sep) {
+inline std::vector<std::string> split(const std::string& str,
+                                      const std::string& sep) {
   std::vector<std::string> tokens;
   auto pos = str.find_first_not_of(sep);
   while (pos != std::string::npos) {

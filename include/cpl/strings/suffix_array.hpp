@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,14 +8,13 @@
 #ifndef CPL_STRINGS_SUFFIX_ARRAY_HPP
 #define CPL_STRINGS_SUFFIX_ARRAY_HPP
 
-#include <cpl/sorting/counting_sort.hpp>
-
-#include <algorithm> // transform
-#include <cstddef>   // size_t
-#include <iterator>  // begin, end
-#include <numeric>   // iota
-#include <string>    // string
-#include <vector>    // vector
+#include <cpl/sorting/counting_sort.hpp> // counting_sort_copy
+#include <algorithm>                     // transform
+#include <cstddef>                       // size_t
+#include <iterator>                      // begin, end
+#include <numeric>                       // iota
+#include <string>                        // string
+#include <vector>                        // vector
 
 namespace cpl {
 
@@ -30,12 +29,12 @@ namespace cpl {
 /// <tt>O(n * log(n))</tt> time and <tt>O(n)</tt> space, where
 /// <tt>n = str.size()</tt>.
 ///
-inline std::vector<size_t> make_suffix_array(const std::string &str) {
+inline std::vector<size_t> make_suffix_array(const std::string& str) {
   if (str.empty())
     return {};
 
-  const size_t N = str.size();
-  std::vector<size_t> sa(N), rank(2 * N), tmp(N);
+  const size_t len = str.size();
+  std::vector<size_t> sa(len), rank(2 * len), tmp(len);
 
   auto char_key = [](unsigned char c) { return c + 1; };
   size_t n_keys = 257; // From 1 to 256. Zero is used for empty substrings.
@@ -52,12 +51,12 @@ inline std::vector<size_t> make_suffix_array(const std::string &str) {
       return msr(s1) != msr(s2) || lsr(s1) != lsr(s2); // suffix not equal
     };
     tmp[0] = 1;
-    for (size_t i = 1; i < N; ++i)
-      tmp[i] = tmp[i - 1] + sne(sa[i], sa[i - 1]);
-    if (tmp.back() == N)
+    for (size_t i = 1; i < len; ++i)
+      tmp[i] = tmp[i - 1] + (sne(sa[i], sa[i - 1]) ? 1 : 0);
+    if (tmp.back() == len)
       break;
     n_keys = tmp.back() + 1;
-    for (size_t i = 0; i < N; ++i)
+    for (size_t i = 0; i < len; ++i)
       rank[sa[i]] = tmp[i];
   }
   return sa;

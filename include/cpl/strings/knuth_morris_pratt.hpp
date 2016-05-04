@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez April 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -55,7 +55,9 @@ public:
   ///
   /// \returns The length of the pattern used in the constructor.
   ///
-  diff_t pattern_length() const { return mismatch_.size() - 1; }
+  diff_t pattern_length() const {
+    return mismatch_.size() - 1;
+  }
 
   /// \brief Searches on the given text for the pattern given at construction
   /// time.

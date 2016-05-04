@@ -1,4 +1,4 @@
-//          Copyright Patricio Beckmann, Diego Ramírez August, September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,23 +6,24 @@
 #include <cpl/strings/dc3_suffix_array.hpp>
 #include <gtest/gtest.h>
 
-#include <algorithm> // For std::sort, std::lexicographical_compare
-#include <cstddef>   // For std::size_t
-#include <numeric>   // For std::iota
-#include <string>    // For std::string
-#include <vector>    // For std::vector
+#include <algorithm> // sort, lexicographical_compare
+#include <cstddef>   // size_t
+#include <numeric>   // iota
+#include <string>    // string
+#include <vector>    // vector
 
-using namespace cpl;
+using cpl::dc3_suffix_array;
+using std::size_t;
 
 namespace {
 class DC3SuffixArrayTest : public ::testing::Test {
 protected:
-  using vec_t = std::vector<std::size_t>;
+  using vec_t = std::vector<size_t>;
 
 protected:
-  static vec_t naive_sa(const std::string &str) {
+  static vec_t naive_sa(const std::string& str) {
     vec_t sa(str.size());
-    std::iota(sa.begin(), sa.end(), std::size_t{0});
+    std::iota(sa.begin(), sa.end(), size_t{0});
 
     auto suffix_less = [&str](const size_t lhs, const size_t rhs) {
       return std::lexicographical_compare(str.begin() + lhs, str.end(),
@@ -31,7 +32,7 @@ protected:
     std::sort(sa.begin(), sa.end(), suffix_less);
     return sa;
   }
-  static void check(const std::string &str) {
+  static void check(const std::string& str) {
     EXPECT_EQ(naive_sa(str), dc3_suffix_array(str)) << "str=" << str;
   }
 };

@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,13 +6,12 @@
 #ifndef CPL_STRINGS_LCP_ARRAY_HPP
 #define CPL_STRINGS_LCP_ARRAY_HPP
 
-#include <cpl/data_structure/segment_tree.hpp>
-
-#include <algorithm> // max, minmax
-#include <cstddef>   // size_t
-#include <string>    // string
-#include <tuple>     // tie
-#include <vector>    // vector
+#include <cpl/data_structure/segment_tree.hpp> // segment_tree
+#include <algorithm>                           // min, max, minmax
+#include <cstddef>                             // size_t
+#include <string>                              // string
+#include <tuple>                               // tie
+#include <vector>                              // vector
 
 namespace cpl {
 
@@ -32,16 +31,16 @@ namespace cpl {
 /// \par Complexity
 /// <tt>O(N)</tt> time and <tt>O(N)</tt> space, where <tt>N = sa.size()</tt>.
 ///
-inline std::vector<size_t> make_lcp_array(const std::string &str,
-                                          const std::vector<size_t> &sa) {
-  const size_t N = str.size();
-  std::vector<size_t> rank(N), lcp(N);
+inline std::vector<size_t> make_lcp_array(const std::string& str,
+                                          const std::vector<size_t>& sa) {
+  const size_t n = str.size();
+  std::vector<size_t> rank(n), lcp(n);
 
-  for (size_t i = 0; i != N; ++i)
+  for (size_t i = 0; i < n; ++i)
     rank[sa[i]] = i; // inverse suffix array.
 
-  for (size_t i = 0, len = 0; i < N; ++i) {
-    if (rank[i] == N - 1)
+  for (size_t i = 0, len = 0; i < n; ++i) {
+    if (rank[i] == n - 1)
       continue;
     {
       const size_t j = sa[rank[i] + 1];
@@ -50,7 +49,7 @@ inline std::vector<size_t> make_lcp_array(const std::string &str,
         ++len;
     }
     lcp[rank[i]] = len;
-    if (len)
+    if (len > 0)
       --len;
   }
   return lcp;
@@ -61,7 +60,9 @@ inline std::vector<size_t> make_lcp_array(const std::string &str,
 ///
 class lcp_querier {
   struct minimum {
-    size_t operator()(size_t x, size_t y) const { return std::min(x, y); }
+    size_t operator()(size_t x, size_t y) const {
+      return std::min(x, y);
+    }
   };
 
 public:
@@ -73,10 +74,10 @@ public:
   /// \par Complexity
   /// <tt>O(N)</tt>, where <tt>N = str.size()</tt>
   ///
-  lcp_querier(const std::string &str, const std::vector<size_t> &sa)
+  lcp_querier(const std::string& str, const std::vector<size_t>& sa)
       : rank_(sa.size()) {
-    const size_t N = sa.size();
-    for (size_t i = 0; i < N; ++i)
+    const size_t n = sa.size();
+    for (size_t i = 0; i < n; ++i)
       rank_[sa[i]] = i; // inverse suffix array.
 
     const auto lcp_array = make_lcp_array(str, sa);

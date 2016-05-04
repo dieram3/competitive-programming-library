@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -12,7 +12,7 @@
 #include <string>    // string
 #include <vector>    // vector
 
-using namespace cpl;
+using cpl::make_suffix_array;
 using std::size_t;
 
 namespace {
@@ -21,7 +21,7 @@ protected:
   using suffix_array = std::vector<size_t>;
 
 protected:
-  static suffix_array naive_sa(const std::string &str) {
+  static suffix_array naive_sa(const std::string& str) {
     suffix_array sa(str.size());
     std::iota(sa.begin(), sa.end(), size_t{0});
 
@@ -32,7 +32,7 @@ protected:
     std::sort(sa.begin(), sa.end(), suffix_less);
     return sa;
   }
-  static void check(const std::string &str) {
+  static void check(const std::string& str) {
     EXPECT_EQ(naive_sa(str), make_suffix_array(str)) << "str=" << str;
   }
 };

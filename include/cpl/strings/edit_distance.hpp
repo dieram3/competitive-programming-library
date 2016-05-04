@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez June 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,13 +8,10 @@
 #ifndef CPL_STRING_EDIT_DISTANCE_HPP
 #define CPL_STRING_EDIT_DISTANCE_HPP
 
-#include <algorithm> // for std::min, std::swap
-#include <memory>    // for std::unique_ptr
-#include <numeric>   // for std::iota
-#include <cstddef>   // for std::size_t
-
-/// \todo analyze: damerau_levenshtein_distance
-/// \todo design: longest_common_subsequence
+#include <algorithm> // min, swap
+#include <cstddef>   // size_t
+#include <numeric>   // iota
+#include <vector>    // vector
 
 namespace cpl {
 
@@ -39,17 +36,17 @@ std::size_t levenshtein_distance(RandomIt1 first1, RandomIt1 last1,
   using std::min;
   auto min3 = [](size_t x, size_t y, size_t z) { return min(x, min(y, z)); };
 
-  const size_t rows = (last1 - first1) + 1;
-  const size_t cols = (last2 - first2) + 1;
-  std::unique_ptr<size_t[]> storage(new size_t[2 * cols]);
-  auto *prev = storage.get(); // previous row
-  auto *curr = prev + cols;   // current row
+  const size_t num_rows = (last1 - first1) + 1;
+  const size_t num_cols = (last2 - first2) + 1;
+  std::vector<size_t> storage(2 * num_cols);
+  auto prev = storage.begin(); // previous row
+  auto curr = prev + num_cols; // current row
 
-  std::iota(prev, prev + cols, size_t{0});
+  std::iota(prev, prev + num_cols, size_t{0});
 
-  for (size_t i = 1; i != rows; ++i) {
+  for (size_t i = 1; i < num_rows; ++i) {
     curr[0] = i;
-    for (size_t j = 1; j != cols; ++j) {
+    for (size_t j = 1; j < num_cols; ++j) {
       if (first1[i - 1] == first2[j - 1])
         curr[j] = prev[j - 1];
       else
@@ -57,7 +54,7 @@ std::size_t levenshtein_distance(RandomIt1 first1, RandomIt1 last1,
     }
     std::swap(curr, prev);
   }
-  return prev[cols - 1];
+  return prev[num_cols - 1];
 }
 
 } // end namespace cpl
