@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez November 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,17 +6,28 @@
 #include <cpl/data_structure/eqsm_segtree.hpp>
 #include <gtest/gtest.h>
 
-#include <functional> // For std::plus, std::multiplies, std::bit_xor
-#include <string>     // For std::string
-#include <vector>     // For std::vector
-#include <cstddef>    // For std::size_t
+#include <algorithm>  // transform
+#include <cassert>    // assert
+#include <cstddef>    // size_t
+#include <functional> // plus, multiplies, bit_xor
+#include <string>     // string
+#include <vector>     // vector
 
-using namespace cpl;
+using cpl::eqsm_segtree;
 using std::size_t;
+
+static std::vector<bool> to_vector_bool(const std::string& seq) {
+  std::vector<bool> result(seq.size());
+  std::transform(seq.begin(), seq.end(), result.begin(), [](const char c) {
+    assert(c == '0' || c == '1');
+    return c == '1'; // true if c == '1', otherwise false as c == '0'.
+  });
+  return result;
+}
 
 namespace {
 class EQSMSegtreeTest : public ::testing::Test {};
-} // end anonymous namaspace
+}
 
 TEST_F(EQSMSegtreeTest, SizeIdemCtorTest) {
   using segtree_t = eqsm_segtree<int, std::plus<int>>;
@@ -101,11 +112,10 @@ TEST_F(EQSMSegtreeTest, MultiplicationTest) {
 
 TEST_F(EQSMSegtreeTest, BitXorTest) {
   using segtree_t = eqsm_segtree<bool, std::bit_xor<bool>>;
-  const int idem = 0; // Identity value for BitXor.
+  const bool idem = false; // Identity value for BitXor.
   segtree_t segtree(0, idem);
 
-  const std::vector<bool> init_values = {1, 0, 0, 1, 1, 1, 0,
-                                         0, 0, 1, 1, 0, 1, 1};
+  const auto init_values = to_vector_bool("10011100011011");
   segtree.store(init_values.begin(), init_values.end());
   ASSERT_EQ(14, segtree.size());
 
@@ -122,8 +132,9 @@ TEST_F(EQSMSegtreeTest, BitXorTest) {
   std::string expected = "01100111100110";
 
   std::string actual(14, '\0');
-  for (size_t i = 0; i < actual.size(); ++i)
+  for (size_t i = 0; i < actual.size(); ++i) {
     actual[i] = segtree.get(i) ? '1' : '0';
+  }
 
   EXPECT_EQ(expected, actual);
 }

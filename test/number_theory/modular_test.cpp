@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez November 2014, May 2015
+//          Copyright Diego Ramirez 2014-2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,15 @@
 #include <cpl/number_theory/modular.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/number_theory/euclid.hpp> // for cpl:gcd
-#include <cstdint>                      // For INT64_MAX, UINT64_MAX
+#include <cpl/number_theory/euclid.hpp> // gcd
+#include <cstdint>                      // INT64_MAX, UINT64_MAX
 
-using namespace cpl;
+using cpl::mod_add;
+using cpl::mod_sub;
+using cpl::mod_mul;
+using cpl::mod_pow;
+using cpl::mod_inverse;
+using cpl::gcd;
 
 TEST(ModAddTest, WorksWell) {
   EXPECT_EQ(0, mod_add(0, 0, 1));

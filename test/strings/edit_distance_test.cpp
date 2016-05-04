@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez 2014
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -7,12 +7,15 @@
 #include <gtest/gtest.h>
 
 #include <algorithm> // reverse
+#include <iterator>  // begin, end
 #include <string>    // string
 
+using cpl::levenshtein_distance;
+using std::string;
+
 TEST(LevenshteinDistanceTest, HandlesSmallInput) {
-  auto lev_dist = [](const std::string &str1, const std::string &str2) {
-    return cpl::levenshtein_distance(str1.begin(), str1.end(), str2.begin(),
-                                     str2.end());
+  auto lev_dist = [](const string& str1, const string& str2) {
+    return levenshtein_distance(begin(str1), end(str1), begin(str2), end(str2));
   };
 
   EXPECT_EQ(3, lev_dist("kitten", "sitting"));
@@ -22,12 +25,12 @@ TEST(LevenshteinDistanceTest, HandlesSmallInput) {
   EXPECT_EQ(2, lev_dist("non swap no", "oon swap nn"));
   EXPECT_EQ(11, lev_dist("max_cost...", "12345678"));
 
-  std::string str1 = "kitten";
-  std::string str2 = "sitting";
-  std::reverse(str2.begin(), str2.end());
+  string str1 = "kitten";
+  string str2 = "sitting";
+  std::reverse(begin(str2), end(str2));
   // The following sentence must compile.
-  const auto distance = cpl::levenshtein_distance(str1.begin(), str1.end(),
-                                                  str2.rbegin(), str2.rend());
+  const auto distance = levenshtein_distance(str1.begin(), str1.end(),
+                                             str2.rbegin(), str2.rend());
   EXPECT_EQ(3, distance);
 }
 

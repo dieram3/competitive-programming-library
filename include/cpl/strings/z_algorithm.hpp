@@ -1,4 +1,4 @@
-//          Copyright Jorge Aguirre, Diego Ramírez 2015
+//          Copyright Jorge Aguirre 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -26,7 +26,7 @@ namespace cpl {
 /// \par Complexity
 /// Linear in <tt>str.size()</tt>.
 ///
-inline std::vector<size_t> z_algorithm(const std::string &str) {
+inline std::vector<size_t> z_algorithm(const std::string& str) {
   if (str.empty())
     return {};
 

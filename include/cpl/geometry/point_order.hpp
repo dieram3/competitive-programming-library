@@ -1,4 +1,4 @@
-//          Copyright Jorge Aguirre July, August 2015
+//          Copyright Jorge Aguirre 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -27,8 +27,8 @@ namespace cpl {
 /// Constant.
 ///
 template <typename Point>
-bool cw_less(const Point &center, const Point &start, const Point &lhs,
-             const Point &rhs) {
+bool cw_less(const Point& center, const Point& start, const Point& lhs,
+             const Point& rhs) {
   const auto u = lhs - center;
   const auto v = rhs - center;
 
@@ -68,8 +68,8 @@ bool cw_less(const Point &center, const Point &start, const Point &lhs,
 /// Constant.
 ///
 template <typename Point>
-bool ccw_less(const Point &center, const Point &start, const Point &lhs,
-              const Point &rhs) {
+bool ccw_less(const Point& center, const Point& start, const Point& lhs,
+              const Point& rhs) {
   const auto u = lhs - center;
   const auto v = rhs - center;
 

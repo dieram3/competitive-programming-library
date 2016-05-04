@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,11 +6,11 @@
 #include <cpl/number_theory/pollard_rho_factorization.hpp>
 #include <gtest/gtest.h>
 
-#include <initializer_list> // For std::initializer_list
-#include <cassert>          // For assert
-#include <cstdint>          // For std::uint64_t, UINT64_MAX
+#include <cassert>          // assert
+#include <cstdint>          // uint64_t, UINT64_MAX
+#include <initializer_list> // initializer_list
 
-using namespace cpl;
+using cpl::pollard_rho_factor;
 
 namespace {
 class PollardRhoFactorTest : public ::testing::Test {
@@ -18,12 +18,13 @@ protected:
   using int_t = std::uint64_t;
 
 protected:
-  static void check(int_t N) {
-    assert(N > 1);
-    const int_t factor = pollard_rho_factor(N);
-    EXPECT_LT(1, factor) << "N=" << N;
-    EXPECT_GT(N, factor) << "N=" << N;
-    EXPECT_EQ(0, N % factor) << "N=" << N << ", found_factor=" << factor;
+  static void check(const int_t value) {
+    assert(value > 1);
+    const int_t factor = pollard_rho_factor(value);
+    EXPECT_LT(1, factor) << "value=" << value;
+    EXPECT_GT(value, factor) << "value=" << value;
+    EXPECT_EQ(0, value % factor) << "value=" << value
+                                 << ", found_factor=" << factor;
   }
   static void check(std::initializer_list<int_t> ilist) {
     for (const auto x : ilist)
@@ -32,8 +33,8 @@ protected:
   static void check(unsigned bits, int_t delta) {
     assert(delta > 0);
     const int_t base = bits == 64 ? 0 : int_t(1) << bits;
-    const int_t N = base - delta;
-    check(N);
+    const int_t value = base - delta;
+    check(value);
   }
   static void check(unsigned bits, std::initializer_list<int_t> deltas) {
     for (const auto delta : deltas)
@@ -44,22 +45,24 @@ protected:
 
 TEST_F(PollardRhoFactorTest, SmallIntegersTest) {
   // Sequence A002808 in OEIS
-  check({4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30,
-         32, 33, 34, 35, 36, 38, 39, 40, 42, 44, 45, 46, 48, 49, 50, 51, 52, 54,
-         55, 56, 57, 58, 60, 62, 63, 64, 65, 66, 68, 69, 70, 72, 74, 75, 76, 77,
-         78, 80, 81, 82, 84, 85, 86, 87, 88, 90, 91, 92, 93, 94, 95, 96, 98, 99,
-         100, 102, 104, 105, 106, 108, 110, 111, 112, 114, 115, 116, 117, 118,
-         119, 120, 121, 122, 123, 124, 125, 126, 128, 129, 130, 132, 133, 134,
-         135, 136, 138, 140, 141, 142, 143, 144, 145, 146, 147, 148, 150});
+  check({4,   6,   8,   9,   10,  12,  14,  15,  16,  18,  20,  21,  22,
+         24,  25,  26,  27,  28,  30,  32,  33,  34,  35,  36,  38,  39,
+         40,  42,  44,  45,  46,  48,  49,  50,  51,  52,  54,  55,  56,
+         57,  58,  60,  62,  63,  64,  65,  66,  68,  69,  70,  72,  74,
+         75,  76,  77,  78,  80,  81,  82,  84,  85,  86,  87,  88,  90,
+         91,  92,  93,  94,  95,  96,  98,  99,  100, 102, 104, 105, 106,
+         108, 110, 111, 112, 114, 115, 116, 117, 118, 119, 120, 121, 122,
+         123, 124, 125, 126, 128, 129, 130, 132, 133, 134, 135, 136, 138,
+         140, 141, 142, 143, 144, 145, 146, 147, 148, 150});
 }
 
 TEST_F(PollardRhoFactorTest, HighlyCompositeNumbersTest) {
   // Starting from 180
   // Sequence A002182 in OEIS
-  check({180, 240, 360, 720, 840, 1260, 1680, 2520, 5040, 7560, 10080, 15120,
-         20160, 25200, 27720, 45360, 50400, 55440, 83160, 110880, 166320,
-         221760, 277200, 332640, 498960, 554400, 665280, 720720, 1081080,
-         1441440, 2162160});
+  check({180,    240,    360,    720,    840,     1260,    1680,   2520,
+         5040,   7560,   10080,  15120,  20160,   25200,   27720,  45360,
+         50400,  55440,  83160,  110880, 166320,  221760,  277200, 332640,
+         498960, 554400, 665280, 720720, 1081080, 1441440, 2162160});
 }
 
 TEST_F(PollardRhoFactorTest, SquaresTest) {

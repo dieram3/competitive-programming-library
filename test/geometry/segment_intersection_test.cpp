@@ -1,4 +1,4 @@
-//          Copyright Jorge Aguirre, Diego Ramirez August 2015
+//          Copyright Jorge Aguirre, Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,13 +6,16 @@
 #include <cpl/geometry/segment_intersection.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/geometry/point_2d.hpp>
+#include <cpl/geometry/point_2d.hpp> // point
+#include <algorithm>                 // count
+#include <utility>                   // make_pair
+#include <vector>                    // vector
 
-#include <algorithm> // For std::count
-#include <utility>   // For std::make_pair
-#include <vector>    // For std::vector
-
-using namespace cpl;
+using cpl::segment_intersect;
+using cpl::segment;
+using cpl::find_intersection;
+using cpl::simple_polygon;
+using cpl::point;
 
 // ==========================================
 // SegmentIntersectTest
@@ -277,7 +280,9 @@ protected:
   std::vector<point_t> points;
 
   // Adds a point to the end of the list.
-  void add(scalar_t x, scalar_t y) { points.emplace_back(x, y); }
+  void add(scalar_t x, scalar_t y) {
+    points.emplace_back(x, y);
+  }
 
   // Adds a point to the end of the list relative to the last point.
   void rel_add(scalar_t x_delta, scalar_t y_delta) {

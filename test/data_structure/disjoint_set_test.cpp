@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez May 2015, August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,7 +6,7 @@
 #include <cpl/data_structure/disjoint_set.hpp>
 #include <gtest/gtest.h>
 
-using namespace cpl;
+using cpl::disjoint_set;
 
 TEST(disjoint_set, WorksWell) {
   disjoint_set d(8);

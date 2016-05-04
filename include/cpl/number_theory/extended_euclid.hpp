@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,7 +6,7 @@
 #ifndef CPL_NUMBER_THEORY_EXTENDED_EUCLID_HPP
 #define CPL_NUMBER_THEORY_EXTENDED_EUCLID_HPP
 
-#include <tuple> // For std::tuple, std::make_tuple
+#include <tuple> // tuple, make_tuple
 
 namespace cpl {
 

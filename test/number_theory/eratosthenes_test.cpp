@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez May 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,17 +6,18 @@
 #include <cpl/number_theory/eratosthenes.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/number_theory/basics.hpp> // for ceil_div
+#include <cpl/number_theory/basics.hpp> // ceil_div
+#include <algorithm>                    // binary_search
+#include <cstddef>                      // size_t
+#include <cstdint>                      // int32_t
+#include <iterator>                     // begin
+#include <stdexcept>                    // logic_error
+#include <vector>                       // vector
 
-#include <algorithm> // for std::binary_search
-#include <iterator>  // fot std::begin
-#include <stdexcept> // for std::logic_error
-#include <vector>    // for std::vector
-
-#include <cstddef> // for std::size_t
-#include <cstdint> // for std::int32_t
-
-using namespace cpl;
+using cpl::sieve_of_eratosthenes;
+using cpl::ceil_div;
+using std::size_t;
+using std::int32_t;
 
 /// \brief Checks if a number is prime by using the given sieve.
 /// \pre \p sieve shall not be empty.
@@ -24,7 +25,7 @@ using namespace cpl;
 ///      starting from 2.
 /// \pre <tt>std::pow(sieve.back(), 2) <= number</tt>
 template <class T>
-static bool is_prime_sieve(T number, const std::vector<T> &sieve) {
+static bool is_prime_sieve(T number, const std::vector<T>& sieve) {
   if (number <= sieve.back())
     return std::binary_search(begin(sieve), end(sieve), number);
 

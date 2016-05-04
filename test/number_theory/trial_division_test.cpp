@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -7,11 +7,12 @@
 #include <gtest/gtest.h>
 
 #include <cpl/number_theory/eratosthenes.hpp>
-#include <stdexcept> // For std::logic_error
-#include <vector>    // For std::vector
-#include <cstdint>   // For std::uint32_t
+#include <cstdint>   // uint32_t
+#include <stdexcept> // logic_error
+#include <vector>    // vector
 
-using namespace cpl;
+using cpl::trial_division;
+using cpl::sieve_of_eratosthenes;
 
 namespace {
 class TrialDivisionTest : public ::testing::Test {
@@ -20,7 +21,9 @@ protected:
   using vec_t = std::vector<int_t>;
 
 protected:
-  vec_t factor(const int_t n) { return trial_division(n, sieve); }
+  vec_t factor(const int_t n) {
+    return trial_division(n, sieve);
+  }
 
   void set_sieve_limit(const int_t limit) {
     sieve = sieve_of_eratosthenes(limit);

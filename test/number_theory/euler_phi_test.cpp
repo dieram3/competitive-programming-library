@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,10 +8,12 @@
 
 #include <cpl/number_theory/eratosthenes.hpp>
 #include <cpl/number_theory/trial_division.hpp>
-#include <vector>  // For std::vector
-#include <cstdint> // For std::uint_fast32_t
+#include <cstdint> // uint_fast32_t
+#include <vector>  // vector
 
-using namespace cpl;
+using cpl::euler_phi;
+using cpl::sieve_of_eratosthenes;
+using cpl::trial_division;
 
 namespace {
 class EulerPhiTest : public ::testing::Test {

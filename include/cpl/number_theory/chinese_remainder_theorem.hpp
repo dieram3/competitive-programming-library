@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez October 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,11 +6,11 @@
 #ifndef CPL_NUMBER_THEORY_CHINESE_REMAINDER_THEOREM_HPP
 #define CPL_NUMBER_THEORY_CHINESE_REMAINDER_THEOREM_HPP
 
-#include <cpl/number_theory/modular.hpp> // For mod_mul, mod_inverse
-#include <utility>                       // For std::pair, std::make_pair
-#include <vector>                        // For std::vector
-#include <cassert>                       // For assert
-#include <cstddef>                       // For std::size_t
+#include <cpl/number_theory/modular.hpp> // mod_mul, mod_inverse
+#include <cassert>                       // assert
+#include <cstddef>                       // size_t
+#include <utility>                       // pair, make_pair
+#include <vector>                        // vector
 
 namespace cpl {
 
@@ -47,7 +47,7 @@ namespace cpl {
 /// where <tt>N = a.size()</tt>.
 ///
 template <typename T>
-T chinese_remainder_theorem(const std::vector<T> &a, const std::vector<T> &m) {
+T chinese_remainder_theorem(const std::vector<T>& a, const std::vector<T>& m) {
   auto solve2 = [](T a0, T m0, T a1, T m1) {
     T t = mod_inverse(m0 % m1, m1);
     assert(t != m1); // Otherwise no solution exists.

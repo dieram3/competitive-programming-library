@@ -1,4 +1,4 @@
-//          Copyright Jorge Aguirre July 2015, August 2015
+//          Copyright Jorge Aguirre 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,35 +6,31 @@
 #include <cpl/geometry/point_order.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/geometry/point_2d.hpp>
+#include <cpl/geometry/point_2d.hpp> // point
+#include <algorithm>                 // sort, is_sorted
+#include <cstdint>                   // int32_t
+#include <vector>                    // vector
 
-#include <algorithm> // For std::sort, std::is_sorted
-#include <vector>    // For std::vector
-#include <cstdint>   // For std::int32_t
-
-using namespace cpl;
+using cpl::cw_less;
+using cpl::ccw_less;
+using cpl::point;
 using point_i = point<std::int32_t>;
 
-namespace {
-
-const point_i origin = {0, 0};
-const point_i p0_00 = {0, 1};
-const point_i p1_30 = {1, 1};
-const point_i p3_00 = {1, 0};
-const point_i p4_30 = {1, -1};
-const point_i p6_00 = {0, -1};
-const point_i p7_30 = {-1, -1};
-const point_i p9_00 = {-1, 0};
-const point_i p10_30 = {-1, 1};
-
-} // end anonymous namespace
+constexpr point_i p0_00{0, 1};
+constexpr point_i p1_30{1, 1};
+constexpr point_i p3_00{1, 0};
+constexpr point_i p4_30{1, -1};
+constexpr point_i p6_00{0, -1};
+constexpr point_i p7_30{-1, -1};
+constexpr point_i p9_00{-1, 0};
+constexpr point_i p10_30{-1, 1};
 
 // Sorts in clockwise order. If two points have same angle, the nearest one to
 // the center comes first.
 template <class RandomIt>
-static void cw_sort(const point_i &center, const point_i &start, RandomIt first,
+static void cw_sort(const point_i& center, const point_i& start, RandomIt first,
                     RandomIt last) {
-  auto less = [=](const point_i &lhs, const point_i &rhs) {
+  auto less = [=](const point_i& lhs, const point_i& rhs) {
     if (cw_less(center, start, lhs, rhs))
       return true;
     if (cw_less(center, start, rhs, lhs))
@@ -45,18 +41,18 @@ static void cw_sort(const point_i &center, const point_i &start, RandomIt first,
   std::sort(first, last, less);
 }
 
-static bool cw_sorted(const point_i &center,
-                      const std::vector<point_i> &points) {
+static bool cw_sorted(const point_i& center,
+                      const std::vector<point_i>& points) {
   if (points.empty())
     return true;
 
   const point_i start = points.front() - center;
   const point_i rev_start = points.back() - center;
 
-  auto cw_less = [=](const point_i &lhs, const point_i &rhs) {
+  auto cw_less = [=](const point_i& lhs, const point_i& rhs) {
     return cpl::cw_less(center, start, lhs, rhs);
   };
-  auto ccw_less = [=](const point_i &lhs, const point_i &rhs) {
+  auto ccw_less = [=](const point_i& lhs, const point_i& rhs) {
     return cpl::ccw_less(center, rev_start, lhs, rhs);
   };
 
@@ -75,7 +71,7 @@ static bool cw_sorted(const point_i &center,
 static bool cw_sorted(std::vector<point_i> points) {
   const point_i center{3, 2}; // Random center.
 
-  for (auto &p : points)
+  for (auto& p : points)
     p = p + center; // Translate points.
 
   return cw_sorted(center, points);

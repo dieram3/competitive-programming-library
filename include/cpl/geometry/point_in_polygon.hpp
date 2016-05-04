@@ -1,4 +1,4 @@
-//          Copyright Jorge Aguirre September 2015
+//          Copyright Jorge Aguirre 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,8 +6,8 @@
 #ifndef CPL_GEOMETRY_POINT_IN_POLYGON_HPP
 #define CPL_GEOMETRY_POINT_IN_POLYGON_HPP
 
-#include <vector>  // For std::vector
-#include <cstddef> // For std::size_t, std::ptrdiff_t
+#include <cstddef> // size_t, ptrdiff_t
+#include <vector>  // vector
 
 namespace cpl {
 
@@ -30,10 +30,10 @@ namespace cpl {
 /// Linear in <tt>poly.size()</tt>.
 ///
 template <typename Point>
-bool point_in_polygon(const Point &p, const std::vector<Point> &poly) {
+bool point_in_polygon(const Point& p, const std::vector<Point>& poly) {
   std::ptrdiff_t wn = 0;
 
-  auto check_crossing = [&](const Point &q0, const Point &q1) {
+  auto check_crossing = [&](const Point& q0, const Point& q1) {
     auto det = (q1 - q0) ^ (p - q0);
     if (q0.y <= p.y) {
       if (q1.y > p.y)
@@ -43,10 +43,10 @@ bool point_in_polygon(const Point &p, const std::vector<Point> &poly) {
         wn -= det < 0;
     }
   };
-  const size_t N = poly.size();
-  for (size_t i = 0; i + 1 < N; ++i)
+  const size_t n = poly.size();
+  for (size_t i = 0; i + 1 < n; ++i)
     check_crossing(poly[i], poly[i + 1]);
-  check_crossing(poly[N - 1], poly[0]);
+  check_crossing(poly[n - 1], poly[0]);
   return wn != 0;
 }
 

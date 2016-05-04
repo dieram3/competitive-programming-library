@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,17 +6,18 @@
 #include <cpl/strings/lcp_array.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/strings/suffix_array.hpp>
+#include <cpl/strings/suffix_array.hpp> // make_suffix_array
+#include <algorithm>                    // mismatch
+#include <cassert>                      // assert
+#include <cstddef>                      // size_t
+#include <iterator>                     // begin, end, distance
+#include <string>                       // string
+#include <utility>                      // swap
+#include <vector>                       // vector
 
-#include <algorithm> // mismatch
-#include <cassert>   // assert
-#include <cstddef>   // size_t
-#include <iterator>  // begin, distance
-#include <string>    // string
-#include <utility>   // swap
-#include <vector>    // vector
-
-using namespace cpl;
+using cpl::make_lcp_array;
+using cpl::lcp_querier;
+using cpl::make_suffix_array;
 using std::size_t;
 
 // ==========================================
@@ -30,7 +31,7 @@ protected:
   using suffix_array = std::vector<size_t>;
 
 protected:
-  void check_lcp(const std::string &str, const lcp_array &expected_lcp) {
+  void check_lcp(const std::string& str, const lcp_array& expected_lcp) {
     ASSERT_EQ(str.size(), expected_lcp.size());
     const suffix_array sa = make_suffix_array(str);
     const lcp_array actual_lcp = make_lcp_array(str, sa);
@@ -39,7 +40,9 @@ protected:
 };
 } // end anonymous namespace
 
-TEST_F(MakeLCPArrayTest, EmptyStringTest) { check_lcp("", {}); }
+TEST_F(MakeLCPArrayTest, EmptyStringTest) {
+  check_lcp("", {});
+}
 
 TEST_F(MakeLCPArrayTest, OneCharacterTest) {
   check_lcp("b", {0});
@@ -65,7 +68,7 @@ TEST_F(MakeLCPArrayTest, MultipleCharactersTest) {
 // LCPQuerierTest
 // ==========================================
 
-static size_t naive_lcp(const std::string &str, size_t s1, size_t s2) {
+static size_t naive_lcp(const std::string& str, size_t s1, size_t s2) {
   using std::begin;
   using std::end;
   using std::distance;
@@ -92,20 +95,24 @@ protected:
   /// suffixes (i,j) gives the correct LCP, as computed by \c naive_lcp
   /// function.
   ///
-  void check_all_pairs(const std::string &str) {
+  void check_all_pairs(const std::string& str) {
     const suffix_array sa = make_suffix_array(str);
     const lcp_querier get_lcp(str, sa);
 
-    for (size_t i = 0; i < str.size(); ++i)
-      for (size_t j = 0; j < str.size(); ++j)
+    for (size_t i = 0; i < str.size(); ++i) {
+      for (size_t j = 0; j < str.size(); ++j) {
         EXPECT_EQ(naive_lcp(str, i, j), get_lcp(i, j))
             << "string=" << str << ", "
             << "(i,j)=(" << i << "," << j << ")";
+      }
+    }
   }
 };
 } // end anonymous namespace
 
-TEST_F(LCPQuerierTest, EmptyStringTest) { check_all_pairs(""); }
+TEST_F(LCPQuerierTest, EmptyStringTest) {
+  check_all_pairs("");
+}
 
 TEST_F(LCPQuerierTest, OneCharacterTest) {
   check_all_pairs("a");

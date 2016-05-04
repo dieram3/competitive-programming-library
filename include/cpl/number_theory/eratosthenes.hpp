@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez May 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,15 +6,12 @@
 #ifndef CPL_NUMBER_THEORY_ERATOSTHENES_HPP
 #define CPL_NUMBER_THEORY_ERATOSTHENES_HPP
 
-#include <cpl/number_theory/modular.hpp>
-#include <cpl/number_theory/basics.hpp>
-
-#include <algorithm> // for std::count
-#include <iterator>  // for std::begin, std::end
-#include <vector>    // for std::vector
-#include <cassert>   // for assert macro
-#include <cstddef>   // for std::size_t
-#include <cstdint>   // for std::uint32_t, std::uint64_t
+#include <algorithm> // count
+#include <cassert>   // assert
+#include <cstddef>   // size_t
+#include <cstdint>   // uint64_t
+#include <iterator>  // begin, end
+#include <vector>    // vector
 
 namespace cpl {
 
@@ -57,6 +54,6 @@ std::vector<T> sieve_of_eratosthenes(const T limit) {
   return primes;
 }
 
-} // namespace cpl
+} // end namespace cpl
 
 #endif // Header guard

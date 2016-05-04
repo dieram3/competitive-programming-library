@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,7 +6,8 @@
 #include <cpl/number_theory/euclid.hpp>
 #include <gtest/gtest.h>
 
-using namespace cpl;
+using cpl::gcd;
+using cpl::lcm;
 
 namespace {
 
@@ -46,7 +47,9 @@ protected:
 
 } // end anonymous namespace
 
-TEST_F(EuclidTest, UndefinedGCDTest) { check_gcd(0, 0, 0); }
+TEST_F(EuclidTest, UndefinedGCDTest) {
+  check_gcd(0, 0, 0);
+}
 
 TEST_F(EuclidTest, DefinedGCDTest) {
   check_gcd(0, 1, 1);

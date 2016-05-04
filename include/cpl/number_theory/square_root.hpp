@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,10 @@
 #ifndef CPL_NUMBER_THEORY_SQUARE_ROOT_HPP
 #define CPL_NUMBER_THEORY_SQUARE_ROOT_HPP
 
-#include <algorithm>   // For std::min
-#include <limits>      // For std::numeric_limits
-#include <type_traits> // For std::make_unsigned
-#include <cmath>       // For std::sqrt
+#include <algorithm>   // min
+#include <cmath>       // sqrt
+#include <limits>      // numeric_limits
+#include <type_traits> // make_unsigned
 
 namespace cpl {
 
@@ -25,12 +25,12 @@ template <typename T>
 T isqrt(const T x) {
   using std::sqrt;
   using U = typename std::make_unsigned<T>::type;
-  constexpr U max_ans = (U(1) << (std::numeric_limits<U>::digits / 2)) - 1;
+  constexpr U max_ans = (U(1) << (std::numeric_limits<U>::digits / 2)) - U(1);
   U ans = std::min(max_ans, static_cast<U>(sqrt(x)));
   // At this point, 'ans' is an approximate square root.
   while (ans * ans > U(x))
     --ans;
-  while (ans < max_ans && (ans + 1) * (ans + 1) <= U(x))
+  while (ans < max_ans && (ans + U(1)) * (ans + U(1)) <= U(x))
     ++ans;
   return ans;
 }

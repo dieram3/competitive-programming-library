@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez May 2015, August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,8 +6,8 @@
 #ifndef CPL_DATA_STRUCTURE_DISJOINT_SET_HPP
 #define CPL_DATA_STRUCTURE_DISJOINT_SET_HPP
 
-#include <memory>  // for std::unique_ptr
-#include <cstddef> // for std::size_t
+#include <cstddef> // size_t
+#include <memory>  // unique_ptr
 
 namespace cpl {
 
@@ -26,7 +26,7 @@ public:
   /// \par Complexity
   /// Linear in the number of elements.
   ///
-  disjoint_set(size_t n) : parent(new size_t[n]), rank(new size_t[n]) {
+  explicit disjoint_set(size_t n) : parent(new size_t[n]), rank(new size_t[n]) {
     for (size_t x = 0; x != n; ++x)
       parent[x] = x, rank[x] = 0;
   }

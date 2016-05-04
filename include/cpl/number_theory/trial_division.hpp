@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,8 +6,8 @@
 #ifndef CPL_NUMBER_THEORY_TRIAL_DIVISION_HPP
 #define CPL_NUMBER_THEORY_TRIAL_DIVISION_HPP
 
-#include <stdexcept> // For std::logic_error
-#include <vector>    // For std::vector
+#include <stdexcept> // logic_error
+#include <vector>    // vector
 
 namespace cpl {
 
@@ -39,7 +39,7 @@ namespace cpl {
 /// \sa sieve_of_eratosthenes
 ///
 template <typename T>
-std::vector<T> trial_division(T n, const std::vector<T> &sieve) {
+std::vector<T> trial_division(T n, const std::vector<T>& sieve) {
   std::vector<T> primes;
   for (const T p : sieve) {
     while (n % p == 0) {

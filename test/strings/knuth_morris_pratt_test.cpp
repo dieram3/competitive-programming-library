@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -10,7 +10,8 @@
 #include <iterator>  // distance
 #include <string>    // string
 
-using namespace cpl;
+using cpl::kmp_searcher;
+using cpl::make_kmp_searcher;
 
 namespace {
 class KMPSearcherTest : public ::testing::Test {
@@ -20,13 +21,13 @@ public:
 protected:
   KMPSearcherTest() : pattern("."), search_on(pattern.begin(), pattern.end()) {}
 
-  void set_pattern(const std::string &new_pattern) {
+  void set_pattern(const std::string& new_pattern) {
     ASSERT_FALSE(new_pattern.empty());
     pattern = new_pattern;
     search_on = make_kmp_searcher(pattern.cbegin(), pattern.cend());
   }
 
-  size_t check_search(const std::string &text, const size_t pos = 0) const {
+  size_t check_search(const std::string& text, const size_t pos = 0) const {
     using std::search;
     using std::distance;
 

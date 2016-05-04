@@ -1,4 +1,4 @@
-//          Copyright Jorge Aguirre, Diego Ramírez April 2015
+//          Copyright Jorge Aguirre 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,26 +6,32 @@
 #include <cpl/geometry/convex_hull.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/geometry/point_2d.hpp>
-#include <cpl/geometry/point_order.hpp>
+#include <cpl/geometry/point_2d.hpp>    // point
+#include <cpl/geometry/point_order.hpp> // ccw_less
+#include <algorithm>                    // sort, is_sorted
+#include <cstddef>                      // size_t
+#include <cstdint>                      // int32_t
+#include <iterator>                     // begin, end
+#include <vector>                       // vector
 
-#include <algorithm> // For std::sort
-#include <iterator>  // For std::begin, std::end
-#include <cstddef>   // For std::size_t
-#include <cstdint>   // For std::int32_t
-
-using namespace cpl;
+using cpl::convex_hull;
+using cpl::convex_hull_partition;
+using cpl::point;
+using std::size_t;
 using std::int32_t;
 
+// TODO(Jorge) make_convex_set should be tested or should be internal.
+
 template <class ForwardIt, class Point>
-static bool is_ccw_sorted(const Point &center, ForwardIt first,
+static bool is_ccw_sorted(const Point& center, ForwardIt first,
                           ForwardIt last) {
   if (first == last)
     return true;
 
   const auto start = *first - center;
   return std::is_sorted(first, last,
-                        [center, start](const Point &lhs, const Point &rhs) {
+                        [center, start](const Point& lhs, const Point& rhs) {
+                          using cpl::ccw_less;
                           return ccw_less(center, start, lhs, rhs);
                         });
 }
@@ -89,8 +95,8 @@ TEST(ConvexHullTest, WithCollinearPoints) {
   EXPECT_EQ(expected_len, hull.size());
   EXPECT_EQ(expected_len, points.size());
 
-  vector_t result = {
-      {0, 0}, {2, 0}, {5, 0}, {5, 2}, {5, 5}, {2, 5}, {0, 5}, {0, 2}};
+  vector_t result = {{0, 0}, {2, 0}, {5, 0}, {5, 2},
+                     {5, 5}, {2, 5}, {0, 5}, {0, 2}};
 
   for (size_t i = 0; i < expected_len; ++i) {
     EXPECT_EQ(result[i].x, points[i].x);

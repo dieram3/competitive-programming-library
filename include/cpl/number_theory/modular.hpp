@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez November 2014, August 2015
+//          Copyright Diego Ramirez 2014-2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,8 +8,8 @@
 #ifndef CPL_NUMBER_THEORY_MODULAR_HPP
 #define CPL_NUMBER_THEORY_MODULAR_HPP
 
-#include <type_traits> // for std::is_signed
-#include <cassert>     // for assert
+#include <cassert>     // assert
+#include <type_traits> // is_signed
 
 namespace cpl {
 

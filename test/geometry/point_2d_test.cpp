@@ -1,4 +1,4 @@
-//          Copyright Jorge Aguirre July 2015
+//          Copyright Jorge Aguirre 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,17 +6,17 @@
 #include <cpl/geometry/point_2d.hpp>
 #include <gtest/gtest.h>
 
-#include <ostream> // For std::ostream
-#include <cmath>   // For std::sqrt
-#include <cstdint> // For std::int32_t
+#include <cmath>   // sqrt
+#include <cstdint> // int32_t
+#include <ostream> // ostream
 
-using namespace cpl;
+using cpl::point;
 using std::int32_t;
 using point_i = point<int32_t>;
 
 namespace cpl {
 template <typename T>
-static std::ostream &operator<<(std::ostream &os, const point<T> &p) {
+static std::ostream& operator<<(std::ostream& os, const point<T>& p) {
   os << '(' << p.x << ", " << p.y << ')';
   return os;
 }

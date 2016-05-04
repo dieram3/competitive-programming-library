@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez September 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,9 @@
 #ifndef CPL_NUMBER_THEORY_PRIME_FACTORS_HPP
 #define CPL_NUMBER_THEORY_PRIME_FACTORS_HPP
 
-#include <algorithm> // For std::sort
-#include <stack>     // For std::stack
-#include <vector>    // For std::vector
+#include <algorithm> // sort
+#include <stack>     // stack
+#include <vector>    // vector
 
 namespace cpl {
 
@@ -41,18 +41,18 @@ namespace cpl {
 template <typename T, typename F1, typename F2>
 std::vector<T> find_prime_factors(T n, F1 is_prime, F2 get_factor) {
   std::vector<T> primes;
-  std::stack<T> S;
+  std::stack<T> stack;
   if (n > 1)
-    S.push(n);
-  while (!S.empty()) {
-    n = S.top();
-    S.pop();
+    stack.push(n);
+  while (!stack.empty()) {
+    n = stack.top();
+    stack.pop();
     if (is_prime(n))
       primes.push_back(n);
     else {
       const T d = get_factor(n);
-      S.push(d);
-      S.push(n / d);
+      stack.push(d);
+      stack.push(n / d);
     }
   }
   std::sort(primes.begin(), primes.end()); // Sorting is optional.

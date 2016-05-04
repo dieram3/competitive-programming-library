@@ -1,4 +1,4 @@
-//          Copyright Jorge Aguirre, Diego Ramírez 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -12,7 +12,7 @@
 #include <string>    // for string
 #include <vector>    // vector
 
-using namespace cpl;
+using cpl::z_algorithm;
 using std::size_t;
 
 namespace {
@@ -21,7 +21,7 @@ protected:
   using z_array = std::vector<size_t>;
 
 private:
-  static z_array naive_z_algorithm(const std::string &str) {
+  static z_array naive_z_algorithm(const std::string& str) {
     using std::mismatch;
     using std::distance;
 
@@ -35,13 +35,15 @@ private:
   }
 
 public:
-  void check(const std::string &str) {
+  void check(const std::string& str) {
     EXPECT_EQ(naive_z_algorithm(str), z_algorithm(str));
   }
 };
-} // end anononymous namespace
+} // end anonymous namespace
 
-TEST_F(ZAlgorithmTest, EmptyStringTest) { check(""); }
+TEST_F(ZAlgorithmTest, EmptyStringTest) {
+  check("");
+}
 
 TEST_F(ZAlgorithmTest, ExplicitTest) {
   EXPECT_EQ(z_array(), z_algorithm(""));
