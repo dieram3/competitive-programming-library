@@ -1,4 +1,4 @@
-//          Copyright Jorge Aguirre July 2015
+//          Copyright Jorge Aguirre 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -7,14 +7,13 @@
 #include <cpl/geometry/shoelace.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/geometry/point_2d.hpp>
+#include <cpl/geometry/point_2d.hpp> // point
+#include <cstdint>                   // int32_t
+#include <vector>                    // vector
 
-#include <chrono>
-#include <cstdint>
-
-using namespace cpl;
+using cpl::shoelace_area;
 using std::int32_t;
-using point_i = point<int32_t>;
+using point_i = cpl::point<int32_t>;
 
 TEST(ShoelaceTest, SimpleShapes) {
   // A square

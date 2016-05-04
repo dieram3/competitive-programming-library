@@ -1,4 +1,4 @@
-//          Copyright Jorge Aguirre, Diego Ramírez September 2015
+//          Copyright Jorge Aguirre, Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,35 +6,34 @@
 #include <cpl/geometry/point_in_polygon.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/geometry/point_2d.hpp>
-
-#include <vector>  // For std::vector
-#include <cassert> // For assert
-
-using namespace cpl;
+#include <cpl/geometry/point_2d.hpp> // point
+#include <cassert>                   // assert
+#include <vector>                    // vector
 
 namespace {
 
 class PointInPolygonTest : public ::testing::Test {
 protected:
   using scalar_t = long;
-  using point_t = point<scalar_t>;
+  using point_t = cpl::point<scalar_t>;
 
 protected:
-  void add(scalar_t x, scalar_t y) { poly.emplace_back(x, y); }
+  void add(scalar_t x, scalar_t y) {
+    poly.emplace_back(x, y);
+  }
   void rel_add(scalar_t dx, scalar_t dy) {
     add(poly.back().x + dx, poly.back().y + dy);
   }
   bool in_polygon(scalar_t x, scalar_t y) const {
     assert(poly.size() >= 3);
-    return point_in_polygon(point_t(x, y), poly);
+    return cpl::point_in_polygon(point_t(x, y), poly);
   }
 
 protected:
   std::vector<point_t> poly;
 };
 
-} // end namespace cpl
+} // end anonymous namespace
 
 TEST_F(PointInPolygonTest, TriangleTest) {
   add(1, 1), add(4, 3), add(2, 4);
