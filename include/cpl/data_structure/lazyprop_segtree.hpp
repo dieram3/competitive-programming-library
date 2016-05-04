@@ -85,8 +85,7 @@ public:
   /// \par Complexity
   /// Linear in <tt>count</tt>.
   ///
-  lazyprop_segtree(size_t count, const T& identity,
-                   const Combine& comb = Combine())
+  lazyprop_segtree(size_t count, const T& identity, Combine comb = Combine())
       : num_elems{count}, combine(std::move(comb)) {
     node_t nd = root(); // Node to find optimal size.
     while (!nd.leaf())
@@ -106,9 +105,8 @@ public:
   /// <tt>n = std::distance(first, last)</tt>.
   ///
   template <typename ForwardIt>
-  lazyprop_segtree(ForwardIt first, ForwardIt last,
-                   const Combine& comb = Combine())
-      : lazyprop_segtree(std::distance(first, last), T(), comb) {
+  lazyprop_segtree(ForwardIt first, ForwardIt last, Combine comb = Combine())
+      : lazyprop_segtree(std::distance(first, last), T(), std::move(comb)) {
     assert(first != last);
     copy_range(first, root());
     assert(first == last);
