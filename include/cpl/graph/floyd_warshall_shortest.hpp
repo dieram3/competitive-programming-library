@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,12 +6,12 @@
 #ifndef CPL_GRAPH_FLOYD_WARSHALL_SHORTEST_HPP
 #define CPL_GRAPH_FLOYD_WARSHALL_SHORTEST_HPP
 
-#include <cpl/utility/matrix.hpp>
-#include <algorithm> // For std::min
-#include <limits>    // For std::numeric_limits
-#include <vector>    // For std::vector
-#include <cstddef>   // For std::size_t
-#include <cstdint>   // For SIZE_MAX
+#include <cpl/utility/matrix.hpp> // matrix
+#include <algorithm>              // min
+#include <cstddef>                // size_t
+#include <cstdint>                // SIZE_MAX
+#include <limits>                 // numeric_limits
+#include <vector>                 // vector
 
 namespace cpl {
 
@@ -41,8 +41,8 @@ namespace cpl {
 ///
 template <typename Graph, typename Distance>
 void floyd_warshall_all_pairs_shortest_paths(
-    const Graph &g, const std::vector<Distance> &weight, matrix<Distance> &dist,
-    matrix<size_t> &next) {
+    const Graph& g, const std::vector<Distance>& weight, matrix<Distance>& dist,
+    matrix<size_t>& next) {
 
   const Distance inf = std::numeric_limits<Distance>::max();
   const size_t num_edges = g.num_edges();
@@ -60,15 +60,23 @@ void floyd_warshall_all_pairs_shortest_paths(
     next[{u, v}] = v;
   }
 
-  for (size_t k = 0; k != num_v; ++k)
-    for (size_t i = 0; i != num_v; ++i)
-      if (dist[{i, k}] != inf)
-        for (size_t j = 0; j != num_v; ++j)
-          if (dist[{k, j}] != inf)
-            if (dist[{i, k}] + dist[{k, j}] < dist[{i, j}]) {
-              dist[{i, j}] = dist[{i, k}] + dist[{k, j}];
-              next[{i, j}] = next[{i, k}];
-            }
+  auto try_update = [&](size_t k, size_t i, size_t j) {
+    if (dist[{i, k}] + dist[{k, j}] >= dist[{i, j}])
+      return;
+    dist[{i, j}] = dist[{i, k}] + dist[{k, j}];
+    next[{i, j}] = next[{i, k}];
+  };
+  for (size_t k = 0; k < num_v; ++k) {
+    for (size_t i = 0; i < num_v; ++i) {
+      if (dist[{i, k}] == inf)
+        continue;
+      for (size_t j = 0; j != num_v; ++j) {
+        if (dist[{k, j}] == inf)
+          continue;
+        try_update(k, i, j);
+      } // 3rd for
+    }   // 2nd for
+  }     // 1st for
 }
 
 /// \brief Reconstruct the shortest path between two vertices using the data
@@ -90,7 +98,7 @@ void floyd_warshall_all_pairs_shortest_paths(
 ///
 template <typename OutputIt>
 OutputIt floyd_warshall_path(size_t u, const size_t v,
-                             const matrix<size_t> &next, OutputIt out_it) {
+                             const matrix<size_t>& next, OutputIt out_it) {
   if (u != v && next[{u, v}] == SIZE_MAX)
     return out_it;
   *out_it++ = u;

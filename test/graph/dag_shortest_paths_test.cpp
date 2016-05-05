@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,12 +6,14 @@
 #include <cpl/graph/dag_shortest_paths.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/directed_graph.hpp>
+#include <cpl/graph/directed_graph.hpp> // directed_graph
+#include <cstddef>                      // size_t
+#include <limits>                       // numeric_limits
+#include <vector>                       // vector
 
-#include <limits> // For std::numeric_limits
-#include <vector> // For std::vector
-
-using namespace cpl;
+using cpl::dag_shortest_paths;
+using cpl::directed_graph;
+using std::size_t;
 using std::vector;
 
 static constexpr int inf = std::numeric_limits<int>::max();

@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,9 @@
 #ifndef CPL_GRAPH_UNDIRECTED_GRAPH_HPP
 #define CPL_GRAPH_UNDIRECTED_GRAPH_HPP
 
-#include <utility> // for std::pair
-#include <vector>  // for std::vector
-#include <cstddef> // for std::size_t
+#include <cstddef> // size_t
+#include <utility> // pair
+#include <vector>  // vector
 
 namespace cpl {
 
@@ -19,7 +19,7 @@ class undirected_graph {
   std::vector<std::pair<size_t, size_t>> edge_list;
 
 public:
-  undirected_graph(size_t num_vertices) : adj_edges(num_vertices) {}
+  explicit undirected_graph(size_t num_vertices) : adj_edges(num_vertices) {}
 
   size_t add_edge(size_t u, size_t v) {
     edge_list.emplace_back(u, v);
@@ -29,18 +29,36 @@ public:
     return edge_id;
   }
 
-  size_t num_vertices() const { return adj_edges.size(); }
-  size_t num_edges() const { return edge_list.size(); }
+  size_t num_vertices() const {
+    return adj_edges.size();
+  }
+  size_t num_edges() const {
+    return edge_list.size();
+  }
 
-  size_t source(size_t e) const { return edge_list[e].first; }
-  size_t target(size_t e) const { return edge_list[e].second; }
+  size_t source(size_t e) const {
+    return edge_list[e].first;
+  }
+  size_t target(size_t e) const {
+    return edge_list[e].second;
+  }
 
-  const std::vector<size_t> &out_edges(size_t v) const { return adj_edges[v]; }
-  const std::vector<size_t> &in_edges(size_t v) const { return adj_edges[v]; }
+  const std::vector<size_t>& out_edges(size_t v) const {
+    return adj_edges[v];
+  }
+  const std::vector<size_t>& in_edges(size_t v) const {
+    return adj_edges[v];
+  }
 
-  size_t degree(size_t v) const { return adj_edges[v].size(); }
-  size_t out_degree(size_t v) const { return degree(v); }
-  size_t in_degree(size_t v) const { return degree(v); }
+  size_t degree(size_t v) const {
+    return adj_edges[v].size();
+  }
+  size_t out_degree(size_t v) const {
+    return degree(v);
+  }
+  size_t in_degree(size_t v) const {
+    return degree(v);
+  }
 };
 
 } // end namespace cpl

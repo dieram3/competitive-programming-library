@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2014
+//          Copyright Diego Ramirez 2014
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,10 +8,10 @@
 #ifndef CPL_GRAPH_DIJKSTRA_SHORTEST_PATHS_HPP
 #define CPL_GRAPH_DIJKSTRA_SHORTEST_PATHS_HPP
 
-#include <vector>  // for std::vector
-#include <queue>   // for std::priority_queue
-#include <limits>  // for std::numeric_limits
-#include <cstddef> // for std::size_t
+#include <cstddef> // size_t
+#include <limits>  // numeric_limits
+#include <queue>   // priority_queue
+#include <vector>  // vector
 
 namespace cpl {
 
@@ -33,13 +33,15 @@ namespace cpl {
 ///
 template <class Graph, class Distance>
 std::vector<Distance>
-dijkstra_shortest_paths(const Graph &g, size_t source,
-                        const std::vector<Distance> &weight) {
+dijkstra_shortest_paths(const Graph& g, size_t source,
+                        const std::vector<Distance>& weight) {
 
   struct pq_elem {
     Distance dist;
     size_t vertex;
-    bool operator<(const pq_elem &that) const { return dist > that.dist; }
+    bool operator<(const pq_elem& that) const {
+      return dist > that.dist;
+    }
   };
 
   std::vector<bool> visited(g.num_vertices(), false);

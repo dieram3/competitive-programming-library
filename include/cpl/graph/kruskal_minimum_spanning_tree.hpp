@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,11 @@
 #ifndef CPL_GRAPH_KRUSKAL_MINIMUM_SPANNING_TREE_HPP
 #define CPL_GRAPH_KRUSKAL_MINIMUM_SPANNING_TREE_HPP
 
-#include <algorithm>                           // for std::sort
-#include <numeric>                             // for std::iota
-#include <vector>                              // for std::vector
-#include <cpl/data_structure/disjoint_set.hpp> // for cpl::disjoint_set
+#include <cpl/data_structure/disjoint_set.hpp> // disjoint_set
+#include <algorithm>                           // sort, iota
+#include <cstddef>                             // size_t
+#include <numeric>                             // iota
+#include <vector>                              // vector
 
 namespace cpl {
 
@@ -27,8 +28,8 @@ namespace cpl {
 ///
 template <typename Graph, typename Weight>
 std::vector<size_t>
-kruskal_minimum_spanning_tree(const Graph &g,
-                              const std::vector<Weight> &weight) {
+kruskal_minimum_spanning_tree(const Graph& g,
+                              const std::vector<Weight>& weight) {
   const size_t num_vertices = g.num_vertices();
   if (num_vertices == 0)
     return {};

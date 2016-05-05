@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,29 +6,30 @@
 #include <cpl/graph/biconnected_components.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/undirected_graph.hpp>
+#include <cpl/graph/undirected_graph.hpp> // undirected_graph
+#include <algorithm>                      // sort, max_element
+#include <cstddef>                        // size_t
+#include <unordered_map>                  // unordered_map
+#include <vector>                         // vector
 
-#include <algorithm>     // for std::sort, std::max_element
-#include <vector>        // for std::vector
-#include <unordered_map> // for std::unordered_map
-#include <cstddef>       // for std::size_t
-
-using namespace cpl;
+using cpl::biconnected_components;
+using cpl::articulation_points_and_bridges;
+using cpl::undirected_graph;
 using std::max_element;
 using std::size_t;
 using std::vector;
 using std::unordered_map;
 
-static void normalize(vector<size_t> &vec) {
+static void normalize(vector<size_t>& vec) {
   unordered_map<size_t, size_t> id_map;
   for (const size_t elem : vec)
     id_map.emplace(elem, id_map.size());
-  for (size_t &elem : vec)
+  for (size_t& elem : vec)
     elem = id_map.at(elem);
 }
 
 static std::vector<size_t>
-get_articulation_points(const vector<bool> &is_articulation) {
+get_articulation_points(const vector<bool>& is_articulation) {
   const size_t num_v = is_articulation.size();
   std::vector<size_t> articulation_points;
   for (size_t v = 0; v != num_v; ++v)
@@ -38,7 +39,7 @@ get_articulation_points(const vector<bool> &is_articulation) {
 }
 
 // Finds bridges from biconnected components map in sorted order.
-static std::vector<size_t> find_bridges(const vector<size_t> &bicomp) {
+static std::vector<size_t> find_bridges(const vector<size_t>& bicomp) {
   const size_t num_edges = bicomp.size();
   const size_t num_bicomps =
       bicomp.empty() ? 0 : *max_element(bicomp.begin(), bicomp.end()) + 1;
@@ -55,9 +56,9 @@ static std::vector<size_t> find_bridges(const vector<size_t> &bicomp) {
 }
 
 static void
-check_ap_and_bridges(const undirected_graph &g,
-                     const vector<size_t> &expected_articulation_points,
-                     const vector<size_t> &expected_bridges) {
+check_ap_and_bridges(const undirected_graph& g,
+                     const vector<size_t>& expected_articulation_points,
+                     const vector<size_t>& expected_bridges) {
   vector<size_t> articulation_points;
   vector<size_t> bridges;
   auto put_ap = [&](size_t v) { articulation_points.push_back(v); };
@@ -70,9 +71,9 @@ check_ap_and_bridges(const undirected_graph &g,
   EXPECT_EQ(expected_bridges, bridges);
 }
 
-static void bi_comps_check(const undirected_graph &g, const size_t num_bicomps,
-                           const vector<size_t> &expected_bicomp,
-                           const vector<size_t> &expected_articulation_points) {
+static void bi_comps_check(const undirected_graph& g, const size_t num_bicomps,
+                           const vector<size_t>& expected_bicomp,
+                           const vector<size_t>& expected_articulation_points) {
   vector<size_t> bicomp;
   vector<bool> is_articulation;
   EXPECT_EQ(num_bicomps, biconnected_components(g, bicomp, is_articulation));

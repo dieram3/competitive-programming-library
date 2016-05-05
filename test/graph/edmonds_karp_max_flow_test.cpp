@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez June 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,12 +6,13 @@
 #include <cpl/graph/edmonds_karp_max_flow.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/directed_graph.hpp>
-#include <functional>
-#include <cassert>
-#include <cstddef>
+#include <cpl/graph/directed_graph.hpp> // directed_graph
+#include <cassert>                      // assert
+#include <cstddef>                      // size_t
 
-using namespace cpl;
+using cpl::edmonds_karp_max_flow;
+using cpl::directed_graph;
+using std::size_t;
 
 /// \todo Check residual capacity output.
 

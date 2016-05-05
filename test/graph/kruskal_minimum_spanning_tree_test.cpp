@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,8 +6,10 @@
 #include <cpl/graph/kruskal_minimum_spanning_tree.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/undirected_graph.hpp>
-using namespace cpl;
+#include <cpl/graph/undirected_graph.hpp> // undirected_graph
+
+using cpl::kruskal_minimum_spanning_tree;
+using cpl::undirected_graph;
 using std::vector;
 
 TEST(KruskalMinimumSpanningTreeTest, WorksOnEmptyGraph) {

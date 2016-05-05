@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,15 @@
 #include <cpl/graph/gusfield_all_pairs_min_cut.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/directed_graph.hpp>
-#include <cpl/utility/matrix.hpp>
+#include <cpl/graph/directed_graph.hpp> // directed_graph
+#include <cpl/utility/matrix.hpp>       // matrix
+#include <cstddef>                      // size_t
+#include <vector>                       // vector
 
-using namespace cpl;
+using cpl::gusfield_all_pairs_min_cut;
+using cpl::directed_graph;
+using cpl::matrix;
+using std::size_t;
 
 TEST(GusfieldAllPairsMinCutTest, SmallGraphTest) {
   directed_graph graph(6);
@@ -39,10 +44,12 @@ TEST(GusfieldAllPairsMinCutTest, SmallGraphTest) {
   ASSERT_EQ(6, cut.rows());
   ASSERT_EQ(6, cut.cols());
 
-  for (size_t i = 0; i != cut.rows(); ++i)
-    for (size_t j = i + 1; j != cut.cols(); ++j)
+  for (size_t i = 0; i < cut.rows(); ++i) {
+    for (size_t j = i + 1; j < cut.cols(); ++j) {
       EXPECT_TRUE((cut[{i, j}] == cut[{j, i}])) << " at (" << i << ", " << j
                                                 << ")";
+    }
+  }
 
   EXPECT_EQ(6, (cut[{0, 1}]));
   EXPECT_EQ(8, (cut[{0, 2}]));

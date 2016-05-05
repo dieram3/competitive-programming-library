@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez June 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,13 +8,13 @@
 #ifndef CPL_GRAPH_EDMONS_KARP_MAX_FLOW_HPP
 #define CPL_GRAPH_EDMONS_KARP_MAX_FLOW_HPP
 
-#include <algorithm>   // For std::min
-#include <limits>      // For std::numeric_limits
-#include <queue>       // For std::queue
-#include <type_traits> // For std::is_arithmetic
-#include <vector>      // For std::vector
-#include <cstddef>     // For std::size_t
-#include <cstdint>     // for SIZE_MAX
+#include <algorithm>   // min
+#include <cstddef>     // size_t
+#include <cstdint>     // SIZE_MAX
+#include <limits>      // numeric_limits
+#include <queue>       // queue
+#include <type_traits> // is_arithmetic
+#include <vector>      // vector
 
 namespace cpl {
 
@@ -42,11 +42,11 @@ namespace cpl {
 /// At most O(V * E^2) memory accesses.
 ///
 template <typename Graph, typename Flow>
-Flow edmonds_karp_max_flow(const Graph &g, const size_t source,
+Flow edmonds_karp_max_flow(const Graph& g, const size_t source,
                            const size_t target,
-                           const std::vector<size_t> &rev_edge,
-                           const std::vector<Flow> &capacity,
-                           std::vector<Flow> &residual) {
+                           const std::vector<size_t>& rev_edge,
+                           const std::vector<Flow>& capacity,
+                           std::vector<Flow>& residual) {
 
   static_assert(std::is_arithmetic<Flow>::value, "'Flow' must be arithmetic.");
   using edge_id = size_t;

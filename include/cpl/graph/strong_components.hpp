@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,12 +6,12 @@
 #ifndef CPL_GRAPH_STRONG_COMPONENTS_HPP
 #define CPL_GRAPH_STRONG_COMPONENTS_HPP
 
-#include <algorithm>  // for std::min
-#include <functional> // for std::function
-#include <stack>      // for std::stack
-#include <vector>     // for std::vector
-#include <cstddef>    // for std::size_t
-#include <cstdint>    // for SIZE_MAX
+#include <algorithm>  // min
+#include <cstddef>    // size_t
+#include <cstdint>    // SIZE_MAX
+#include <functional> // function
+#include <stack>      // stack
+#include <vector>     // vector
 
 namespace cpl {
 
@@ -35,12 +35,12 @@ namespace cpl {
 /// C = the total number of SCC).
 ///
 template <typename Graph>
-size_t strong_components(const Graph &g, std::vector<size_t> &comp) {
+size_t strong_components(const Graph& g, std::vector<size_t>& comp) {
 
   const size_t num_vertices = g.num_vertices();
   size_t time = 0;
   size_t comp_cnt = 0;
-  std::stack<size_t> S;
+  std::stack<size_t> stack;
   std::vector<size_t> low(num_vertices);
   std::vector<size_t> dtm(num_vertices);
   comp.resize(num_vertices);
@@ -49,7 +49,7 @@ size_t strong_components(const Graph &g, std::vector<size_t> &comp) {
   dfs_visit = [&](const size_t v) {
     low[v] = dtm[v] = ++time;
     comp[v] = SIZE_MAX;
-    S.push(v);
+    stack.push(v);
     for (const auto edge : g.out_edges(v)) {
       const size_t w = g.target(edge);
       if (!dtm[w]) {
@@ -60,11 +60,13 @@ size_t strong_components(const Graph &g, std::vector<size_t> &comp) {
     }
     if (dtm[v] != low[v])
       return;
-    size_t w;
-    do {
-      w = S.top(), S.pop();
+    while (true) {
+      const size_t w = stack.top();
+      stack.pop();
       comp[w] = comp_cnt;
-    } while (w != v);
+      if (w == v)
+        break;
+    }
     ++comp_cnt;
   };
 

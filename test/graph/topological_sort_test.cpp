@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,17 +6,18 @@
 #include <cpl/graph/topological_sort.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/directed_graph.hpp> // for cpl::directed_graph
+#include <cpl/graph/directed_graph.hpp> // directed_graph
+#include <algorithm>                    // find
+#include <functional>                   // greater
+#include <stdexcept>                    // logic_error
+#include <vector>                       // vector
 
-#include <algorithm>  // for std::find
-#include <functional> // for std::greater
-#include <stdexcept>  // for std::logic_error
-#include <vector>     // for std::vector
-
-using namespace cpl;
+using cpl::topological_sort;
+using cpl::prioritized_topological_sort;
+using cpl::directed_graph;
 using std::vector;
 
-static void check_toposort(const directed_graph &g) {
+static void check_toposort(const directed_graph& g) {
   vector<bool> processed(g.num_vertices());
   const auto sorted_list = topological_sort(g);
 
@@ -88,7 +89,7 @@ TEST(TopologicalSortTest, ThrowsIfNotADag) {
 }
 
 static vector<size_t>
-smallest_numbered_first_toposort(const directed_graph &g) {
+smallest_numbered_first_toposort(const directed_graph& g) {
   vector<size_t> list;
   list.reserve(g.num_vertices());
   prioritized_topological_sort(g, std::greater<size_t>(),

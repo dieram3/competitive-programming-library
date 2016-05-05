@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,17 +6,17 @@
 #include <cpl/graph/strong_components.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/directed_graph.hpp>
+#include <cpl/graph/directed_graph.hpp> // directed_graph
+#include <cstddef>                      // size_t
+#include <numeric>                      // iota
+#include <unordered_map>                // unordered_map
+#include <vector>                       // vector
 
-#include <numeric>       // for std::iota
-#include <unordered_map> // for std::unordered_map
-#include <vector>        // for std::vector
-#include <cstddef>       // for std::size_t
-
-using namespace cpl;
+using cpl::strong_components;
+using cpl::directed_graph;
 using std::vector;
 
-static std::vector<size_t> normalize(const vector<size_t> &vec) {
+static std::vector<size_t> normalize(const vector<size_t>& vec) {
   std::unordered_map<size_t, size_t> id_map;
   for (const size_t elem : vec)
     id_map.emplace(elem, id_map.size());
@@ -27,9 +27,9 @@ static std::vector<size_t> normalize(const vector<size_t> &vec) {
   return norm;
 }
 
-static directed_graph make_condensate(const directed_graph &g,
+static directed_graph make_condensate(const directed_graph& g,
                                       const size_t num_comps,
-                                      const vector<size_t> &comp) {
+                                      const vector<size_t>& comp) {
   directed_graph cg(num_comps);
   const size_t num_e = g.num_edges();
   for (size_t e = 0; e != num_e; ++e) {
@@ -42,7 +42,7 @@ static directed_graph make_condensate(const directed_graph &g,
   return cg;
 }
 
-static bool check_cg_toposort(const directed_graph &cg) {
+static bool check_cg_toposort(const directed_graph& cg) {
   const size_t num_v = cg.num_vertices();
   vector<bool> ready(num_v);
   // The toposort should be num_v - 1, num_v - 2, ..., 2, 1, 0
@@ -56,8 +56,8 @@ static bool check_cg_toposort(const directed_graph &cg) {
 }
 
 // Requires: expected.size() >= 1
-static void check_scc(const directed_graph &g, const size_t total_scc,
-                      const vector<size_t> &expected) {
+static void check_scc(const directed_graph& g, const size_t total_scc,
+                      const vector<size_t>& expected) {
   vector<size_t> comp;
   EXPECT_EQ(total_scc, strong_components(g, comp));
   for (const size_t label : comp)

@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July-August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,9 @@
 #ifndef CPL_GRAPH_CONNECTED_COMPONENTS_HPP
 #define CPL_GRAPH_CONNECTED_COMPONENTS_HPP
 
-#include <vector>  // for std::vector
-#include <cstddef> // for std::size_t
-#include <cstdint> // for SIZE_MAX
+#include <cstddef> // size_t
+#include <cstdint> // SIZE_MAX
+#include <vector>  // vector
 
 namespace cpl {
 
@@ -37,7 +37,7 @@ namespace cpl {
 /// <tt>O(V + E)</tt>.
 ///
 template <typename Graph>
-size_t connected_components(const Graph &g, std::vector<size_t> &component_of) {
+size_t connected_components(const Graph& g, std::vector<size_t>& component_of) {
   const size_t num_vertices = g.num_vertices();
   component_of.assign(num_vertices, SIZE_MAX);
 

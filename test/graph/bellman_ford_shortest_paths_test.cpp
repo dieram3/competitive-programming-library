@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,13 @@
 #include <cpl/graph/bellman_ford_shortest_paths.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/directed_graph.hpp> // for cpl::directed_graph
-#include <vector>                       // for std::vector
-using namespace cpl;
+#include <cpl/graph/directed_graph.hpp> // directed_graph
+#include <limits>                       // numeric_limits
+#include <vector>                       // vector
 
+using cpl::bellman_ford_shortest_paths;
+using cpl::directed_graph;
+using std::size_t;
 using dist_vec = std::vector<long>;
 using weight_vec = std::vector<long>;
 

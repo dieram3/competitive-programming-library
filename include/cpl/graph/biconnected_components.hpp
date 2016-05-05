@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,13 +6,13 @@
 #ifndef CPL_GRAPH_BICONNECTED_COMPONENTS_HPP
 #define CPL_GRAPH_BICONNECTED_COMPONENTS_HPP
 
-#include <algorithm>  // for std::min
-#include <functional> // for std::function
-#include <stack>      // for std::stack
-#include <vector>     // for std::vector
-#include <utility>    // for std::pair
-#include <cstddef>    // for std::size_t
-#include <cstdint>    // for SIZE_MAX
+#include <algorithm>  // min
+#include <cstddef>    // size_t
+#include <cstdint>    // SIZE_MAX
+#include <functional> // function
+#include <stack>      // stack
+#include <utility>    // pair
+#include <vector>     // vector
 
 namespace cpl {
 
@@ -46,15 +46,15 @@ namespace cpl {
 /// the unique member of its biconnected component, then \c e is a bridge.
 ///
 template <typename Graph>
-std::size_t biconnected_components(const Graph &g, std::vector<size_t> &bicomp,
-                                   std::vector<bool> &is_articulation) {
+size_t biconnected_components(const Graph& g, std::vector<size_t>& bicomp,
+                              std::vector<bool>& is_articulation) {
 
   enum colors { white, gray, black };
   const size_t num_vertices = g.num_vertices();
   size_t time = 0;
   size_t children_of_root = 0;
   size_t comp_cnt = 0;
-  std::stack<std::pair<size_t, size_t>> S; // edge, source of edge
+  std::stack<std::pair<size_t, size_t>> stack; // edge, source of edge
   std::vector<size_t> pred(num_vertices, SIZE_MAX);
   std::vector<size_t> dtm(num_vertices);
   std::vector<size_t> low(num_vertices);
@@ -71,14 +71,14 @@ std::size_t biconnected_components(const Graph &g, std::vector<size_t> &bicomp,
       if (tgt == pred[src])
         continue;
       if (color[tgt] == white) {
-        S.emplace(e, src);
+        stack.emplace(e, src);
         pred[tgt] = src;
         if (pred[src] == SIZE_MAX)
           ++children_of_root;
         dfs_visit(tgt);
         low[src] = std::min(low[src], low[tgt]);
       } else if (color[tgt] == gray) {
-        S.emplace(e, src);
+        stack.emplace(e, src);
         low[src] = std::min(low[src], dtm[tgt]);
       }
     }
@@ -91,16 +91,17 @@ std::size_t biconnected_components(const Graph &g, std::vector<size_t> &bicomp,
     if (low[src] < dtm[parent])
       return;
     is_articulation[parent] = true;
-    while (dtm[S.top().second] >= dtm[src])
-      bicomp[S.top().first] = comp_cnt, S.pop();
-    bicomp[S.top().first] = comp_cnt++, S.pop();
+    while (dtm[stack.top().second] >= dtm[src])
+      bicomp[stack.top().first] = comp_cnt, stack.pop();
+    bicomp[stack.top().first] = comp_cnt++, stack.pop();
   };
 
-  for (size_t v = 0; v != num_vertices; ++v)
+  for (size_t v = 0; v != num_vertices; ++v) {
     if (color[v] == white) {
       children_of_root = 0;
       dfs_visit(v);
     }
+  }
   return comp_cnt;
 }
 
@@ -126,7 +127,7 @@ std::size_t biconnected_components(const Graph &g, std::vector<size_t> &bicomp,
 /// <tt>O(V + E)</tt>
 ///
 template <typename Graph, typename Out1, typename Out2>
-void articulation_points_and_bridges(const Graph &g,
+void articulation_points_and_bridges(const Graph& g,
                                      Out1 output_articulation_point,
                                      Out2 output_bridge) {
 

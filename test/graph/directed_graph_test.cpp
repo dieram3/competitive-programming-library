@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2014, August 2015
+//          Copyright Diego Ramirez 2014-2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,10 @@
 #include <cpl/graph/directed_graph.hpp>
 #include <gtest/gtest.h>
 
-#include <cstddef> // for std::size_t
+#include <cstddef> // size_t
 
-using namespace cpl;
+using cpl::directed_graph;
+using std::size_t;
 
 TEST(DirectedGraphTest, ConstructWell) {
   directed_graph graph(15);
@@ -23,7 +24,7 @@ TEST(DirectedGraphTest, ConstructWell) {
 TEST(DirectedGraphTest, LinksWell) {
   directed_graph graph(5);
 
-  auto check_in = [&graph](std::size_t u, std::size_t v) {
+  auto check_in = [&graph](size_t u, size_t v) {
     for (const auto edge : graph.in_edges(v)) {
       if (graph.source(edge) == u)
         return true;
@@ -31,7 +32,7 @@ TEST(DirectedGraphTest, LinksWell) {
     return false;
   };
 
-  auto check_out = [&graph](std::size_t u, std::size_t v) {
+  auto check_out = [&graph](size_t u, size_t v) {
     for (const auto edge : graph.out_edges(u)) {
       if (graph.target(edge) == v)
         return true;
@@ -39,7 +40,7 @@ TEST(DirectedGraphTest, LinksWell) {
     return false;
   };
 
-  auto connects_to = [&](std::size_t u, std::size_t v) {
+  auto connects_to = [&](size_t u, size_t v) {
     if (check_in(u, v)) {
       EXPECT_TRUE(check_out(u, v));
       return true;

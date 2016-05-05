@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,9 @@
 #ifndef CPL_GRAPH_BELLMAN_FORD_SHORTEST_PATHS_HPP
 #define CPL_GRAPH_BELLMAN_FORD_SHORTEST_PATHS_HPP
 
-#include <limits>  // for std::numeric_limits
-#include <vector>  // for std::vector
-#include <cstddef> // for std::size_t
+#include <cstddef> // size_t
+#include <limits>  // numeric_limits
+#include <vector>  // vector
 
 namespace cpl {
 
@@ -40,9 +40,9 @@ namespace cpl {
 /// At most <tt>O(V * E)</tt> memory accesses.
 ///
 template <typename Graph, typename Distance>
-bool bellman_ford_shortest_paths(const Graph &g, const size_t source,
-                                 const std::vector<Distance> &weight,
-                                 std::vector<Distance> &dist) {
+bool bellman_ford_shortest_paths(const Graph& g, const size_t source,
+                                 const std::vector<Distance>& weight,
+                                 std::vector<Distance>& dist) {
   const auto infinity = std::numeric_limits<Distance>::max();
   const size_t num_edges = g.num_edges();
 

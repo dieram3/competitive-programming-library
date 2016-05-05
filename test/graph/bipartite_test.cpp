@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,15 +6,16 @@
 #include <cpl/graph/bipartite.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/undirected_graph.hpp>
+#include <cpl/graph/undirected_graph.hpp> // undirected_graph
+#include <cstddef>                        // size_t
+#include <vector>                         // vector
 
-#include <cstddef> // For std::size_t
-#include <vector>  // For std::vector
-
-using namespace cpl;
+using cpl::is_bipartite;
+using cpl::undirected_graph;
+using std::size_t;
 using std::vector;
 
-static void check_colors(const undirected_graph &g, const vector<bool> &color) {
+static void check_colors(const undirected_graph& g, const vector<bool>& color) {
 
   EXPECT_EQ(g.num_vertices(), color.size());
   for (size_t e = 0; e != g.num_edges(); ++e) {
@@ -25,7 +26,7 @@ static void check_colors(const undirected_graph &g, const vector<bool> &color) {
   }
 }
 
-static void check_bipartite(const undirected_graph &g) {
+static void check_bipartite(const undirected_graph& g) {
   vector<bool> color;
   EXPECT_TRUE(is_bipartite(g, color));
   check_colors(g, color);

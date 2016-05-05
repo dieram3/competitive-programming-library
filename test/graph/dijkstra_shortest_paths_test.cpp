@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2014
+//          Copyright Diego Ramirez 2014
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,14 +6,39 @@
 #include <cpl/graph/dijkstra_shortest_paths.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/directed_graph.hpp>
-#include <vector>
-#include <random>
-#include <numeric>
-#include <functional>
-#include <cassert>
+#include <cpl/graph/directed_graph.hpp> // directed_graph
+#include <cstddef>                      // size_t
+#include <vector>                       // vector
 
-using namespace cpl;
+using cpl::dijkstra_shortest_paths;
+using cpl::directed_graph;
+using std::size_t;
+
+TEST(DijkstraShortestPathsTest, WorksOnDirectedGraphs) {
+  directed_graph graph(6);
+  std::vector<unsigned> weight_of;
+  auto add_bidir_edge = [&](size_t u, size_t v, unsigned weight) {
+    graph.add_edge(u, v);
+    weight_of.push_back(weight);
+    graph.add_edge(v, u);
+    weight_of.push_back(weight);
+  };
+
+  add_bidir_edge(0, 1, 7);
+  add_bidir_edge(0, 2, 9);
+  add_bidir_edge(0, 5, 14);
+  add_bidir_edge(1, 2, 10);
+  add_bidir_edge(1, 3, 15);
+  add_bidir_edge(2, 3, 11);
+  add_bidir_edge(2, 5, 2);
+  add_bidir_edge(3, 4, 6);
+  add_bidir_edge(4, 5, 9);
+
+  const auto spaths = dijkstra_shortest_paths(graph, 0, weight_of);
+  const std::vector<unsigned> expected = {0, 7, 9, 20, 20, 11};
+
+  EXPECT_EQ(expected, spaths);
+}
 
 // Complexity: O(V*avg_degree)
 // It might generate parallel edges.
@@ -45,42 +70,4 @@ using namespace cpl;
 //  }
 //
 //  return graph;
-//}
-
-TEST(DijkstraShortestPathsTest, WorksOnDirectedGraphs) {
-  directed_graph graph(6);
-  std::vector<unsigned> weight_of;
-  auto add_bidir_edge = [&](size_t u, size_t v, unsigned weight) {
-    graph.add_edge(u, v);
-    weight_of.push_back(weight);
-    graph.add_edge(v, u);
-    weight_of.push_back(weight);
-  };
-
-  add_bidir_edge(0, 1, 7);
-  add_bidir_edge(0, 2, 9);
-  add_bidir_edge(0, 5, 14);
-  add_bidir_edge(1, 2, 10);
-  add_bidir_edge(1, 3, 15);
-  add_bidir_edge(2, 3, 11);
-  add_bidir_edge(2, 5, 2);
-  add_bidir_edge(3, 4, 6);
-  add_bidir_edge(4, 5, 9);
-
-  const auto spaths = cpl::dijkstra_shortest_paths(graph, 0, weight_of);
-  const std::vector<unsigned> expected = {0, 7, 9, 20, 20, 11};
-
-  EXPECT_EQ(expected, spaths);
-}
-
-// TODO: Compare against bellman-ford when ready.
-// TEST(dijkstra_shortest_paths, WorksOnBigGraphs) {
-//  const size_t num_vertices = 10000;
-//  const double out_degree_mean = 5.0;
-//  const auto graph = make_random_graph(num_vertices, out_degree_mean);
-//
-//  auto dist_v1 = dijkstra_shortest_paths(graph, 0);
-//  auto dist_v2 = 0;
-//
-//  EXPECT_EQ(dist_v1, dist_v2);
 //}
