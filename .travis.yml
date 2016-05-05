@@ -18,11 +18,11 @@ install:
   - tar -xzf cmake-3.1.3-Linux-x86_64.tar.gz
   - sudo cp -fR cmake-3.1.3-Linux-x86_64/* /usr
 
-# Install gcc, g++ and gcov (implicitly) version 5.2
-  - sudo apt-get -qq install gcc-5.2 g++-5.2
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5.2 90
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5.2 90
-  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-5.2 90
+# Install gcc, g++ and gcov (implicitly) version 5
+  - sudo apt-get -qq install gcc-5 g++-5
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 90
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90
+  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-5 90
 
 # Install cpp-coveralls if build-type is Debug
   - if [ "$BUILD_TYPE" = "Debug" ]; then
