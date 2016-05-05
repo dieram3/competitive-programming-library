@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,13 +6,17 @@
 #include <cpl/graph/connected_components.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/undirected_graph.hpp>
-#include <algorithm> // for std::max_element
-#include <vector>    // for std::vector
-using namespace cpl;
+#include <cpl/graph/undirected_graph.hpp> // undirected_graph
+#include <algorithm>                      // max_element
+#include <cstddef>                        // size_t
+#include <vector>                         // vector
 
-static void check_labels(const undirected_graph &graph,
-                         const std::vector<size_t> &expected) {
+using cpl::connected_components;
+using cpl::undirected_graph;
+using std::size_t;
+
+static void check_labels(const undirected_graph& graph,
+                         const std::vector<size_t>& expected) {
   const size_t num_components =
       expected.empty()
           ? 0

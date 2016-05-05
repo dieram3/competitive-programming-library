@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,17 +6,17 @@
 #include <cpl/graph/bridges.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/undirected_graph.hpp>
+#include <cpl/graph/undirected_graph.hpp> // undirected_graph
+#include <algorithm>                      // sort
+#include <cstddef>                        // size_t
+#include <vector>                         // vector
 
-#include <algorithm> // for std::sort
-#include <vector>    // For std::vector
-#include <cstddef>   // For std::size_t
-
-using namespace cpl;
+using cpl::find_bridges;
+using cpl::undirected_graph;
 using std::vector;
 using std::size_t;
 
-static vector<size_t> sorted_bridges(const undirected_graph &g) {
+static vector<size_t> sorted_bridges(const undirected_graph& g) {
   vector<size_t> bridges;
   auto output_bridge = [&](const size_t e) { bridges.push_back(e); };
   find_bridges(g, output_bridge);

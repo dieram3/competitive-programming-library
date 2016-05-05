@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,11 +6,11 @@
 #ifndef CPL_GRAPH_TOPOLOGICAL_SORT_HPP
 #define CPL_GRAPH_TOPOLOGICAL_SORT_HPP
 
-#include <functional> // for std::function
-#include <queue>      // for std::priority_queue
-#include <stdexcept>  // for std::logic_error
-#include <vector>     // for std::vector
-#include <cstddef>    // for std::size_t
+#include <cstddef>    // size_t
+#include <functional> // function
+#include <queue>      // priority_queue
+#include <stdexcept>  // logic_error
+#include <vector>     // vector
 
 namespace cpl {
 
@@ -32,29 +32,29 @@ namespace cpl {
 /// \sa prioritized_topological_sort
 ///
 template <typename Graph>
-std::vector<size_t> topological_sort(const Graph &g) {
-  enum colors { white, gray, black };
+std::vector<size_t> topological_sort(const Graph& g) {
+  enum class colors { white, gray, black };
   const size_t num_v = g.num_vertices();
   std::vector<size_t> list(num_v);
-  std::vector<colors> color(num_v, white);
+  std::vector<colors> color(num_v, colors::white);
   size_t cur_pos = num_v;
 
   std::function<void(size_t)> dfs_visit;
   dfs_visit = [&](const size_t src) {
-    color[src] = gray;
+    color[src] = colors::gray;
     for (const auto e : g.out_edges(src)) {
       const size_t tgt = g.target(e);
-      if (color[tgt] == white)
+      if (color[tgt] == colors::white)
         dfs_visit(tgt);
-      else if (color[tgt] == gray)
+      else if (color[tgt] == colors::gray)
         throw std::logic_error("Not a DAG");
     }
-    color[src] = black;
+    color[src] = colors::black;
     list[--cur_pos] = src;
   };
 
   for (size_t v = 0; v != num_v; ++v)
-    if (color[v] == white)
+    if (color[v] == colors::white)
       dfs_visit(v);
 
   return list;
@@ -86,11 +86,11 @@ std::vector<size_t> topological_sort(const Graph &g) {
 /// \sa topological_sort
 ///
 template <typename Graph, typename Comp, typename UnaryFunction>
-void prioritized_topological_sort(const Graph &g, Comp comp,
+void prioritized_topological_sort(const Graph& g, Comp comp,
                                   UnaryFunction output_vertex) {
   const size_t num_vertices = g.num_vertices();
   const size_t num_edges = g.num_edges();
-  std::priority_queue<void, std::vector<size_t>, Comp> Q(comp);
+  std::priority_queue<void, std::vector<size_t>, Comp> queue(comp);
   std::vector<size_t> in_degree(num_vertices);
 
   for (size_t e = 0; e != num_edges; ++e)
@@ -98,18 +98,18 @@ void prioritized_topological_sort(const Graph &g, Comp comp,
 
   for (size_t v = 0; v != num_vertices; ++v)
     if (!in_degree[v])
-      Q.push(v);
+      queue.push(v);
 
-  while (!Q.empty()) {
-    const size_t src = Q.top();
-    Q.pop();
+  while (!queue.empty()) {
+    const size_t src = queue.top();
+    queue.pop();
     output_vertex(src);
 
     for (const auto e : g.out_edges(src)) {
       const auto tgt = g.target(e);
       --in_degree[tgt];
       if (!in_degree[tgt])
-        Q.push(tgt);
+        queue.push(tgt);
     }
   }
 }

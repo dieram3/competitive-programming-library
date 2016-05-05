@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,11 +6,11 @@
 #ifndef CPL_GRAPH_JUMP_POINTER_TREE_HPP
 #define CPL_GRAPH_JUMP_POINTER_TREE_HPP
 
-#include <stack>   // For std::stack
-#include <vector>  // For std::vector
-#include <cassert> // For assert
-#include <cstddef> // For std::size_t
-#include <cstdint> // For SIZE_MAX
+#include <cassert> // assert
+#include <cstddef> // size_t
+#include <cstdint> // SIZE_MAX
+#include <stack>   // stack
+#include <vector>  // vector
 
 namespace cpl {
 
@@ -26,7 +26,7 @@ class jump_pointer_tree {
 private:
   static size_t parents_size(size_t depth) {
     size_t result = 0;
-    while (depth)
+    while (depth > 0)
       ++result, depth >>= 1;
     return result;
   }
@@ -54,20 +54,20 @@ public:
   /// Linearithmic in <tt>g.num_vertices()</tt>.
   ///
   template <typename Graph>
-  jump_pointer_tree(const Graph &g, const size_t root)
+  jump_pointer_tree(const Graph& g, const size_t root)
       : parents(g.num_vertices()), depth(parents.size(), SIZE_MAX) {
     depth[root] = 0;
-    std::stack<size_t> S;
-    S.push(root);
-    while (!S.empty()) {
-      const size_t curr = S.top();
-      S.pop();
+    std::stack<size_t> stack;
+    stack.push(root);
+    while (!stack.empty()) {
+      const size_t curr = stack.top();
+      stack.pop();
       for (const size_t e : g.out_edges(curr)) {
         const size_t child = (curr == g.source(e) ? g.target(e) : g.source(e));
         if (depth[child] != SIZE_MAX)
           continue;
         add_leaf(child, curr);
-        S.push(child);
+        stack.push(child);
       }
     } // end while
   }
@@ -81,7 +81,9 @@ public:
   /// \par Complexity
   /// Constant.
   ///
-  size_t depth_of(const size_t v) const { return depth[v]; }
+  size_t depth_of(const size_t v) const {
+    return depth[v];
+  }
 
   /// \brief Finds the k-th ancestor of \p v according to the used root.
   ///
@@ -96,9 +98,10 @@ public:
   /// Logarithmic in \c k.
   ///
   size_t kth_ancestor(size_t v, size_t k) const {
-    for (size_t i = 0; k; k >>= 1, ++i)
-      if (k & 1)
+    for (size_t i = 0; k > 0; k >>= 1, ++i) {
+      if ((k & 1) != 0)
         v = parents[v][i];
+    }
     return v;
   }
 
@@ -121,4 +124,4 @@ public:
 
 } // end namespace cpl
 
-#endif // header guard
+#endif // Header guard

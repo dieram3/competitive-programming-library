@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez May 2015, August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,10 @@
 #include <cpl/graph/lowest_common_ancestor.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/undirected_graph.hpp>
+#include <cpl/graph/undirected_graph.hpp> // undirected_graph
 
-using namespace cpl;
+using cpl::rmq_lca;
+using cpl::undirected_graph;
 
 namespace {
 
@@ -35,7 +36,7 @@ protected:
   undirected_graph tree;
 };
 
-} // End anonymous namespace
+} // end anonymous namespace
 
 TEST_F(RMQLowestCommonAncestorTest, FindLCATest) {
   {

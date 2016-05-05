@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,10 @@
 #ifndef CPL_GRAPH_BIPARTITE_HPP
 #define CPL_GRAPH_BIPARTITE_HPP
 
-#include <cassert>    // For assert
-#include <cstddef>    // For std::size_t
-#include <functional> // For std::function
-#include <vector>     // For std::vector
+#include <cassert>    // assert
+#include <cstddef>    // size_t
+#include <functional> // function
+#include <vector>     // vector
 
 namespace cpl {
 
@@ -31,7 +31,7 @@ namespace cpl {
 /// <tt>O(V + E)</tt>
 ///
 template <typename Graph>
-bool is_bipartite(const Graph &g, std::vector<bool> &color) {
+bool is_bipartite(const Graph& g, std::vector<bool>& color) {
   const size_t num_v = g.num_vertices();
   std::vector<bool> visited(num_v);
   color.resize(num_v);

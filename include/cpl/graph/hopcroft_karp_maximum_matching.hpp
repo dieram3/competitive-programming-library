@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez July 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,11 +6,11 @@
 #ifndef CPL_GRAPH_HOPCROFT_KARP_MAXIMUM_MATCHING_HPP
 #define CPL_GRAPH_HOPCROFT_KARP_MAXIMUM_MATCHING_HPP
 
-#include <functional> // for std::function
-#include <queue>      // for std::queue
-#include <vector>     // for std::vector
-#include <cstddef>    // for std::size_t
-#include <cstdint>    // for SIZE_MAX
+#include <cstddef>    // size_t
+#include <cstdint>    // SIZE_MAX
+#include <functional> // function
+#include <queue>      // queue
+#include <vector>     // vector
 
 namespace cpl {
 
@@ -31,7 +31,7 @@ namespace cpl {
 /// <tt>O(E * sqrt(V))</tt>.
 ///
 template <typename Graph>
-std::size_t hopcroft_karp_maximum_matching(const Graph &g) {
+std::size_t hopcroft_karp_maximum_matching(const Graph& g) {
   // Note: pair_of can be used to query the selected pairs.
   const size_t num_vertices = g.num_vertices();
   const size_t nil = num_vertices; // The null vertex
@@ -52,11 +52,12 @@ std::size_t hopcroft_karp_maximum_matching(const Graph &g) {
         dfs_visit(v);
       }
     };
-    for (size_t v = 0; v != num_vertices; ++v)
-      if (!color[v]) {
-        color[v] = 1;
-        dfs_visit(v);
-      }
+    for (size_t v = 0; v < num_vertices; ++v) {
+      if (color[v] != 0)
+        continue;
+      color[v] = 1;
+      dfs_visit(v);
+    }
   };
   auto bfs = [&] {
     std::queue<size_t> q;
@@ -102,10 +103,11 @@ std::size_t hopcroft_karp_maximum_matching(const Graph &g) {
 
   separate_vertices();
   size_t num_matching = 0;
-  while (bfs())
+  while (bfs()) {
     for (const size_t a : set_a)
       if (pair_of[a] == nil && dfs(a))
         ++num_matching;
+  }
   return num_matching;
 }
 

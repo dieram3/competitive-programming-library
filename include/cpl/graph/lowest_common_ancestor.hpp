@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez May 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,12 +8,11 @@
 #ifndef CPL_GRAPH_LOWER_COMMON_ANCESTOR_HPP
 #define CPL_GRAPH_LOWER_COMMON_ANCESTOR_HPP
 
-#include <cpl/data_structure/segment_tree.hpp> // Used for Range Minimum Query
-
-#include <algorithm> // for std::minmax
-#include <stack>     // for std::stack
-#include <vector>    // for std::vector
-#include <cstddef>   // for std::size_t
+#include <cpl/data_structure/segment_tree.hpp> // segment_tree
+#include <algorithm>                           // minmax
+#include <cstddef>                             // size_t
+#include <stack>                               // stack
+#include <vector>                              // vector
 
 namespace cpl {
 
@@ -28,8 +27,8 @@ class rmq_lca {
   };
 
   struct shallower {
-    const euler_visit &operator()(const euler_visit &lhs,
-                                  const euler_visit &rhs) const {
+    const euler_visit& operator()(const euler_visit& lhs,
+                                  const euler_visit& rhs) const {
       return lhs.depth < rhs.depth ? lhs : rhs;
     }
   };
@@ -46,7 +45,7 @@ public:
   /// <tt>O(N)</tt>, where <tt>N = g.num_vertices()</tt>
   ///
   template <typename Graph>
-  rmq_lca(const Graph &g, const size_t root) {
+  rmq_lca(const Graph& g, const size_t root) {
     const size_t num_vertices = g.num_vertices();
 
     euler_pos.resize(num_vertices);
@@ -103,7 +102,9 @@ public:
   /// \par Complexity
   /// Constant.
   ///
-  size_t depth_of(const size_t v) const { return stree.at(euler_pos[v]).depth; }
+  size_t depth_of(const size_t v) const {
+    return stree.at(euler_pos[v]).depth;
+  }
 
   /// \brief Computes the distance between the given pair of vertices using the
   /// stored data.

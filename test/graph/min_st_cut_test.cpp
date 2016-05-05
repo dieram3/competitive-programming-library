@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,17 +6,17 @@
 #include <cpl/graph/min_st_cut.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/directed_graph.hpp>
+#include <cpl/graph/directed_graph.hpp> // directed_graph
+#include <cstddef>                      // size_t
+#include <vector>                       // vector
 
-#include <vector>  // for std::vector
-#include <cstddef> // for std::size_t
-
-using namespace cpl;
-
+using cpl::min_st_cut;
+using cpl::directed_graph;
+using std::size_t;
 using bool_vec = std::vector<bool>;
 
-static std::vector<size_t> get_cut_set(const directed_graph &g,
-                                       bool_vec &source_side) {
+static std::vector<size_t> get_cut_set(const directed_graph& g,
+                                       bool_vec& source_side) {
   std::vector<size_t> cut_set;
   const size_t num_edges = g.num_edges();
   // even edges are originals, odd edges are the transposed.

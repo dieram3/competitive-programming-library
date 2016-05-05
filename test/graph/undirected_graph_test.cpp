@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,9 +6,13 @@
 #include <cpl/graph/undirected_graph.hpp>
 #include <gtest/gtest.h>
 
-#include <algorithm> // for std::any_of
-#include <iterator>  // for std::begin, std::end
-using namespace cpl;
+#include <algorithm> // any_of
+#include <cstddef>   // size_t
+#include <iterator>  // begin, end
+
+using cpl::undirected_graph;
+using std::begin;
+using std::end;
 using std::size_t;
 
 TEST(UndirectedGraphTest, ConstructWell) {
@@ -27,7 +31,7 @@ TEST(UndirectedGraphTest, LinksWell) {
   undirected_graph g(5);
 
   auto connects_to = [&g](size_t u, size_t v) {
-    auto &u_edges = g.out_edges(u);
+    auto& u_edges = g.out_edges(u);
     return std::any_of(begin(u_edges), end(u_edges), [&g, v](size_t e) {
       return g.source(e) == v || g.target(e) == v;
     });

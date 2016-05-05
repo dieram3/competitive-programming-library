@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -9,10 +9,10 @@
 #include <cpl/graph/min_st_cut.hpp>
 #include <cpl/utility/matrix.hpp>
 
-#include <algorithm> // for std::min
-#include <limits>    // for std::numeric_limits
-#include <vector>    // for std::vector
-#include <cstddef>   // for std::size_t
+#include <algorithm> // min
+#include <cstddef>   // size_t
+#include <limits>    // numeric_limits
+#include <vector>    // vector
 
 namespace cpl {
 
@@ -43,9 +43,9 @@ namespace cpl {
 /// <tt>O(V^2 * E^2)</tt>.
 ///
 template <typename Graph, typename Flow>
-matrix<Flow> gusfield_all_pairs_min_cut(const Graph &g,
-                                        const std::vector<size_t> &rev_edge,
-                                        const std::vector<Flow> &capacity) {
+matrix<Flow> gusfield_all_pairs_min_cut(const Graph& g,
+                                        const std::vector<size_t>& rev_edge,
+                                        const std::vector<Flow>& capacity) {
 
   const size_t num_vertices = g.num_vertices();
   std::vector<size_t> parent(num_vertices);

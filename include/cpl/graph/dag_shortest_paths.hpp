@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,11 +6,11 @@
 #ifndef CPL_GRAPH_DAG_SHORTEST_PATHS_HPP
 #define CPL_GRAPH_DAG_SHORTEST_PATHS_HPP
 
-#include <algorithm>  // For std::for_each, std::min
-#include <functional> // For std::function
-#include <limits>     // For std::numeric_limits
-#include <vector>     // For std::vector
-#include <cstddef>    // For std::size_t
+#include <algorithm>  // for_each, min
+#include <cstddef>    // size_t
+#include <functional> // function
+#include <limits>     // numeric_limits
+#include <vector>     // vector
 
 namespace cpl {
 
@@ -32,9 +32,9 @@ namespace cpl {
 /// The time complexity is <tt>O(V + E)</tt>.
 ///
 template <typename Graph, typename Distance>
-void dag_shortest_paths(const Graph &g, const size_t source,
-                        const std::vector<Distance> &weight,
-                        std::vector<Distance> &dist) {
+void dag_shortest_paths(const Graph& g, const size_t source,
+                        const std::vector<Distance>& weight,
+                        std::vector<Distance>& dist) {
   const size_t num_v = g.num_vertices();
   std::vector<bool> visited(num_v);
   std::vector<size_t> rev_topo;

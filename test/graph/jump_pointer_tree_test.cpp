@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,11 @@
 #include <cpl/graph/jump_pointer_tree.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/undirected_graph.hpp>
-#include <cassert> // For assert
+#include <cpl/graph/undirected_graph.hpp> // undirected_graph
+#include <cassert>                        // assert
 
-using namespace cpl;
+using cpl::jump_pointer_tree;
+using cpl::undirected_graph;
 
 namespace {
 class JumpPointerTreeTest : public ::testing::Test {

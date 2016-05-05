@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,15 +6,17 @@
 #include <cpl/graph/floyd_warshall_shortest.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/graph/directed_graph.hpp>
-#include <cpl/utility/matrix.hpp>
+#include <cpl/graph/directed_graph.hpp> // directed_graph
+#include <cpl/utility/matrix.hpp>       // matrix
+#include <cstddef>                      // size_t
+#include <iterator>                     // back_inserter
+#include <limits>                       // numeric_limits
+#include <vector>                       // vector
 
-#include <iterator> // For std::back_inserter
-#include <limits>   // For std::numeric_limits
-#include <vector>   // For std::vector
-#include <cstddef>  // For std::size_t
-
-using namespace cpl;
+using cpl::floyd_warshall_all_pairs_shortest_paths;
+using cpl::floyd_warshall_path;
+using cpl::directed_graph;
+using cpl::matrix;
 using std::vector;
 using std::size_t;
 
@@ -26,7 +28,7 @@ class FloydWarshallAPSPTest : public ::testing::Test {
 public:
   FloydWarshallAPSPTest() : g(0) {}
 
-  void build10VerticesGraph() {
+  void build_10_vertices_graph() {
     g = directed_graph(10);
     add_edge(0, 4, -3);
     add_edge(1, 2, 3);
@@ -63,7 +65,7 @@ protected:
 } // end anonymous namespace
 
 TEST_F(FloydWarshallAPSPTest, ShortestDistancesTest) {
-  build10VerticesGraph();
+  build_10_vertices_graph();
 
   vector<vector<int>> expected(10);
   expected[0] = {0, -1, 2, 6, -3, 0, 2, -4, -1, inf};
@@ -82,14 +84,16 @@ TEST_F(FloydWarshallAPSPTest, ShortestDistancesTest) {
   matrix<size_t> next({0, 0});
   floyd_warshall_all_pairs_shortest_paths(g, weight, dist, next);
 
-  for (size_t i = 0; i != 10; ++i)
-    for (size_t j = 0; j != 10; ++j)
+  for (size_t i = 0; i != 10; ++i) {
+    for (size_t j = 0; j != 10; ++j) {
       EXPECT_EQ(expected[i][j], (dist[{i, j}])) << " at (" << i << ", " << j
                                                 << ")";
+    }
+  }
 }
 
 TEST_F(FloydWarshallAPSPTest, PathTest) {
-  build10VerticesGraph();
+  build_10_vertices_graph();
   matrix<int> dist({0, 0});
   matrix<size_t> next({0, 0});
   floyd_warshall_all_pairs_shortest_paths(g, weight, dist, next);

@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,10 +6,10 @@
 #ifndef CPL_GRAPH_BRIDGES_HPP
 #define CPL_GRAPH_BRIDGES_HPP
 
-#include <algorithm>  // For std::min
-#include <functional> // For std::function
-#include <vector>     // For std::vector
-#include <cstddef>    // For std::size_t
+#include <algorithm>  // min
+#include <cstddef>    // size_t
+#include <functional> // function
+#include <vector>     // vector
 
 namespace cpl {
 
@@ -35,7 +35,7 @@ namespace cpl {
 /// \sa connected_components
 ///
 template <typename Graph, typename UnaryFunction>
-void find_bridges(const Graph &g, UnaryFunction output_bridge) {
+void find_bridges(const Graph& g, UnaryFunction output_bridge) {
 
   const size_t num_v = g.num_vertices();
   size_t time = 0;

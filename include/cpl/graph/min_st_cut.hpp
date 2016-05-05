@@ -1,4 +1,4 @@
-//          Copyright Diego Ramírez August 2015
+//          Copyright Diego Ramirez 2015
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -6,12 +6,10 @@
 #ifndef CPL_GRAPH_MIN_ST_CUT_HPP
 #define CPL_GRAPH_MIN_ST_CUT_HPP
 
-#include <cpl/graph/edmonds_karp_max_flow.hpp>
-
-#include <stack>   // for std::stack
-#include <utility> // for std::declval
-#include <vector>  // for std::vector
-#include <cstddef> // for std::size_t
+#include <cpl/graph/edmonds_karp_max_flow.hpp> // edmonds_karp_max_flow
+#include <cstddef>                             // size_t
+#include <stack>                               // stack
+#include <vector>                              // vector
 
 namespace cpl {
 
@@ -50,10 +48,10 @@ namespace cpl {
 /// <tt>O(V * E^2)</tt> (See Edmonds-Karp max-flow for details).
 ///
 template <typename Graph, typename Flow>
-Flow min_st_cut(const Graph &g, const size_t source, const size_t target,
-                const std::vector<size_t> &rev_edge,
-                const std::vector<Flow> &capacity,
-                std::vector<bool> &source_side) {
+Flow min_st_cut(const Graph& g, const size_t source, const size_t target,
+                const std::vector<size_t>& rev_edge,
+                const std::vector<Flow>& capacity,
+                std::vector<bool>& source_side) {
 
   std::vector<Flow> residual;
   const auto max_flow =
