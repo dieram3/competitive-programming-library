@@ -29,23 +29,27 @@ namespace cpl {
 ///
 template <typename T>
 T pollard_rho_factor(const T n) {
-  auto find_factor = [&](const T c) {
+  auto find_factor = [n](const T c) {
     auto abs_diff = [](T x, T y) { return x < y ? y - x : x - y; };
     unsigned long power = 1, lam = 1;
     T x = 2, x_fixed = 2;
     T factor = 1;
     while (factor == 1) {
-      if (power == lam)
+      if (power == lam) {
         x_fixed = x, power *= 2, lam = 0;
+      }
       x = mod_add(mod_mul(x, x, n), c, n);
       ++lam;
       factor = gcd(abs_diff(x, x_fixed), n);
     }
     return factor;
   };
+  T step = 0;
   T factor = n;
-  for (T c = 1; factor == n; ++c)
-    factor = find_factor(c);
+  while (factor == n) {
+    ++step;
+    factor = find_factor(step);
+  }
   return factor;
 }
 
