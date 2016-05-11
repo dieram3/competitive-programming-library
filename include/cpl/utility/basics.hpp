@@ -15,8 +15,8 @@ namespace cpl {
 /// \param n The number of times to invoke \p f.
 /// \param f The function to be invoked on each repetition.
 ///
-template <typename Size, typename UnaryFunction>
-inline void repeat(const Size n, UnaryFunction f) {
+template <typename Size, typename NullaryFunction>
+inline void repeat(const Size n, NullaryFunction f) {
   for (Size i = 0; i < n; ++i)
     f();
 }

@@ -8,7 +8,7 @@
 
 using cpl::repeat;
 
-TEST(repeat, WorksWell) {
+TEST(RepeatTest, WorksWell) {
   int value = 0;
   repeat(13, [&value] { ++value; });
   EXPECT_EQ(13, value);
