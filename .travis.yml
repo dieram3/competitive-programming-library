@@ -1,8 +1,6 @@
+sudo: required
+dist: precise
 language: cpp
-
-branches:
-  only:
-    - master
 
 env:
   - BUILD_TYPE=Debug
@@ -13,10 +11,10 @@ before_install:
   - sudo apt-get -qq update
 
 install:
-# Install cmake 3.1.3
-  - wget --no-check-certificate https://www.cmake.org/files/v3.1/cmake-3.1.3-Linux-x86_64.tar.gz
-  - tar -xzf cmake-3.1.3-Linux-x86_64.tar.gz
-  - sudo cp -fR cmake-3.1.3-Linux-x86_64/* /usr
+# Install cmake 3.6.0
+  - wget --no-check-certificate https://www.cmake.org/files/v3.6/cmake-3.6.0-Linux-x86_64.tar.gz
+  - tar -xzf cmake-3.6.0-Linux-x86_64.tar.gz
+  - sudo cp -fR cmake-3.6.0-Linux-x86_64/* /usr
 
 # Install gcc, g++ and gcov (implicitly) version 5
   - sudo apt-get -qq install gcc-5 g++-5
