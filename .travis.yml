@@ -2,6 +2,10 @@ sudo: required
 dist: precise
 language: cpp
 
+branches:
+  only:
+    - master
+
 env:
   - BUILD_TYPE=Debug
   - BUILD_TYPE=Release
