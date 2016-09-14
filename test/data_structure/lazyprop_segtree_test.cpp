@@ -167,10 +167,12 @@ TEST_F(LazypropSegtreeTest,
       return must_assign ? value : reduced_val + value;
     }
     op_list& push(const op_list& op) {
-      if (op.must_assign)
-        value = op.value, must_assign = true;
-      else
+      if (op.must_assign) {
+        value = op.value;
+        must_assign = true;
+      } else {
         value += op.value;
+      }
       return *this; // Just for convenience, not required
     }
   };
