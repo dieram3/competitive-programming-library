@@ -91,9 +91,12 @@ size_t biconnected_components(const Graph& g, std::vector<size_t>& bicomp,
     if (low[src] < dtm[parent])
       return;
     is_articulation[parent] = true;
-    while (dtm[stack.top().second] >= dtm[src])
-      bicomp[stack.top().first] = comp_cnt, stack.pop();
-    bicomp[stack.top().first] = comp_cnt++, stack.pop();
+    while (dtm[stack.top().second] >= dtm[src]) {
+      bicomp[stack.top().first] = comp_cnt;
+      stack.pop();
+    }
+    bicomp[stack.top().first] = comp_cnt++;
+    stack.pop();
   };
 
   for (size_t v = 0; v != num_vertices; ++v) {

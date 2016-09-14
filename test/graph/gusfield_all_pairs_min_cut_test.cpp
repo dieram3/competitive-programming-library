@@ -13,7 +13,6 @@
 
 using cpl::gusfield_all_pairs_min_cut;
 using cpl::directed_graph;
-using cpl::matrix;
 using std::size_t;
 
 TEST(GusfieldAllPairsMinCutTest, SmallGraphTest) {
