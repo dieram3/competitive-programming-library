@@ -73,9 +73,10 @@ TEST(MatrixTest, AssignDefaultTest) {
   mat.assign({3, 4});
   ASSERT_EQ(3, mat.rows());
   ASSERT_EQ(4, mat.cols());
-  for (size_t i = 0; i != mat.rows(); ++i)
+  for (size_t i = 0; i != mat.rows(); ++i) {
     for (size_t j = 0; j != mat.cols(); ++j)
       EXPECT_EQ(0, (mat[{i, j}])) << " at (" << i << ", " << j << ")";
+  }
 }
 
 TEST(MatrixTest, AssignWithFillValueTest) {
@@ -83,7 +84,8 @@ TEST(MatrixTest, AssignWithFillValueTest) {
   mat.assign({5, 4}, 7);
   ASSERT_EQ(5, mat.rows());
   ASSERT_EQ(4, mat.cols());
-  for (size_t i = 0; i != mat.rows(); ++i)
+  for (size_t i = 0; i != mat.rows(); ++i) {
     for (size_t j = 0; j != mat.cols(); ++j)
       EXPECT_EQ(7, (mat[{i, j}])) << " at (" << i << ", " << j << ")";
+  }
 }
