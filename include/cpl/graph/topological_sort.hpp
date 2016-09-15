@@ -90,7 +90,7 @@ void prioritized_topological_sort(const Graph& g, Comp comp,
                                   UnaryFunction output_vertex) {
   const size_t num_vertices = g.num_vertices();
   const size_t num_edges = g.num_edges();
-  std::priority_queue<void, std::vector<size_t>, Comp> queue(comp);
+  std::priority_queue<size_t, std::vector<size_t>, Comp> queue(comp);
   std::vector<size_t> in_degree(num_vertices);
 
   for (size_t e = 0; e != num_edges; ++e)

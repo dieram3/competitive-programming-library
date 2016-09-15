@@ -219,8 +219,8 @@ private:
 
 private:
   // Data variables
-  size_t num_elems;
-  Combine combine;
+  size_t num_elems{};
+  Combine combine{};
   std::vector<T> values;
   std::vector<OpList> ops;
   // Cache variables

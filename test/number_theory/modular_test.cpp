@@ -134,21 +134,43 @@ protected:
 } // end anonymous namespace
 
 TEST_F(ModInverseTest, PrimeModulesTest) {
-  set_mod(2), check_inverses(1, 1);
-  set_mod(3), check_inverses(2, 2);
-  set_mod(7), check_inverses(2, 4);
-  set_mod(47), check_inverses(6, 8);
-  set_mod(373), check_inverses(17, 22);
-  set_mod(7919), check_inverses(55, 144);
-  set_mod(1000000007), check_inverses(504, 1984127);
-  set_mod(2147483647), check_inverses(32768, 65536);
+  set_mod(2);
+  check_inverses(1, 1);
+
+  set_mod(3);
+  check_inverses(2, 2);
+
+  set_mod(7);
+  check_inverses(2, 4);
+
+  set_mod(47);
+  check_inverses(6, 8);
+
+  set_mod(373);
+  check_inverses(17, 22);
+
+  set_mod(7919);
+  check_inverses(55, 144);
+
+  set_mod(1000000007);
+  check_inverses(504, 1984127);
+
+  set_mod(2147483647);
+  check_inverses(32768, 65536);
 }
 
 TEST_F(ModInverseTest, NonPrimeModulesTest) {
-  set_mod(1), check_inverses(0, 0);
-  set_mod(4), check_inverses(1, 1);
-  set_mod(8), check_inverses(3, 3);
-  set_mod(9), check_inverses(2, 5);
+  set_mod(1);
+  check_inverses(0, 0);
+
+  set_mod(4);
+  check_inverses(1, 1);
+
+  set_mod(8);
+  check_inverses(3, 3);
+
+  set_mod(9);
+  check_inverses(2, 5);
 
   set_mod(63);
   check_inverses(1, 1);

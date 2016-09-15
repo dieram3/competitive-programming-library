@@ -27,8 +27,10 @@ public:
   /// Linear in the number of elements.
   ///
   explicit disjoint_set(size_t n) : parent(new size_t[n]), rank(new size_t[n]) {
-    for (size_t x = 0; x != n; ++x)
-      parent[x] = x, rank[x] = 0;
+    for (size_t x = 0; x != n; ++x) {
+      parent[x] = x;
+      rank[x] = 0;
+    }
   }
 
   /// \brief Finds the representative element of the set containing \p x.
@@ -62,12 +64,15 @@ public:
     y = find_set(y);
     if (x == y)
       return false;
-    if (rank[x] < rank[y])
+
+    if (rank[x] < rank[y]) {
       parent[x] = y;
-    else if (rank[x] > rank[y])
+    } else if (rank[x] > rank[y]) {
       parent[y] = x;
-    else
-      parent[y] = x, ++rank[x];
+    } else {
+      parent[y] = x;
+      ++rank[x];
+    }
     return true;
   }
 };

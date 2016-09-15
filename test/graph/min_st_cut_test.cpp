@@ -7,13 +7,28 @@
 #include <gtest/gtest.h>
 
 #include <cpl/graph/directed_graph.hpp> // directed_graph
+#include <algorithm>                    // transform
+#include <cassert>                      // assert
 #include <cstddef>                      // size_t
+#include <iterator>                     // back_inserter
 #include <vector>                       // vector
 
 using cpl::min_st_cut;
 using cpl::directed_graph;
 using std::size_t;
+using std::back_inserter;
 using bool_vec = std::vector<bool>;
+
+static bool_vec make_bool_vec(const std::string& str) {
+  std::vector<bool> res;
+  res.reserve(str.size());
+  std::transform(begin(str), end(str), back_inserter(res), [](const char c) {
+    assert(c == '0' || c == '1');
+    return c == '1';
+  });
+  assert(res.size() == str.size());
+  return res;
+}
 
 static std::vector<size_t> get_cut_set(const directed_graph& g,
                                        bool_vec& source_side) {
@@ -54,7 +69,7 @@ TEST(MinSTCutTest, WorksForSmallCases) {
 
   bool_vec source_side;
   EXPECT_EQ(23, min_st_cut(graph, 0, 5, rev_edge, capacity, source_side));
-  ASSERT_EQ(bool_vec({1, 1, 1, 0, 1, 0}), source_side);
+  ASSERT_EQ(make_bool_vec("111010"), source_side);
 
   const auto cut_set = get_cut_set(graph, source_side);
 
@@ -102,7 +117,7 @@ TEST(MinSTCutTest, BidirGraphTest) {
 
   bool_vec source_side;
   EXPECT_EQ(2, min_st_cut(graph, 0, 11, rev_edge, capacity, source_side));
-  EXPECT_EQ(bool_vec({1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0}), source_side);
+  EXPECT_EQ(make_bool_vec("1111111011000"), source_side);
 
   const auto cut_set = get_cut_set(graph, source_side);
 

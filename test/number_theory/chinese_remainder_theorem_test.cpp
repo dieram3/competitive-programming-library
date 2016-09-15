@@ -32,7 +32,7 @@ class ChineseRemainderTheoremTest : public ::testing::Test {
 
 protected:
   void check(const std::vector<int_t>& a, const std::vector<int_t>& m) {
-    assert(a.size() > 0 && a.size() == m.size());
+    assert(!a.empty() && a.size() == m.size());
     ASSERT_TRUE(pairwise_coprime(m));
     const int_t x = chinese_remainder_theorem(a, m);
     EXPECT_LE(0, x);

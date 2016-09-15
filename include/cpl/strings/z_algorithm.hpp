@@ -39,8 +39,10 @@ inline std::vector<size_t> z_algorithm(const std::string& str) {
       z[i] = std::min(r - i, z[i - l]);
     while (i + z[i] < n && str[z[i]] == str[i + z[i]])
       ++z[i];
-    if (i + z[i] > r)
-      l = i, r = i + z[i];
+    if (i + z[i] > r) {
+      l = i;
+      r = i + z[i];
+    }
   }
   return z;
 }

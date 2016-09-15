@@ -22,7 +22,7 @@ TEST(CountingSortTest, Sorts) {
 
   const auto minmax = std::minmax_element(vec.begin(), vec.end());
   const int base = *minmax.first;
-  const size_t num_keys = *minmax.second - *minmax.first + 1;
+  const auto num_keys = static_cast<size_t>(*minmax.second - *minmax.first) + 1;
   auto get_key = [base](const int x) -> size_t { return x - base; };
 
   counting_sort(vec.begin(), vec.end(), num_keys, get_key);

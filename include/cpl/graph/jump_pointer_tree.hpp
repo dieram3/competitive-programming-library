@@ -26,8 +26,10 @@ class jump_pointer_tree {
 private:
   static size_t parents_size(size_t depth) {
     size_t result = 0;
-    while (depth > 0)
-      ++result, depth >>= 1;
+    while (depth > 0) {
+      ++result;
+      depth >>= 1;
+    }
     return result;
   }
   void add_leaf(const size_t leaf, const size_t parent) {

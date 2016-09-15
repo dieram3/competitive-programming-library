@@ -26,13 +26,14 @@ template <typename T>
 matrix<T> mat_mul(const matrix<T>& a, const matrix<T>& b) {
   assert(a.cols() == b.rows() && "Matrices cannot be multiplied");
   matrix<T> r({a.rows(), b.cols()});
-  for (size_t i = 0; i < r.rows(); ++i)
+  for (size_t i = 0; i < r.rows(); ++i) {
     for (size_t j = 0; j < r.cols(); ++j) {
       T sum = 0;
       for (size_t k = 0; k < a.cols(); ++k)
         sum += a[{i, k}] * b[{k, j}];
       r[{i, j}] = sum;
     }
+  }
   return r;
 }
 
