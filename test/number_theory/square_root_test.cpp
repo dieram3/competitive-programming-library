@@ -44,32 +44,32 @@ public:
   }
 };
 
-static constexpr rare_int operator+(rare_int lhs, rare_int rhs) {
+constexpr rare_int operator+(rare_int lhs, rare_int rhs) {
   return rare_int{lhs.get() + rhs.get()};
 }
-static constexpr rare_int operator-(rare_int lhs, rare_int rhs) {
+constexpr rare_int operator-(rare_int lhs, rare_int rhs) {
   return rare_int{lhs.get() - rhs.get()};
 }
-static constexpr rare_int operator*(rare_int lhs, rare_int rhs) {
+constexpr rare_int operator*(rare_int lhs, rare_int rhs) {
   return rare_int{lhs.get() * rhs.get()};
 }
-static constexpr rare_int operator<<(rare_int num, unsigned b) {
+constexpr rare_int operator<<(rare_int num, unsigned b) {
   return rare_int{num.get() << b};
 }
-static constexpr bool operator==(unsigned lhs, rare_int rhs) {
+constexpr bool operator==(unsigned lhs, rare_int rhs) {
   return lhs == rhs.get();
 }
-static constexpr bool operator<(rare_int lhs, rare_int rhs) {
+constexpr bool operator<(rare_int lhs, rare_int rhs) {
   return lhs.get() < rhs.get();
 }
-static constexpr bool operator<=(rare_int lhs, rare_int rhs) {
+constexpr bool operator<=(rare_int lhs, rare_int rhs) {
   return lhs.get() <= rhs.get();
 }
-static constexpr bool operator>(rare_int lhs, rare_int rhs) {
+constexpr bool operator>(rare_int lhs, rare_int rhs) {
   return lhs.get() > rhs.get();
 }
 
-static double sqrt(rare_int x) {
+double sqrt(rare_int x) {
   if (x.get() < 1000)
     return std::sqrt(x.get());
   if (x.get() % 2 == 0)
@@ -77,7 +77,7 @@ static double sqrt(rare_int x) {
   return std::sqrt(x.get()) - 5;
 }
 
-static std::ostream& operator<<(std::ostream& os, rare_int num) {
+std::ostream& operator<<(std::ostream& os, rare_int num) {
   return os << num.get();
 }
 } // end anonymous namespace
