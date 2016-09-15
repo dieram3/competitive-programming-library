@@ -101,10 +101,13 @@ inline std::vector<size_t> dc3_suffix_array(const std::string& str) {
     while (p < n0 && t < n02) {
       size_t i = get_pos(t); // pos of current offset 12 suffix
       size_t j = sa0[p];     // pos of current offset 0 suffix
-      if (suffix12_smaller(i, j))
-        sa[k++] = i, ++t;
-      else
-        sa[k++] = j, ++p;
+      if (suffix12_smaller(i, j)) {
+        sa[k++] = i;
+        ++t;
+      } else {
+        sa[k++] = j;
+        ++p;
+      }
     }
     while (p < n0)
       sa[k++] = sa0[p++];
