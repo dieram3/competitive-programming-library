@@ -181,7 +181,7 @@ OutputIt continued_fraction(const rational<T>& r, OutputIt out_it) {
 ///
 template <typename T>
 rational<T> evaluate_continued_fraction(const std::vector<T>& coeffs) {
-  assert(coeffs.size() > 0);
+  assert(!coeffs.empty());
   rational<T> r{coeffs.back()};
   std::for_each(coeffs.rbegin() + 1, coeffs.rend(),
                 [&](const T& ai) { r = rational<T>(ai) + reciprocal(r); });

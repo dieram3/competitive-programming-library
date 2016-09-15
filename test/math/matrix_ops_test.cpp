@@ -34,12 +34,13 @@ template <typename T>
 static bool is_identity(const matrix<T>& mat) {
   if (!is_square(mat))
     return false;
-  for (size_t i = 0; i < mat.rows(); ++i)
+  for (size_t i = 0; i < mat.rows(); ++i) {
     for (size_t j = 0; j < mat.cols(); ++j) {
       T expected = (i == j) ? 1 : 0;
       if (mat[{i, j}] != expected)
         return false;
     }
+  }
   return true;
 }
 
@@ -49,10 +50,12 @@ template <typename T>
 static bool operator==(const matrix<T>& a, const matrix<T>& b) {
   if (a.rows() != b.rows() || a.cols() != b.cols())
     return false;
-  for (size_t i = 0; i < a.rows(); ++i)
-    for (size_t j = 0; j < a.cols(); ++j)
+  for (size_t i = 0; i < a.rows(); ++i) {
+    for (size_t j = 0; j < a.cols(); ++j) {
       if (a[{i, j}] != b[{i, j}])
         return false;
+    }
+  }
   return true;
 }
 
