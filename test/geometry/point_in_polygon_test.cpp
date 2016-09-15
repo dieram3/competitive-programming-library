@@ -8,6 +8,7 @@
 
 #include <cpl/geometry/point_2d.hpp> // point
 #include <cassert>                   // assert
+#include <initializer_list>          // initializer_list
 #include <vector>                    // vector
 
 namespace {
@@ -18,15 +19,28 @@ protected:
   using point_t = cpl::point<scalar_t>;
 
 protected:
-  void add(scalar_t x, scalar_t y) {
-    poly.emplace_back(x, y);
+  void add(point_t point) {
+    poly.emplace_back(point);
   }
-  void rel_add(scalar_t dx, scalar_t dy) {
-    add(poly.back().x + dx, poly.back().y + dy);
+  void add(std::initializer_list<point_t> points) {
+    for (const auto point : points) {
+      add(point);
+    }
   }
+
+  void rel_add(point_t delta) {
+    assert(!poly.empty()); // There must be a point of reference.
+    add(poly.back() + delta);
+  }
+  void rel_add(std::initializer_list<point_t> deltas) {
+    for (const auto delta : deltas) {
+      rel_add(delta);
+    }
+  }
+
   bool in_polygon(scalar_t x, scalar_t y) const {
     assert(poly.size() >= 3);
-    return cpl::point_in_polygon(point_t(x, y), poly);
+    return cpl::point_in_polygon(point_t{x, y}, poly);
   }
 
 protected:
@@ -36,26 +50,26 @@ protected:
 } // end anonymous namespace
 
 TEST_F(PointInPolygonTest, TriangleTest) {
-  add(1, 1), add(4, 3), add(2, 4);
+  add({{1, 1}, {4, 3}, {2, 4}});
   EXPECT_FALSE(in_polygon(6, 6));
   EXPECT_TRUE(in_polygon(3, 3));
 }
 
 TEST_F(PointInPolygonTest, SquareTest) {
-  add(0, 0), add(0, 4), add(4, 4), add(4, 0);
+  add({{0, 0}, {0, 4}, {4, 4}, {4, 0}});
   EXPECT_FALSE(in_polygon(6, 6));
   EXPECT_TRUE(in_polygon(2, 3));
 }
 
 TEST_F(PointInPolygonTest, CollinearPointsTest) {
-  add(0, 0), add(0, 4), add(4, 4), add(4, 0);
+  add({{0, 0}, {0, 4}, {4, 4}, {4, 0}});
   EXPECT_FALSE(in_polygon(-1, 0));
   EXPECT_FALSE(in_polygon(5, 0));
   EXPECT_FALSE(in_polygon(0, 6));
   EXPECT_FALSE(in_polygon(4, 6));
 
   poly.clear();
-  add(0, 0), add(1, 1), add(2, 0);
+  add({{0, 0}, {1, 1}, {2, 0}});
 
   EXPECT_FALSE(in_polygon(2, 2));
   EXPECT_FALSE(in_polygon(0, 2));
@@ -66,8 +80,7 @@ TEST_F(PointInPolygonTest, CollinearPointsTest) {
 }
 
 TEST_F(PointInPolygonTest, NonConvexPolygonTest) {
-  add(1, 1), add(3, 0), add(4, 2), add(6, 1);
-  add(3, 6), add(4, 3), add(2, 4);
+  add({{1, 1}, {3, 0}, {4, 2}, {6, 1}, {3, 6}, {4, 3}, {2, 4}});
 
   EXPECT_TRUE(in_polygon(2, 3));
   EXPECT_TRUE(in_polygon(5, 2));
@@ -79,13 +92,12 @@ TEST_F(PointInPolygonTest, NonConvexPolygonTest) {
 }
 
 TEST_F(PointInPolygonTest, RingLikePolygonTest) {
-  add(2, 3);
-  rel_add(-5, 0), rel_add(0, -2), rel_add(0, -2), rel_add(0, -2);
-  rel_add(3, 0), rel_add(0, -1), rel_add(2, 0), rel_add(0, 1);
-  rel_add(2, 0), rel_add(0, 3), rel_add(1, 1), rel_add(0, 5);
-  rel_add(-2, 0), rel_add(-4, 0), rel_add(-2, 0), rel_add(0, -2);
-  rel_add(2, 0), rel_add(0, 1), rel_add(4, 0), rel_add(0, -4);
-  rel_add(0, -3), rel_add(-4, 0), rel_add(0, 4), rel_add(3, 0);
+  add({2, 3});
+  rel_add({
+      {-5, 0}, {0, -2}, {0, -2}, {0, -2}, {3, 0},  {0, -1}, {2, 0},  {0, 1},
+      {2, 0},  {0, 3},  {1, 1},  {0, 5},  {-2, 0}, {-4, 0}, {-2, 0}, {0, -2},
+      {2, 0},  {0, 1},  {4, 0},  {0, -4}, {0, -3}, {-4, 0}, {0, 4},  {3, 0},
+  });
 
   ASSERT_EQ(25, poly.size());
   ASSERT_EQ(point_t(2, 2), poly.back());
@@ -120,16 +132,15 @@ TEST_F(PointInPolygonTest, RingLikePolygonTest) {
 }
 
 TEST_F(PointInPolygonTest, DistortedPolygonTest) {
-  add(-3, 2);
-  rel_add(2, 0), rel_add(2, 0), rel_add(1, 0), rel_add(-1, -1);
-  rel_add(1, -1), rel_add(1, 1), rel_add(-1, 2), rel_add(2, -1);
-  rel_add(1, -1), rel_add(-1, -1), rel_add(-1, 0), rel_add(-1, -2);
-  rel_add(-1, 1), rel_add(1, -2), rel_add(2, 1), rel_add(-1, 1);
-  rel_add(3, 0), rel_add(-1, -1), rel_add(0, -1), rel_add(-1, -1);
-  rel_add(-1, 0), rel_add(-1, 0), rel_add(-1, 1), rel_add(-1, 1);
-  rel_add(-1, -2), rel_add(-1, 2), rel_add(-1, -1), rel_add(-1, 2);
-  rel_add(1, 2), rel_add(1, -2), rel_add(-1, -1), rel_add(2, 1);
-  rel_add(0, -1), rel_add(2, 2), rel_add(-1, 1), rel_add(-1, -1);
+  add({-3, 2});
+  rel_add({
+      {2, 0},   {2, 0},   {1, 0},   {-1, -1}, {1, -1}, {1, 1},
+      {-1, 2},  {2, -1},  {1, -1},  {-1, -1}, {-1, 0}, {-1, -2},
+      {-1, 1},  {1, -2},  {2, 1},   {-1, 1},  {3, 0},  {-1, -1},
+      {0, -1},  {-1, -1}, {-1, 0},  {-1, 0},  {-1, 1}, {-1, 1},
+      {-1, -2}, {-1, 2},  {-1, -1}, {-1, 2},  {1, 2},  {1, -2},
+      {-1, -1}, {2, 1},   {0, -1},  {2, 2},   {-1, 1}, {-1, -1},
+  });
 
   ASSERT_EQ(37, poly.size());
   ASSERT_EQ(point_t(-1, 0), poly.back());
