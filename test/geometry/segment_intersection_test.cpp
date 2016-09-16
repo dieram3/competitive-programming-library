@@ -94,8 +94,18 @@ protected:
   std::vector<segment_t> set;
 
 protected:
-  void add(scalar_t px, scalar_t py, scalar_t qx, scalar_t qy) {
-    set.emplace_back(point_t(px, py), point_t(qx, qy));
+  static segment_t seg(point_t p, point_t q) {
+    return segment_t{p, q};
+  }
+
+  void add(const segment_t& segment) {
+    set.emplace_back(segment);
+  }
+
+  void add(std::initializer_list<segment_t> segments) {
+    for (const auto& elem : segments) {
+      add(elem);
+    }
   }
 
   bool finds(const size_t s0, const size_t s1) {
@@ -115,33 +125,45 @@ protected:
 } // End anonymous namespace
 
 TEST_F(FindIntersectionTest, CommonCrossingTest) {
-  add(2, 0, 4, 0), add(5, 0, 4, 3), add(4, 4, 0, 4);
-  add(3, 1, 2, 3), add(1, 0, 4, 3), add(0, 1, 1, 3);
+  add({
+      seg({2, 0}, {4, 0}), seg({5, 0}, {4, 3}), seg({4, 4}, {0, 4}),
+      seg({3, 1}, {2, 3}), seg({1, 0}, {4, 3}), seg({0, 1}, {1, 3}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(3, 4));
 
   set.clear();
-  add(-2, -1, 0, 1), add(-1, -1, 1, 1), add(0, -1, 2, 1), add(1, -1, 3, 1);
-  add(0, -2, 2, 2);
+  add({
+      seg({-2, -1}, {0, 1}), seg({-1, -1}, {1, 1}), seg({0, -1}, {2, 1}),
+      seg({1, -1}, {3, 1}), seg({0, -2}, {2, 2}),
+  });
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds(2, 4));
 
   // One intersection.
   set.clear();
-  add(1, 1, 2, 0), add(1, 4, 3, 4), add(3, 3, 4, 5), add(2, 5, 5, 4);
+  add({
+      seg({1, 1}, {2, 0}), seg({1, 4}, {3, 4}), seg({3, 3}, {4, 5}),
+      seg({2, 5}, {5, 4}),
+  });
   ASSERT_EQ(4, set.size());
   EXPECT_TRUE(finds(2, 3));
 
   // Two intersections.
   set.clear();
-  add(0, 0, 2, 3), add(0, 1, 1, 2), add(0, 5, 3, 4);
-  add(1, 0, 3, 0), add(0, 3, 4, 0), add(2, 4, 3, 5);
+  add({
+      seg({0, 0}, {2, 3}), seg({0, 1}, {1, 2}), seg({0, 5}, {3, 4}),
+      seg({1, 0}, {3, 0}), seg({0, 3}, {4, 0}), seg({2, 4}, {3, 5}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(0, 4));
 
   // Three intersections.
   set.clear();
-  add(-2, -1, 0, 1), add(-1, -1, 1, 1), add(0, -1, 2, 1), add(-2, 0, 2, 0);
+  add({
+      seg({-2, -1}, {0, 1}), seg({-1, -1}, {1, 1}), seg({0, -1}, {2, 1}),
+      seg({-2, 0}, {2, 0}),
+  });
   ASSERT_EQ(4, set.size());
   EXPECT_TRUE(finds(0, 3));
 }
@@ -153,115 +175,151 @@ TEST_F(FindIntersectionTest, NoIntersectionTest) {
 
   // Unique segment
   set.clear();
-  add(-50, -50, 10, 40);
+  add({{-50, -50}, {10, 40}});
   ASSERT_EQ(1, set.size());
   EXPECT_TRUE(finds_nothing());
 
   // Small test
   set.clear();
-  add(0, 0, 1, 2), add(1, -2, 1, -1), add(0, -1, 2, 0);
-  add(1, 3, -1, -1), add(-1, 0, 0, 2);
+  add({
+      seg({0, 0}, {1, 2}), seg({1, -2}, {1, -1}), seg({0, -1}, {2, 0}),
+      seg({1, 3}, {-1, -1}), seg({-1, 0}, {0, 2}),
+  });
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds_nothing());
 
   // Big test
   set.clear();
-  add(0, 2, 0, 3), add(1, -2, 3, 1), add(1, -3, -1, -1), add(0, 0, 0, -1);
-  add(3, 2, 2, 5), add(2, -3, 4, 2), add(0, 1, 1, -1), add(-1, 0, -2, -2);
-  add(-2, 0, -1, 3), add(2, 2, 1, 6), add(1, 2, 1, 3), add(1, 4, 1, 5);
-  add(-2, 2, -1, 5), add(0, 4, 0, 5);
+  add({
+      seg({0, 2}, {0, 3}), seg({1, -2}, {3, 1}), seg({1, -3}, {-1, -1}),
+      seg({0, 0}, {0, -1}), seg({3, 2}, {2, 5}), seg({2, -3}, {4, 2}),
+      seg({0, 1}, {1, -1}), seg({-1, 0}, {-2, -2}), seg({-2, 0}, {-1, 3}),
+      seg({2, 2}, {1, 6}), seg({1, 2}, {1, 3}), seg({1, 4}, {1, 5}),
+      seg({-2, 2}, {-1, 5}), seg({0, 4}, {0, 5}),
+  });
   ASSERT_EQ(14, set.size());
   EXPECT_TRUE(finds_nothing());
 }
 
 TEST_F(FindIntersectionTest, SequentialSegmentsTest) {
   // vertical lines
-  add(0, 0, 0, 1), add(0, 1, 0, 2), add(1, 0, 1, 1), add(2, 2, 3, 3);
-  add(-1, -1, 1, -1), add(-1, 0, -1, 3), add(-2, 0, -2, 1), add(-3, 2, -2, 2);
+  add({
+      seg({0, 0}, {0, 1}), seg({0, 1}, {0, 2}), seg({1, 0}, {1, 1}),
+      seg({2, 2}, {3, 3}), seg({-1, -1}, {1, -1}), seg({-1, 0}, {-1, 3}),
+      seg({-2, 0}, {-2, 1}), seg({-3, 2}, {-2, 2}),
+  });
   ASSERT_EQ(8, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // horizontal line
   set.clear();
-  add(0, 0, 1, 0), add(1, 0, 2, 0), add(0, 1, 1, 1);
-  add(1, -1, 2, -1), add(3, -1, 3, 2), add(-2, -1, -2, 2);
+  add({
+      seg({0, 0}, {1, 0}), seg({1, 0}, {2, 0}), seg({0, 1}, {1, 1}),
+      seg({1, -1}, {2, -1}), seg({3, -1}, {3, 2}), seg({-2, -1}, {-2, 2}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // diagonal line
   set.clear();
-  add(0, 0, 1, 1), add(1, 1, 2, 2), add(0, 1, 1, 2);
-  add(1, -1, 2, 0), add(3, -3, 3, 4);
+  add({
+      seg({0, 0}, {1, 1}), seg({1, 1}, {2, 2}), seg({0, 1}, {1, 2}),
+      seg({1, -1}, {2, 0}), seg({3, -3}, {3, 4}),
+  });
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // perpendicular lines
   set.clear();
-  add(0, 0, 0, 1), add(0, 1, 1, 1), add(-1, -1, 2, -1), add(-1, 1, -1, 0);
+  add({
+      seg({0, 0}, {0, 1}), seg({0, 1}, {1, 1}), seg({-1, -1}, {2, -1}),
+      seg({-1, 1}, {-1, 0}),
+  });
   ASSERT_EQ(4, set.size());
   EXPECT_TRUE(finds(1, 0));
 }
 
 TEST_F(FindIntersectionTest, OverlappedSegments) {
   // vertical lines
-  add(0, 0, 0, 2), add(0, 1, 0, 3), add(1, 0, 1, 1), add(2, 2, 3, 3);
-  add(-1, -1, 1, -1), add(-1, 0, -1, 3), add(-2, 0, -2, 1), add(-3, 2, -2, 2);
+  add({
+      seg({0, 0}, {0, 2}), seg({0, 1}, {0, 3}), seg({1, 0}, {1, 1}),
+      seg({2, 2}, {3, 3}), seg({-1, -1}, {1, -1}), seg({-1, 0}, {-1, 3}),
+      seg({-2, 0}, {-2, 1}), seg({-3, 2}, {-2, 2}),
+  });
   ASSERT_EQ(8, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // horizontal line
   set.clear();
-  add(0, 0, 2, 0), add(1, 0, 5, 0), add(0, 1, 1, 1);
-  add(1, -1, 2, -1), add(3, -1, 3, 2), add(-2, -1, -2, 2);
+  add({
+      seg({0, 0}, {2, 0}), seg({1, 0}, {5, 0}), seg({0, 1}, {1, 1}),
+      seg({1, -1}, {2, -1}), seg({3, -1}, {3, 2}), seg({-2, -1}, {-2, 2}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // diagonal line
   set.clear();
-  add(0, 0, 2, 2), add(1, 1, 3, 3), add(0, 1, 1, 2);
-  add(1, -1, 2, 0), add(3, -3, 3, 4);
+  add({
+      seg({0, 0}, {2, 2}), seg({1, 1}, {3, 3}), seg({0, 1}, {1, 2}),
+      seg({1, -1}, {2, 0}), seg({3, -3}, {3, 4}),
+  });
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // perpendicular lines
   set.clear();
-  add(0, 0, 0, 2), add(0, 1, 1, 1), add(-1, -1, 2, -1), add(-1, 1, -1, 0);
+  add({
+      seg({0, 0}, {0, 2}), seg({0, 1}, {1, 1}), seg({-1, -1}, {2, -1}),
+      seg({-1, 1}, {-1, 0}),
+  });
   ASSERT_EQ(4, set.size());
   EXPECT_TRUE(finds(1, 0));
 }
 
 TEST_F(FindIntersectionTest, TangentSegmentTest) {
   // Perpendicular case
-  add(0, 0, 0, 3), add(1, 0, 2, 2), add(0, 2, 1, 2);
-  add(-1, -1, -1, 1), add(-2, 1, -1, 2), add(-2, 2, -1, 3);
+  add({
+      seg({0, 0}, {0, 3}), seg({1, 0}, {2, 2}), seg({0, 2}, {1, 2}),
+      seg({-1, -1}, {-1, 1}), seg({-2, 1}, {-1, 2}), seg({-2, 2}, {-1, 3}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(2, 0));
 
   // Another perpendicular case
   set.clear();
-  add(-1, -1, 1, 1), add(1, -2, 2, 1), add(-3, 0, -2, 1), add(-1, 1, -2, 2);
-  add(0, 0, 1, -1), add(-1, -2, -2, 0);
+  add({
+      seg({-1, -1}, {1, 1}), seg({1, -2}, {2, 1}), seg({-3, 0}, {-2, 1}),
+      seg({-1, 1}, {-2, 2}), seg({0, 0}, {1, -1}), seg({-1, -2}, {-2, 0}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(4, 0));
 
   set.clear();
-  add(0, 2, 1, 0), add(0, 4, 1, 3), add(2, 1, 3, 4);
-  add(1, 1, 2, 4), add(1, 2, 3, 6);
+  add({
+      seg({0, 2}, {1, 0}), seg({0, 4}, {1, 3}), seg({2, 1}, {3, 4}),
+      seg({1, 1}, {2, 4}), seg({1, 2}, {3, 6}),
+  });
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds(4, 3));
 }
 
 TEST_F(FindIntersectionTest, CollinearSegmentsWithSameStartTest) {
-  add(0, 2, 1, 2), add(-2, 0, -1, 2), add(-1, 1, 1, 1);
-  add(0, 0, 1, -1), add(3, -1, 3, 1);
+  add({
+      seg({0, 2}, {1, 2}), seg({-2, 0}, {-1, 2}), seg({-1, 1}, {1, 1}),
+      seg({0, 0}, {1, -1}), seg({3, -1}, {3, 1}),
+  });
   EXPECT_TRUE(finds_nothing());
-  add(-1, 1, 1, 1);
+  add({{-1, 1}, {1, 1}});
   EXPECT_TRUE(finds(2, 5));
 
   set.clear();
-  add(1, 1, 0, 2), add(2, 1, 4, 4), add(1, 2, 2, 3), add(1, 3, 2, 4);
+  add({
+      seg({1, 1}, {0, 2}), seg({2, 1}, {4, 4}), seg({1, 2}, {2, 3}),
+      seg({1, 3}, {2, 4}),
+  });
   EXPECT_TRUE(finds_nothing());
-  add(1, 2, 3, 4);
+  add({{1, 2}, {3, 4}});
   EXPECT_TRUE(finds(2, 4));
 }
 
