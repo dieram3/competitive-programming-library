@@ -8,6 +8,8 @@
 
 #include <cpl/geometry/point_2d.hpp> // point
 #include <algorithm>                 // count
+#include <cassert>                   // assert
+#include <initializer_list>          // initializer_list
 #include <utility>                   // make_pair
 #include <vector>                    // vector
 
@@ -94,8 +96,18 @@ protected:
   std::vector<segment_t> set;
 
 protected:
-  void add(scalar_t px, scalar_t py, scalar_t qx, scalar_t qy) {
-    set.emplace_back(point_t(px, py), point_t(qx, qy));
+  static segment_t seg(point_t p, point_t q) {
+    return segment_t{p, q};
+  }
+
+  void add(const segment_t& segment) {
+    set.emplace_back(segment);
+  }
+
+  void add(std::initializer_list<segment_t> segments) {
+    for (const auto& elem : segments) {
+      add(elem);
+    }
   }
 
   bool finds(const size_t s0, const size_t s1) {
@@ -115,33 +127,45 @@ protected:
 } // End anonymous namespace
 
 TEST_F(FindIntersectionTest, CommonCrossingTest) {
-  add(2, 0, 4, 0), add(5, 0, 4, 3), add(4, 4, 0, 4);
-  add(3, 1, 2, 3), add(1, 0, 4, 3), add(0, 1, 1, 3);
+  add({
+      seg({2, 0}, {4, 0}), seg({5, 0}, {4, 3}), seg({4, 4}, {0, 4}),
+      seg({3, 1}, {2, 3}), seg({1, 0}, {4, 3}), seg({0, 1}, {1, 3}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(3, 4));
 
   set.clear();
-  add(-2, -1, 0, 1), add(-1, -1, 1, 1), add(0, -1, 2, 1), add(1, -1, 3, 1);
-  add(0, -2, 2, 2);
+  add({
+      seg({-2, -1}, {0, 1}), seg({-1, -1}, {1, 1}), seg({0, -1}, {2, 1}),
+      seg({1, -1}, {3, 1}), seg({0, -2}, {2, 2}),
+  });
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds(2, 4));
 
   // One intersection.
   set.clear();
-  add(1, 1, 2, 0), add(1, 4, 3, 4), add(3, 3, 4, 5), add(2, 5, 5, 4);
+  add({
+      seg({1, 1}, {2, 0}), seg({1, 4}, {3, 4}), seg({3, 3}, {4, 5}),
+      seg({2, 5}, {5, 4}),
+  });
   ASSERT_EQ(4, set.size());
   EXPECT_TRUE(finds(2, 3));
 
   // Two intersections.
   set.clear();
-  add(0, 0, 2, 3), add(0, 1, 1, 2), add(0, 5, 3, 4);
-  add(1, 0, 3, 0), add(0, 3, 4, 0), add(2, 4, 3, 5);
+  add({
+      seg({0, 0}, {2, 3}), seg({0, 1}, {1, 2}), seg({0, 5}, {3, 4}),
+      seg({1, 0}, {3, 0}), seg({0, 3}, {4, 0}), seg({2, 4}, {3, 5}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(0, 4));
 
   // Three intersections.
   set.clear();
-  add(-2, -1, 0, 1), add(-1, -1, 1, 1), add(0, -1, 2, 1), add(-2, 0, 2, 0);
+  add({
+      seg({-2, -1}, {0, 1}), seg({-1, -1}, {1, 1}), seg({0, -1}, {2, 1}),
+      seg({-2, 0}, {2, 0}),
+  });
   ASSERT_EQ(4, set.size());
   EXPECT_TRUE(finds(0, 3));
 }
@@ -153,115 +177,151 @@ TEST_F(FindIntersectionTest, NoIntersectionTest) {
 
   // Unique segment
   set.clear();
-  add(-50, -50, 10, 40);
+  add({{-50, -50}, {10, 40}});
   ASSERT_EQ(1, set.size());
   EXPECT_TRUE(finds_nothing());
 
   // Small test
   set.clear();
-  add(0, 0, 1, 2), add(1, -2, 1, -1), add(0, -1, 2, 0);
-  add(1, 3, -1, -1), add(-1, 0, 0, 2);
+  add({
+      seg({0, 0}, {1, 2}), seg({1, -2}, {1, -1}), seg({0, -1}, {2, 0}),
+      seg({1, 3}, {-1, -1}), seg({-1, 0}, {0, 2}),
+  });
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds_nothing());
 
   // Big test
   set.clear();
-  add(0, 2, 0, 3), add(1, -2, 3, 1), add(1, -3, -1, -1), add(0, 0, 0, -1);
-  add(3, 2, 2, 5), add(2, -3, 4, 2), add(0, 1, 1, -1), add(-1, 0, -2, -2);
-  add(-2, 0, -1, 3), add(2, 2, 1, 6), add(1, 2, 1, 3), add(1, 4, 1, 5);
-  add(-2, 2, -1, 5), add(0, 4, 0, 5);
+  add({
+      seg({0, 2}, {0, 3}), seg({1, -2}, {3, 1}), seg({1, -3}, {-1, -1}),
+      seg({0, 0}, {0, -1}), seg({3, 2}, {2, 5}), seg({2, -3}, {4, 2}),
+      seg({0, 1}, {1, -1}), seg({-1, 0}, {-2, -2}), seg({-2, 0}, {-1, 3}),
+      seg({2, 2}, {1, 6}), seg({1, 2}, {1, 3}), seg({1, 4}, {1, 5}),
+      seg({-2, 2}, {-1, 5}), seg({0, 4}, {0, 5}),
+  });
   ASSERT_EQ(14, set.size());
   EXPECT_TRUE(finds_nothing());
 }
 
 TEST_F(FindIntersectionTest, SequentialSegmentsTest) {
   // vertical lines
-  add(0, 0, 0, 1), add(0, 1, 0, 2), add(1, 0, 1, 1), add(2, 2, 3, 3);
-  add(-1, -1, 1, -1), add(-1, 0, -1, 3), add(-2, 0, -2, 1), add(-3, 2, -2, 2);
+  add({
+      seg({0, 0}, {0, 1}), seg({0, 1}, {0, 2}), seg({1, 0}, {1, 1}),
+      seg({2, 2}, {3, 3}), seg({-1, -1}, {1, -1}), seg({-1, 0}, {-1, 3}),
+      seg({-2, 0}, {-2, 1}), seg({-3, 2}, {-2, 2}),
+  });
   ASSERT_EQ(8, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // horizontal line
   set.clear();
-  add(0, 0, 1, 0), add(1, 0, 2, 0), add(0, 1, 1, 1);
-  add(1, -1, 2, -1), add(3, -1, 3, 2), add(-2, -1, -2, 2);
+  add({
+      seg({0, 0}, {1, 0}), seg({1, 0}, {2, 0}), seg({0, 1}, {1, 1}),
+      seg({1, -1}, {2, -1}), seg({3, -1}, {3, 2}), seg({-2, -1}, {-2, 2}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // diagonal line
   set.clear();
-  add(0, 0, 1, 1), add(1, 1, 2, 2), add(0, 1, 1, 2);
-  add(1, -1, 2, 0), add(3, -3, 3, 4);
+  add({
+      seg({0, 0}, {1, 1}), seg({1, 1}, {2, 2}), seg({0, 1}, {1, 2}),
+      seg({1, -1}, {2, 0}), seg({3, -3}, {3, 4}),
+  });
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // perpendicular lines
   set.clear();
-  add(0, 0, 0, 1), add(0, 1, 1, 1), add(-1, -1, 2, -1), add(-1, 1, -1, 0);
+  add({
+      seg({0, 0}, {0, 1}), seg({0, 1}, {1, 1}), seg({-1, -1}, {2, -1}),
+      seg({-1, 1}, {-1, 0}),
+  });
   ASSERT_EQ(4, set.size());
   EXPECT_TRUE(finds(1, 0));
 }
 
 TEST_F(FindIntersectionTest, OverlappedSegments) {
   // vertical lines
-  add(0, 0, 0, 2), add(0, 1, 0, 3), add(1, 0, 1, 1), add(2, 2, 3, 3);
-  add(-1, -1, 1, -1), add(-1, 0, -1, 3), add(-2, 0, -2, 1), add(-3, 2, -2, 2);
+  add({
+      seg({0, 0}, {0, 2}), seg({0, 1}, {0, 3}), seg({1, 0}, {1, 1}),
+      seg({2, 2}, {3, 3}), seg({-1, -1}, {1, -1}), seg({-1, 0}, {-1, 3}),
+      seg({-2, 0}, {-2, 1}), seg({-3, 2}, {-2, 2}),
+  });
   ASSERT_EQ(8, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // horizontal line
   set.clear();
-  add(0, 0, 2, 0), add(1, 0, 5, 0), add(0, 1, 1, 1);
-  add(1, -1, 2, -1), add(3, -1, 3, 2), add(-2, -1, -2, 2);
+  add({
+      seg({0, 0}, {2, 0}), seg({1, 0}, {5, 0}), seg({0, 1}, {1, 1}),
+      seg({1, -1}, {2, -1}), seg({3, -1}, {3, 2}), seg({-2, -1}, {-2, 2}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // diagonal line
   set.clear();
-  add(0, 0, 2, 2), add(1, 1, 3, 3), add(0, 1, 1, 2);
-  add(1, -1, 2, 0), add(3, -3, 3, 4);
+  add({
+      seg({0, 0}, {2, 2}), seg({1, 1}, {3, 3}), seg({0, 1}, {1, 2}),
+      seg({1, -1}, {2, 0}), seg({3, -3}, {3, 4}),
+  });
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds(1, 0));
 
   // perpendicular lines
   set.clear();
-  add(0, 0, 0, 2), add(0, 1, 1, 1), add(-1, -1, 2, -1), add(-1, 1, -1, 0);
+  add({
+      seg({0, 0}, {0, 2}), seg({0, 1}, {1, 1}), seg({-1, -1}, {2, -1}),
+      seg({-1, 1}, {-1, 0}),
+  });
   ASSERT_EQ(4, set.size());
   EXPECT_TRUE(finds(1, 0));
 }
 
 TEST_F(FindIntersectionTest, TangentSegmentTest) {
   // Perpendicular case
-  add(0, 0, 0, 3), add(1, 0, 2, 2), add(0, 2, 1, 2);
-  add(-1, -1, -1, 1), add(-2, 1, -1, 2), add(-2, 2, -1, 3);
+  add({
+      seg({0, 0}, {0, 3}), seg({1, 0}, {2, 2}), seg({0, 2}, {1, 2}),
+      seg({-1, -1}, {-1, 1}), seg({-2, 1}, {-1, 2}), seg({-2, 2}, {-1, 3}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(2, 0));
 
   // Another perpendicular case
   set.clear();
-  add(-1, -1, 1, 1), add(1, -2, 2, 1), add(-3, 0, -2, 1), add(-1, 1, -2, 2);
-  add(0, 0, 1, -1), add(-1, -2, -2, 0);
+  add({
+      seg({-1, -1}, {1, 1}), seg({1, -2}, {2, 1}), seg({-3, 0}, {-2, 1}),
+      seg({-1, 1}, {-2, 2}), seg({0, 0}, {1, -1}), seg({-1, -2}, {-2, 0}),
+  });
   ASSERT_EQ(6, set.size());
   EXPECT_TRUE(finds(4, 0));
 
   set.clear();
-  add(0, 2, 1, 0), add(0, 4, 1, 3), add(2, 1, 3, 4);
-  add(1, 1, 2, 4), add(1, 2, 3, 6);
+  add({
+      seg({0, 2}, {1, 0}), seg({0, 4}, {1, 3}), seg({2, 1}, {3, 4}),
+      seg({1, 1}, {2, 4}), seg({1, 2}, {3, 6}),
+  });
   ASSERT_EQ(5, set.size());
   EXPECT_TRUE(finds(4, 3));
 }
 
 TEST_F(FindIntersectionTest, CollinearSegmentsWithSameStartTest) {
-  add(0, 2, 1, 2), add(-2, 0, -1, 2), add(-1, 1, 1, 1);
-  add(0, 0, 1, -1), add(3, -1, 3, 1);
+  add({
+      seg({0, 2}, {1, 2}), seg({-2, 0}, {-1, 2}), seg({-1, 1}, {1, 1}),
+      seg({0, 0}, {1, -1}), seg({3, -1}, {3, 1}),
+  });
   EXPECT_TRUE(finds_nothing());
-  add(-1, 1, 1, 1);
+  add({{-1, 1}, {1, 1}});
   EXPECT_TRUE(finds(2, 5));
 
   set.clear();
-  add(1, 1, 0, 2), add(2, 1, 4, 4), add(1, 2, 2, 3), add(1, 3, 2, 4);
+  add({
+      seg({1, 1}, {0, 2}), seg({2, 1}, {4, 4}), seg({1, 2}, {2, 3}),
+      seg({1, 3}, {2, 4}),
+  });
   EXPECT_TRUE(finds_nothing());
-  add(1, 2, 3, 4);
+  add({{1, 2}, {3, 4}});
   EXPECT_TRUE(finds(2, 4));
 }
 
@@ -280,15 +340,24 @@ protected:
   std::vector<point_t> points;
 
   // Adds a point to the end of the list.
-  void add(scalar_t x, scalar_t y) {
-    points.emplace_back(x, y);
+  void add(point_t point) {
+    points.emplace_back(point);
+  }
+  void add(std::initializer_list<point_t> list) {
+    for (const auto& point : list) {
+      add(point);
+    }
   }
 
   // Adds a point to the end of the list relative to the last point.
-  void rel_add(scalar_t x_delta, scalar_t y_delta) {
-    const auto prev_x = points.back().x;
-    const auto prev_y = points.back().y;
-    add(prev_x + x_delta, prev_y + y_delta);
+  void rel_add(point_t delta) {
+    assert(!points.empty()); // There must be a point of reference.
+    add(points.back() + delta);
+  }
+  void rel_add(std::initializer_list<point_t> deltas) {
+    for (const auto& delta : deltas) {
+      rel_add(delta);
+    }
   }
 
   bool is_simple() {
@@ -305,58 +374,72 @@ protected:
 } // End anonymous namespace
 
 TEST_F(SimplePolygonTest, SquareTest) {
-  add(0, 0);
-  add(0, 2);
-  add(2, 2);
-  add(2, 0);
+  add({
+      {0, 0}, {0, 2}, {2, 2}, {2, 0},
+  });
   EXPECT_TRUE(is_simple());
 }
 
 TEST_F(SimplePolygonTest, CrossingSquaresTest) {
-  add(0, 1), add(1, 1), add(1, 0);
+  add({
+      {0, 1}, {1, 1}, {1, 0},
+  });
   EXPECT_TRUE(is_simple());
-  add(0, 0);
+
+  add({0, 0});
   EXPECT_TRUE(is_simple());
+
   points.pop_back();
-  add(-1, 0);
+  add({-1, 0});
   EXPECT_TRUE(is_simple());
-  add(-1, -1);
+
+  add({-1, -1});
   EXPECT_FALSE(is_simple());
-  add(0, -1);
+
+  add({0, -1});
   EXPECT_FALSE(is_simple());
+
   points.pop_back();
-  add(1, -1);
+  add({1, -1});
   EXPECT_FALSE(is_simple());
+
   points.pop_back();
-  add(2, -1);
+  add({2, -1});
   EXPECT_FALSE(is_simple());
-  add(2, 0);
+
+  add({2, 0});
   EXPECT_FALSE(is_simple());
+
   points.pop_back();
-  add(2, 2);
+  add({2, 2});
   EXPECT_TRUE(is_simple());
-  add(-1, 2);
+
+  add({-1, 2});
   EXPECT_TRUE(is_simple());
 }
 
 TEST_F(SimplePolygonTest, OneIntersectionTest) {
-  add(0, 0);
-  rel_add(3, -2), rel_add(1, 3), rel_add(-2, 1);
-  rel_add(2, -5), rel_add(-2, -1), rel_add(1, 1);
+  add({0, 0});
+  rel_add({
+      {3, -2}, {1, 3}, {-2, 1}, {2, -5}, {-2, -1}, {1, 1},
+  });
   ASSERT_EQ(7, points.size());
   ASSERT_EQ(point_t(3, -3), points.back());
   EXPECT_FALSE(is_simple());
 
   points.clear();
-  add(0, 0);
-  rel_add(1, 3), rel_add(3, 0), rel_add(1, -3);
-  rel_add(-2, -3), rel_add(-2, 0), rel_add(0, 5);
+  add({0, 0});
+  rel_add({
+      {1, 3}, {3, 0}, {1, -3}, {-2, -3}, {-2, 0}, {0, 5},
+  });
   EXPECT_TRUE(is_simple());
-  rel_add(3, 0);
-  rel_add(0, -2);
+
+  rel_add({3, 0});
+  rel_add({0, -2});
   EXPECT_FALSE(is_simple());
-  rel_add(-2, 0);
-  rel_add(0, -1);
+
+  rel_add({-2, 0});
+  rel_add({0, -1});
   EXPECT_FALSE(is_simple());
 
   EXPECT_EQ(point_t(2, -1), points.back());
@@ -364,115 +447,162 @@ TEST_F(SimplePolygonTest, OneIntersectionTest) {
 }
 
 TEST_F(SimplePolygonTest, MultipleIntersecionsTest) {
-  add(0, 0);
-  rel_add(0, 3), rel_add(2, -2), rel_add(0, 2), rel_add(1, -2);
-  rel_add(2, 0), rel_add(-2, -2), rel_add(2, 1), rel_add(-2, -2);
+  add({0, 0});
+  rel_add({
+      {0, 3}, {2, -2}, {0, 2}, {1, -2}, {2, 0}, {-2, -2}, {2, 1}, {-2, -2},
+  });
   EXPECT_TRUE(is_simple());
-  rel_add(-2, 5);
+  rel_add({-2, 5});
   EXPECT_FALSE(is_simple());
-  rel_add(-2, -2);
-  rel_add(2, -1);
+  rel_add({-2, -2});
+  rel_add({2, -1});
   EXPECT_FALSE(is_simple());
 
   EXPECT_EQ(point_t(1, 0), points.back());
   EXPECT_EQ(12, points.size());
 
   points.clear();
-  add(0, 0);
-  rel_add(1, 1), rel_add(1, -1), rel_add(-2, -2), rel_add(2, -2);
-  rel_add(-1, -1), rel_add(-1, 1), rel_add(2, 2);
+  add({0, 0});
+  rel_add({
+      {1, 1}, {1, -1}, {-2, -2}, {2, -2}, {-1, -1}, {-1, 1}, {2, 2},
+  });
   EXPECT_EQ(point_t(2, -2), points.back());
   EXPECT_EQ(8, points.size());
   EXPECT_FALSE(is_simple());
 }
 
 TEST_F(SimplePolygonTest, NoIntersectionTest) {
-  add(0, 0);
-  rel_add(0, 3), rel_add(1, -2), rel_add(1, 1), rel_add(0, -3);
-  rel_add(-1, 1), rel_add(0, -1), rel_add(1, -1), rel_add(1, 1);
-  rel_add(0, 3), rel_add(-1, 1), rel_add(-1, -1), rel_add(0, 1);
-  rel_add(1, 1), rel_add(2, -2), rel_add(0, -3), rel_add(-2, -2);
-  rel_add(-3, 3), rel_add(0, 3);
-
+  add({0, 0});
+  rel_add({
+      {0, 3},
+      {1, -2},
+      {1, 1},
+      {0, -3},
+      {-1, 1},
+      {0, -1},
+      {1, -1},
+      {1, 1},
+      {0, 3},
+      {-1, 1},
+      {-1, -1},
+      {0, 1},
+      {1, 1},
+      {2, -2},
+      {0, -3},
+      {-2, -2},
+      {-3, 3},
+      {0, 3},
+  });
   ASSERT_EQ(19, points.size());
   ASSERT_EQ(point_t(-1, 3), points.back());
   EXPECT_TRUE(is_simple());
 
   points.clear();
-  add(0, 0);
-  rel_add(0, 3), rel_add(1, -2), rel_add(-1, -2), rel_add(-1, 5);
+  add({0, 0});
+  rel_add({
+      {0, 3}, {1, -2}, {-1, -2}, {-1, 5},
+  });
   ASSERT_EQ(5, points.size());
   ASSERT_EQ(point_t(-1, 4), points.back());
   EXPECT_TRUE(is_simple());
 }
 
 TEST_F(SimplePolygonTest, TangentPointTest) {
-  add(0, 0);
-  rel_add(2, 2), rel_add(0, -3), rel_add(2, 2), rel_add(-4, 2);
+  add({0, 0});
+  rel_add({
+      {2, 2}, {0, -3}, {2, 2}, {-4, 2},
+  });
   ASSERT_EQ(point_t(0, 3), points.back());
   ASSERT_EQ(5, points.size());
   EXPECT_FALSE(is_simple());
 
   points.clear();
-  add(0, 0);
-  rel_add(2, 2), rel_add(0, -3), rel_add(2, 3), rel_add(0, -4);
-  rel_add(2, 0), rel_add(0, -1);
+  add({0, 0});
+  rel_add({
+      {2, 2}, {0, -3}, {2, 3}, {0, -4}, {2, 0}, {0, -1},
+  });
   ASSERT_EQ(7, points.size());
   ASSERT_EQ(point_t(6, -3), points.back());
   EXPECT_FALSE(is_simple());
 }
 
 TEST_F(SimplePolygonTest, CollinearChainedTest) {
-  add(0, 0);
-  rel_add(0, 1), rel_add(0, 1), rel_add(1, 1);
-  rel_add(0, -1), rel_add(0, -1), rel_add(0, -1), rel_add(0, -1);
-  rel_add(-1, 0), rel_add(-1, 0);
-  rel_add(0, 1), rel_add(0, 1), rel_add(0, 1);
+  add({0, 0});
+  rel_add({
+      {0, 1},
+      {0, 1},
+      {1, 1},
+      {0, -1},
+      {0, -1},
+      {0, -1},
+      {0, -1},
+      {-1, 0},
+      {-1, 0},
+      {0, 1},
+      {0, 1},
+      {0, 1},
+  });
   ASSERT_EQ(13, points.size());
   ASSERT_EQ(point_t(-1, 2), points.back());
   EXPECT_TRUE(is_simple());
 
   points.clear();
-  add(0, 0);
-  rel_add(1, 1), rel_add(1, 1), rel_add(1, 1), rel_add(1, 1), rel_add(1, 1);
-  rel_add(-4, -5);
+  add({0, 0});
+  rel_add({
+      {1, 1}, {1, 1}, {1, 1}, {1, 1}, {1, 1}, {-4, -5},
+  });
   ASSERT_EQ(7, points.size());
   ASSERT_EQ(point_t(1, 0), points.back());
   EXPECT_TRUE(is_simple());
 }
 
 TEST_F(SimplePolygonTest, OverlappedSegments) {
-  add(0, 0);
-  rel_add(1, 3), rel_add(2, 0), rel_add(1, -3), rel_add(1, 3);
+  add({0, 0});
+  rel_add({
+      {1, 3}, {2, 0}, {1, -3}, {1, 3},
+  });
   ASSERT_EQ(5, points.size());
   ASSERT_EQ(point_t(5, 3), points.back());
   EXPECT_FALSE(is_simple());
 
   points.clear();
-  add(0, 0);
-  rel_add(0, 2), rel_add(1, 0), rel_add(0, -2);
-  rel_add(1, 0), rel_add(0, 3), rel_add(-2, 0);
+  add({0, 0});
+  rel_add({
+      {0, 2}, {1, 0}, {0, -2}, {1, 0}, {0, 3}, {-2, 0},
+  });
   ASSERT_EQ(7, points.size());
   ASSERT_EQ(point_t(0, 3), points.back());
   EXPECT_FALSE(is_simple());
 }
 
 TEST_F(SimplePolygonTest, EightTest) {
-  add(0, 0);
-  rel_add(1, 1), rel_add(1, -1), rel_add(-1, -1), rel_add(-1, -1);
-  rel_add(1, -1), rel_add(1, 1);
-  rel_add(-1, 1);
+  add({0, 0});
+  rel_add({
+      {1, 1}, {1, -1}, {-1, -1}, {-1, -1}, {1, -1}, {1, 1}, {-1, 1},
+  });
   ASSERT_EQ(8, points.size());
   ASSERT_EQ(point_t(1, -1), points.back());
   EXPECT_TRUE(is_simple());
 }
 
 TEST_F(SimplePolygonTest, RareSimplePolygonTest) {
-  add(0, 0);
-  rel_add(3, -4), rel_add(2, 7), rel_add(5, 0), rel_add(-3, -3);
-  rel_add(-3, -4), rel_add(3, -2), rel_add(3, -2), rel_add(1, 0);
-  rel_add(2, -2), rel_add(-3, 2), rel_add(-1, 0), rel_add(-5, -2);
-  rel_add(0, 4), rel_add(-1, -1);
+  add({0, 0});
+  rel_add({
+      {3, -4},
+      {2, 7},
+      {5, 0},
+      {-3, -3},
+      {-3, -4},
+      {3, -2},
+      {3, -2},
+      {1, 0},
+      {2, -2},
+      {-3, 2},
+      {-1, 0},
+      {-5, -2},
+      {0, 4},
+      {-1, -1},
+  });
   ASSERT_EQ(15, points.size());
   ASSERT_EQ(point_t(3, -7), points.back());
   ASSERT_EQ(2, std::count(points.begin(), points.end(), point_t(10, -8)));
