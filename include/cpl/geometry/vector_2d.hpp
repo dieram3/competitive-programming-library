@@ -92,7 +92,7 @@ T dot(const vector2d<T>& u, const vector2d<T>& v) {
   return u.x * v.x + u.y * v.y;
 }
 
-/// \brief Computes the magnitude of the cross product between two vectors.
+/// \brief Computes the z-component of the cross product between two vectors.
 ///
 /// \relates vector2d
 ///
