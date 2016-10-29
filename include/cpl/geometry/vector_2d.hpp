@@ -38,8 +38,8 @@ vector2d<T> operator-(const vector2d<T>& v) {
 /// \relates vector2d
 ///
 template <typename T>
-vector2d<T> operator+(const vector2d<T>& u, const vector2d<T>& v) {
-  return {u.x + v.x, u.y + v.y};
+vector2d<T> operator+(const vector2d<T>& v, const vector2d<T>& w) {
+  return {v.x + w.x, v.y + w.y};
 }
 
 /// \brief Computes the difference between two vectors.
@@ -47,8 +47,8 @@ vector2d<T> operator+(const vector2d<T>& u, const vector2d<T>& v) {
 /// \relates vector2d
 ///
 template <typename T>
-vector2d<T> operator-(const vector2d<T>& u, const vector2d<T>& v) {
-  return {u.x - v.x, u.y - v.y};
+vector2d<T> operator-(const vector2d<T>& v, const vector2d<T>& w) {
+  return {v.x - w.x, v.y - w.y};
 }
 
 /// \brief Computes the scalar product between \p v and \p k.
@@ -88,8 +88,8 @@ vector2d<T> operator/(const vector2d<T>& v, const T& k) {
 /// \relates vector2d
 ///
 template <typename T>
-T dot(const vector2d<T>& u, const vector2d<T>& v) {
-  return u.x * v.x + u.y * v.y;
+T dot(const vector2d<T>& v, const vector2d<T>& w) {
+  return v.x * w.x + v.y * w.y;
 }
 
 /// \brief Computes the z-component of the cross product between two vectors.
@@ -97,8 +97,8 @@ T dot(const vector2d<T>& u, const vector2d<T>& v) {
 /// \relates vector2d
 ///
 template <typename T>
-T cross(const vector2d<T>& u, const vector2d<T>& v) {
-  return u.x * v.y - u.y * v.x;
+T cross(const vector2d<T>& v, const vector2d<T>& w) {
+  return v.x * w.y - v.y * w.x;
 }
 
 /// \brief Computes the squared magnitude of a vector.
@@ -125,8 +125,8 @@ T abs(const vector2d<T>& v) {
 /// \relates vector2d
 ///
 template <typename T>
-bool operator==(const vector2d<T>& u, const vector2d<T> v) {
-  return u.x == v.x && u.y == v.y;
+bool operator==(const vector2d<T>& v, const vector2d<T> w) {
+  return v.x == w.x && v.y == w.y;
 }
 
 /// \brief Compares two vectors for inequality.
@@ -134,8 +134,8 @@ bool operator==(const vector2d<T>& u, const vector2d<T> v) {
 /// \relates vector2d
 ///
 template <typename T>
-bool operator!=(const vector2d<T>& u, const vector2d<T>& v) {
-  return !(u == v);
+bool operator!=(const vector2d<T>& v, const vector2d<T>& w) {
+  return !(v == w);
 }
 
 /// \brief Serializes a vector.
