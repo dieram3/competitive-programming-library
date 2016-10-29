@@ -3,6 +3,7 @@ add_unittest("geometry"
   "point_2d_test.cpp"
   "point_in_polygon_test.cpp"
   "point_order_test.cpp"
+  "point_rotation_test.cpp"
   "segment_intersection_test.cpp"
   "shoelace_test.cpp"
 )
