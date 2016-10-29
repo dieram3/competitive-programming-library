@@ -6,4 +6,5 @@ add_unittest("geometry"
   "point_rotation_test.cpp"
   "segment_intersection_test.cpp"
   "shoelace_test.cpp"
+  "vector_2d_test.cpp"
 )
