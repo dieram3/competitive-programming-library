@@ -146,7 +146,7 @@ bool operator!=(const vector2d<T>& u, const vector2d<T>& v) {
 ///
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const vector2d<T>& v) {
-  return os << '(' << v.x << ',' << v.y << ')';
+  return os << '<' << v.x << ',' << v.y << '>';
 }
 
 } // end namespace cpl

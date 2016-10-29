@@ -212,12 +212,12 @@ TEST_F(Vector2DTest, SerializationTest) {
     return oss.str();
   };
 
-  EXPECT_EQ("(0,0)", serialize({0, 0}));
-  EXPECT_EQ("(0,-1)", serialize({0, -1}));
-  EXPECT_EQ("(4,0)", serialize({4, 0}));
+  EXPECT_EQ("<0,0>", serialize({0, 0}));
+  EXPECT_EQ("<0,-1>", serialize({0, -1}));
+  EXPECT_EQ("<4,0>", serialize({4, 0}));
 
-  EXPECT_EQ("(2,3)", serialize({2, 3}));
-  EXPECT_EQ("(-2,3)", serialize({-2, 3}));
-  EXPECT_EQ("(2,-3)", serialize({2, -3}));
-  EXPECT_EQ("(-2,-3)", serialize({-2, -3}));
+  EXPECT_EQ("<2,3>", serialize({2, 3}));
+  EXPECT_EQ("<-2,3>", serialize({-2, 3}));
+  EXPECT_EQ("<2,-3>", serialize({2, -3}));
+  EXPECT_EQ("<-2,-3>", serialize({-2, -3}));
 }
