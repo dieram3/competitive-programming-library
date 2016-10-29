@@ -47,6 +47,20 @@ TEST_F(Vector2DTest, PairConstructorTest) {
   }
 }
 
+TEST_F(Vector2DTest, NegateOperatorTest) {
+  EXPECT_EQ(vec(0, 0), -vec(0, 0));
+
+  EXPECT_EQ(vec(0, -1), -vec(0, 1));
+  EXPECT_EQ(vec(-1, 0), -vec(1, 0));
+  EXPECT_EQ(vec(0, 1), -vec(0, -1));
+  EXPECT_EQ(vec(1, 0), -vec(-1, 0));
+
+  EXPECT_EQ(vec(-3, -5), -vec(3, 5));
+  EXPECT_EQ(vec(-3, 5), -vec(3, -5));
+  EXPECT_EQ(vec(3, -5), -vec(-3, 5));
+  EXPECT_EQ(vec(3, 5), -vec(-3, -5));
+}
+
 TEST_F(Vector2DTest, AdditionTest) {
   EXPECT_EQ(vec(0, 2), vec(2, 3) + vec(-2, -1));
   EXPECT_EQ(vec(7, 13), vec(4, 6) + vec(3, 7));
@@ -77,6 +91,30 @@ TEST_F(Vector2DTest, ScalarProductTest) {
   EXPECT_EQ(vec(0, 84), 2 * vec(0, 42));
   EXPECT_EQ(vec(84, 0), 2 * vec(42, 0));
   EXPECT_EQ(vec(0, 0), 2 * vec(0, 0));
+}
+
+TEST_F(Vector2DTest, DivisonTest) {
+  using vecf = vector2d<float>;
+  {
+    const auto v = vecf{0, 0} / 2.0f;
+    EXPECT_FLOAT_EQ(0, v.x);
+    EXPECT_FLOAT_EQ(0, v.y);
+  }
+  {
+    const auto v = vecf{7, 11} / 2.0f;
+    EXPECT_FLOAT_EQ(3.5f, v.x);
+    EXPECT_FLOAT_EQ(5.5f, v.y);
+  }
+  {
+    const auto v = vecf{12, 36} / 30.0f;
+    EXPECT_FLOAT_EQ(0.4f, v.x);
+    EXPECT_FLOAT_EQ(1.2f, v.y);
+  }
+  {
+    const auto v = vecf{-4.746f, 22.764f} / 4.2f;
+    EXPECT_FLOAT_EQ(-1.13f, v.x);
+    EXPECT_FLOAT_EQ(5.42f, v.y);
+  }
 }
 
 TEST_F(Vector2DTest, DotProductTest) {

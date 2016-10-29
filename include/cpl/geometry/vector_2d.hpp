@@ -6,7 +6,8 @@
 #ifndef CPL_GEOMETRY_VECTOR_2D_HPP
 #define CPL_GEOMETRY_VECTOR_2D_HPP
 
-#include <cmath>       // sqrt
+#include <cassert>     // assert
+#include <cmath>       // sqrt, abs(float)
 #include <ostream>     // ostream
 #include <type_traits> // is_floating_point
 
@@ -22,6 +23,15 @@ struct vector2d {
   vector2d() = default;
   vector2d(T x0, T y0) : x{x0}, y{y0} {}
 };
+
+/// \brief Negates a vector.
+///
+/// \relates vector2d
+///
+template <typename T>
+vector2d<T> operator-(const vector2d<T>& v) {
+  return {-v.x, -v.y};
+}
 
 /// \brief Computes the sum of two vectors.
 ///
@@ -57,6 +67,20 @@ vector2d<T> operator*(const vector2d<T>& v, const T& k) {
 template <typename T>
 vector2d<T> operator*(const T& k, const vector2d<T>& v) {
   return {k * v.x, k * v.y};
+}
+
+/// \brief Divides a vector by a scalar.
+///
+/// \pre <tt>k != 0</tt>
+///
+/// \relates vector2d
+///
+template <typename T>
+vector2d<T> operator/(const vector2d<T>& v, const T& k) {
+  static_assert(std::is_floating_point<T>::value, "");
+  assert(std::abs(k) > 0); // This comparison silences float-equal warnings.
+
+  return {v.x / k, v.y / k};
 }
 
 /// \brief Computes the dot product between two vectors.
