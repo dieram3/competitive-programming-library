@@ -25,12 +25,16 @@ struct vector2d {
 
 /// \brief Computes the sum of two vectors.
 ///
+/// \relates vector2d
+///
 template <typename T>
 vector2d<T> operator+(const vector2d<T>& u, const vector2d<T>& v) {
   return {u.x + v.x, u.y + v.y};
 }
 
 /// \brief Computes the difference between two vectors.
+///
+/// \relates vector2d
 ///
 template <typename T>
 vector2d<T> operator-(const vector2d<T>& u, const vector2d<T>& v) {
@@ -39,12 +43,16 @@ vector2d<T> operator-(const vector2d<T>& u, const vector2d<T>& v) {
 
 /// \brief Computes the scalar product between \p v and \p k.
 ///
+/// \relates vector2d
+///
 template <typename T>
 vector2d<T> operator*(const vector2d<T>& v, const T& k) {
   return {v.x * k, v.y * k};
 }
 
 /// \brief Computes the scalar product between \p k and \p v.
+///
+/// \relates vector2d
 ///
 template <typename T>
 vector2d<T> operator*(const T& k, const vector2d<T>& v) {
@@ -53,12 +61,16 @@ vector2d<T> operator*(const T& k, const vector2d<T>& v) {
 
 /// \brief Computes the dot product between two vectors.
 ///
+/// \relates vector2d
+///
 template <typename T>
 T dot(const vector2d<T>& u, const vector2d<T>& v) {
   return u.x * v.x + u.y * v.y;
 }
 
 /// \brief Computes the magnitude of the cross product between two vectors.
+///
+/// \relates vector2d
 ///
 template <typename T>
 T cross(const vector2d<T>& u, const vector2d<T>& v) {
@@ -67,12 +79,16 @@ T cross(const vector2d<T>& u, const vector2d<T>& v) {
 
 /// \brief Computes the squared magnitude of a vector.
 ///
+/// \relates vector2d
+///
 template <typename T>
 T norm(const vector2d<T>& v) {
   return dot(v, v);
 }
 
 /// \brief Computes the magnitude of a vector.
+///
+/// \relates vector2d
 ///
 template <typename T>
 T abs(const vector2d<T>& v) {
@@ -82,12 +98,16 @@ T abs(const vector2d<T>& v) {
 
 /// \brief Compares two vectors for equality.
 ///
+/// \relates vector2d
+///
 template <typename T>
 bool operator==(const vector2d<T>& u, const vector2d<T> v) {
   return u.x == v.x && u.y == v.y;
 }
 
 /// \brief Compares two vectors for inequality.
+///
+/// \relates vector2d
 ///
 template <typename T>
 bool operator!=(const vector2d<T>& u, const vector2d<T>& v) {
@@ -96,7 +116,9 @@ bool operator!=(const vector2d<T>& u, const vector2d<T>& v) {
 
 /// \brief Serializes a vector.
 ///
-/// Writes to the given ostream in the form <tt>(x,y)</tt>
+/// Writes to the given ostream in the form <tt>(x,y)</tt>.
+///
+/// \relates vector2d
 ///
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const vector2d<T>& v) {
