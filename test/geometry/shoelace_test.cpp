@@ -17,20 +17,20 @@ TEST(ShoelaceTest, SimpleShapes) {
   // A square
   std::vector<point_i> poly = {{0, 0}, {0, 2}, {2, 2}, {2, 0}};
 
-  EXPECT_EQ(shoelace_area(poly), 8);
+  EXPECT_EQ(8, shoelace_area(poly));
 
   // A square with colinear lines
   poly = {{0, 0}, {0, 1}, {0, 2}, {1, 2}, {2, 2}, {2, 1}, {2, 0}, {1, 0}};
-  EXPECT_EQ(shoelace_area(poly), 8);
+  EXPECT_EQ(8, shoelace_area(poly));
 
   // A triangle
   poly = {{2, 6}, {6, 4}, {4, 1}};
-  EXPECT_EQ(shoelace_area(poly), 16);
+  EXPECT_EQ(16, shoelace_area(poly));
 }
 
 TEST(ShoelaceTest, NonConvexPolygon) {
   std::vector<point_i> poly = {{1, 6}, {1, 3}, {1, 2}, {1, 1},  {2, 4},
                                {3, 2}, {5, 1}, {6, 3}, {10, 3}, {8, 6},
                                {9, 4}, {3, 5}, {4, 6}};
-  EXPECT_EQ(shoelace_area(poly), 42);
+  EXPECT_EQ(42, shoelace_area(poly));
 }
