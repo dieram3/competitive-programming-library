@@ -13,7 +13,7 @@ class RotationsTest : public ::testing::Test {};
 } // end anonymous namespace
 
 TEST_F(RotationsTest, Rotate90CCWTest) {
-  using pt = cpl::point<int>;
+  using pt = cpl::vector2d<int>;
   using cpl::rotate_90_ccw;
 
   EXPECT_EQ(pt(0, 0), rotate_90_ccw(pt(0, 0)));
@@ -30,7 +30,7 @@ TEST_F(RotationsTest, Rotate90CCWTest) {
 }
 
 TEST_F(RotationsTest, Rotate180CCWTest) {
-  using pt = cpl::point<int>;
+  using pt = cpl::vector2d<int>;
   using cpl::rotate_180_ccw;
 
   EXPECT_EQ(pt(0, 0), rotate_180_ccw(pt(0, 0)));
@@ -47,7 +47,7 @@ TEST_F(RotationsTest, Rotate180CCWTest) {
 }
 
 TEST_F(RotationsTest, Rotate270CCWTest) {
-  using pt = cpl::point<int>;
+  using pt = cpl::vector2d<int>;
   using cpl::rotate_270_ccw;
 
   EXPECT_EQ(pt(0, 0), rotate_270_ccw(pt(0, 0)));
@@ -63,14 +63,8 @@ TEST_F(RotationsTest, Rotate270CCWTest) {
   EXPECT_EQ(pt(-7, 4), rotate_270_ccw(pt(-4, -7)));
 }
 
-namespace cpl {
-static std::ostream& operator<<(std::ostream& os, const point<double>& p) {
-  return os << '(' << p.x << ", " << p.y << ')';
-}
-}
-
 TEST_F(RotationsTest, RotateCCWTest) {
-  using pt = cpl::point<double>;
+  using pt = cpl::vector2d<double>;
   using cpl::rotate_ccw;
 
   auto expect_equal = [&](const pt& expected, const pt& actual) {
