@@ -92,24 +92,24 @@ TEST_F(RotationsTest, RotateCCWTest) {
   expect_equal(vecf{4, 0}, rotate_ccw(vecf{0, 4}, -pi / 2));
   expect_equal(vecf{6, 5}, rotate_ccw(vecf{-5, 6}, -pi / 2));
 
-  const vecf p0{5, 0};
-  const vecf p30{5 * std::sqrt(0.75), 2.5};
-  const vecf p45{5 * std::sqrt(0.5), 5 * std::sqrt(0.5)};
-  const vecf p60{2.5, 5 * std::sqrt(0.75)};
+  const vecf v0{5, 0};
+  const vecf v30{5 * std::sqrt(0.75), 2.5};
+  const vecf v45{5 * std::sqrt(0.5), 5 * std::sqrt(0.5)};
+  const vecf v60{2.5, 5 * std::sqrt(0.75)};
 
-  expect_equal(p30, rotate_ccw(p0, pi / 6));
-  expect_equal(p45, rotate_ccw(p0, pi / 4));
-  expect_equal(p60, rotate_ccw(p0, pi / 3));
+  expect_equal(v30, rotate_ccw(v0, pi / 6));
+  expect_equal(v45, rotate_ccw(v0, pi / 4));
+  expect_equal(v60, rotate_ccw(v0, pi / 3));
 
-  expect_equal(p0, rotate_ccw(p30, -pi / 6));
-  expect_equal(p45, rotate_ccw(p30, pi / 12));
-  expect_equal(p60, rotate_ccw(p30, pi / 6));
+  expect_equal(v0, rotate_ccw(v30, -pi / 6));
+  expect_equal(v45, rotate_ccw(v30, pi / 12));
+  expect_equal(v60, rotate_ccw(v30, pi / 6));
 
-  expect_equal(p0, rotate_ccw(p45, -pi / 4));
-  expect_equal(p30, rotate_ccw(p45, -pi / 12));
-  expect_equal(p60, rotate_ccw(p45, pi / 12));
+  expect_equal(v0, rotate_ccw(v45, -pi / 4));
+  expect_equal(v30, rotate_ccw(v45, -pi / 12));
+  expect_equal(v60, rotate_ccw(v45, pi / 12));
 
-  expect_equal(p0, rotate_ccw(p60, -pi / 3));
-  expect_equal(p30, rotate_ccw(p60, -pi / 6));
-  expect_equal(p45, rotate_ccw(p60, -pi / 12));
+  expect_equal(v0, rotate_ccw(v60, -pi / 3));
+  expect_equal(v30, rotate_ccw(v60, -pi / 6));
+  expect_equal(v45, rotate_ccw(v60, -pi / 12));
 }
