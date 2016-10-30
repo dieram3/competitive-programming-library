@@ -7,13 +7,11 @@
 #include <cpl/geometry/shoelace.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/geometry/point_2d.hpp> // point
-#include <cstdint>                   // int32_t
+#include <cpl/geometry/point_2d.hpp> // point2d
 #include <vector>                    // vector
 
 using cpl::shoelace_area;
-using std::int32_t;
-using point_i = cpl::point<int32_t>;
+using point_i = cpl::point2d<int>;
 
 TEST(ShoelaceTest, SimpleShapes) {
   // A square

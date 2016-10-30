@@ -6,7 +6,7 @@
 #ifndef CPL_GEOMETRY_SHOELACE_HPP
 #define CPL_GEOMETRY_SHOELACE_HPP
 
-#include <cpl/geometry/point_2d.hpp> // point
+#include <cpl/geometry/point_2d.hpp> // point2d
 #include <cassert>                   // assert
 #include <cmath>                     // abs(Float)
 #include <cstddef>                   // size_t
@@ -29,7 +29,7 @@ namespace cpl {
 /// Linear in <tt>poly.size()</tt>.
 ///
 template <typename T>
-T shoelace_area(const std::vector<point<T>>& poly) {
+T shoelace_area(const std::vector<point2d<T>>& poly) {
   assert(poly.size() >= 3);
   using std::size_t;
 
