@@ -9,10 +9,10 @@
 #include <cpl/geometry/point_2d.hpp> // point
 
 namespace {
-class PointRotationTest : public ::testing::Test {};
+class RotationsTest : public ::testing::Test {};
 } // end anonymous namespace
 
-TEST_F(PointRotationTest, Rotate90CCWTest) {
+TEST_F(RotationsTest, Rotate90CCWTest) {
   using pt = cpl::point<int>;
   using cpl::rotate_90_ccw;
 
@@ -29,7 +29,7 @@ TEST_F(PointRotationTest, Rotate90CCWTest) {
   EXPECT_EQ(pt(7, -4), rotate_90_ccw(pt(-4, -7)));
 }
 
-TEST_F(PointRotationTest, Rotate180CCWTest) {
+TEST_F(RotationsTest, Rotate180CCWTest) {
   using pt = cpl::point<int>;
   using cpl::rotate_180_ccw;
 
@@ -46,7 +46,7 @@ TEST_F(PointRotationTest, Rotate180CCWTest) {
   EXPECT_EQ(pt(4, 7), rotate_180_ccw(pt(-4, -7)));
 }
 
-TEST_F(PointRotationTest, Rotate270CCWTest) {
+TEST_F(RotationsTest, Rotate270CCWTest) {
   using pt = cpl::point<int>;
   using cpl::rotate_270_ccw;
 
@@ -69,7 +69,7 @@ static std::ostream& operator<<(std::ostream& os, const point<double>& p) {
 }
 }
 
-TEST_F(PointRotationTest, RotateCCWTest) {
+TEST_F(RotationsTest, RotateCCWTest) {
   using pt = cpl::point<double>;
   using cpl::rotate_ccw;
 
