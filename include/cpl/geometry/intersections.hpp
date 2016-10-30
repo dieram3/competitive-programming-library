@@ -21,8 +21,8 @@ namespace cpl {
 ///
 /// \returns The intersection point.
 ///
-/// \pre The line defined by `p0` and `q0` shall not be parallel to the line
-/// defined by `p1` and `q1`.
+/// \pre The line defined by `p0` and `p1` shall not be parallel to the line
+/// defined by `q0` and `q1`.
 ///
 /// \par Complexity
 /// Constant.
