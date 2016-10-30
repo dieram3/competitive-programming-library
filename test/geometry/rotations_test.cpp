@@ -3,7 +3,7 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#include <cpl/geometry/point_rotation.hpp>
+#include <cpl/geometry/rotations.hpp>
 #include <gtest/gtest.h>
 
 #include <cpl/geometry/point_2d.hpp> // point

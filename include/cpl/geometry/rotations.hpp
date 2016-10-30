@@ -3,8 +3,8 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef CPL_GEOMETRY_POINT_ROTATION_HPP
-#define CPL_GEOMETRY_POINT_ROTATION_HPP
+#ifndef CPL_GEOMETRY_ROTATIONS_HPP
+#define CPL_GEOMETRY_ROTATIONS_HPP
 
 #include <cmath>       // sin, cos
 #include <type_traits> // is_floating_point, is_same
