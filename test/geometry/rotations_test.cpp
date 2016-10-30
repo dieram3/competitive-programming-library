@@ -9,65 +9,65 @@
 #include <cpl/geometry/point_2d.hpp> // point
 
 namespace {
-class RotationsTest : public ::testing::Test {};
+class RotationsTest : public ::testing::Test {
+protected:
+  using vec = cpl::vector2d<int>;
+};
 } // end anonymous namespace
 
 TEST_F(RotationsTest, Rotate90CCWTest) {
-  using pt = cpl::vector2d<int>;
   using cpl::rotate_90_ccw;
 
-  EXPECT_EQ(pt(0, 0), rotate_90_ccw(pt(0, 0)));
+  EXPECT_EQ(vec(0, 0), rotate_90_ccw(vec(0, 0)));
 
-  EXPECT_EQ(pt(0, 1), rotate_90_ccw(pt(1, 0)));
-  EXPECT_EQ(pt(-1, 0), rotate_90_ccw(pt(0, 1)));
-  EXPECT_EQ(pt(0, -1), rotate_90_ccw(pt(-1, 0)));
-  EXPECT_EQ(pt(1, 0), rotate_90_ccw(pt(0, -1)));
+  EXPECT_EQ(vec(0, 1), rotate_90_ccw(vec(1, 0)));
+  EXPECT_EQ(vec(-1, 0), rotate_90_ccw(vec(0, 1)));
+  EXPECT_EQ(vec(0, -1), rotate_90_ccw(vec(-1, 0)));
+  EXPECT_EQ(vec(1, 0), rotate_90_ccw(vec(0, -1)));
 
-  EXPECT_EQ(pt(-3, 2), rotate_90_ccw(pt(2, 3)));
-  EXPECT_EQ(pt(4, 3), rotate_90_ccw(pt(3, -4)));
-  EXPECT_EQ(pt(-5, -1), rotate_90_ccw(pt(-1, 5)));
-  EXPECT_EQ(pt(7, -4), rotate_90_ccw(pt(-4, -7)));
+  EXPECT_EQ(vec(-3, 2), rotate_90_ccw(vec(2, 3)));
+  EXPECT_EQ(vec(4, 3), rotate_90_ccw(vec(3, -4)));
+  EXPECT_EQ(vec(-5, -1), rotate_90_ccw(vec(-1, 5)));
+  EXPECT_EQ(vec(7, -4), rotate_90_ccw(vec(-4, -7)));
 }
 
 TEST_F(RotationsTest, Rotate180CCWTest) {
-  using pt = cpl::vector2d<int>;
   using cpl::rotate_180_ccw;
 
-  EXPECT_EQ(pt(0, 0), rotate_180_ccw(pt(0, 0)));
+  EXPECT_EQ(vec(0, 0), rotate_180_ccw(vec(0, 0)));
 
-  EXPECT_EQ(pt(-1, 0), rotate_180_ccw(pt(1, 0)));
-  EXPECT_EQ(pt(0, -1), rotate_180_ccw(pt(0, 1)));
-  EXPECT_EQ(pt(1, 0), rotate_180_ccw(pt(-1, 0)));
-  EXPECT_EQ(pt(0, 1), rotate_180_ccw(pt(0, -1)));
+  EXPECT_EQ(vec(-1, 0), rotate_180_ccw(vec(1, 0)));
+  EXPECT_EQ(vec(0, -1), rotate_180_ccw(vec(0, 1)));
+  EXPECT_EQ(vec(1, 0), rotate_180_ccw(vec(-1, 0)));
+  EXPECT_EQ(vec(0, 1), rotate_180_ccw(vec(0, -1)));
 
-  EXPECT_EQ(pt(-2, -3), rotate_180_ccw(pt(2, 3)));
-  EXPECT_EQ(pt(-3, 4), rotate_180_ccw(pt(3, -4)));
-  EXPECT_EQ(pt(1, -5), rotate_180_ccw(pt(-1, 5)));
-  EXPECT_EQ(pt(4, 7), rotate_180_ccw(pt(-4, -7)));
+  EXPECT_EQ(vec(-2, -3), rotate_180_ccw(vec(2, 3)));
+  EXPECT_EQ(vec(-3, 4), rotate_180_ccw(vec(3, -4)));
+  EXPECT_EQ(vec(1, -5), rotate_180_ccw(vec(-1, 5)));
+  EXPECT_EQ(vec(4, 7), rotate_180_ccw(vec(-4, -7)));
 }
 
 TEST_F(RotationsTest, Rotate270CCWTest) {
-  using pt = cpl::vector2d<int>;
   using cpl::rotate_270_ccw;
 
-  EXPECT_EQ(pt(0, 0), rotate_270_ccw(pt(0, 0)));
+  EXPECT_EQ(vec(0, 0), rotate_270_ccw(vec(0, 0)));
 
-  EXPECT_EQ(pt(0, -1), rotate_270_ccw(pt(1, 0)));
-  EXPECT_EQ(pt(1, 0), rotate_270_ccw(pt(0, 1)));
-  EXPECT_EQ(pt(0, 1), rotate_270_ccw(pt(-1, 0)));
-  EXPECT_EQ(pt(-1, 0), rotate_270_ccw(pt(0, -1)));
+  EXPECT_EQ(vec(0, -1), rotate_270_ccw(vec(1, 0)));
+  EXPECT_EQ(vec(1, 0), rotate_270_ccw(vec(0, 1)));
+  EXPECT_EQ(vec(0, 1), rotate_270_ccw(vec(-1, 0)));
+  EXPECT_EQ(vec(-1, 0), rotate_270_ccw(vec(0, -1)));
 
-  EXPECT_EQ(pt(3, -2), rotate_270_ccw(pt(2, 3)));
-  EXPECT_EQ(pt(-4, -3), rotate_270_ccw(pt(3, -4)));
-  EXPECT_EQ(pt(5, 1), rotate_270_ccw(pt(-1, 5)));
-  EXPECT_EQ(pt(-7, 4), rotate_270_ccw(pt(-4, -7)));
+  EXPECT_EQ(vec(3, -2), rotate_270_ccw(vec(2, 3)));
+  EXPECT_EQ(vec(-4, -3), rotate_270_ccw(vec(3, -4)));
+  EXPECT_EQ(vec(5, 1), rotate_270_ccw(vec(-1, 5)));
+  EXPECT_EQ(vec(-7, 4), rotate_270_ccw(vec(-4, -7)));
 }
 
 TEST_F(RotationsTest, RotateCCWTest) {
-  using pt = cpl::vector2d<double>;
+  using vecf = cpl::vector2d<double>;
   using cpl::rotate_ccw;
 
-  auto expect_equal = [&](const pt& expected, const pt& actual) {
+  auto expect_equal = [&](const vecf& expected, const vecf& actual) {
     EXPECT_NEAR(expected.x, actual.x, 1e-6) << "Expected: " << expected
                                             << ", Actual: " << actual;
     EXPECT_NEAR(expected.y, actual.y, 1e-6) << "Expected: " << expected
@@ -76,26 +76,26 @@ TEST_F(RotationsTest, RotateCCWTest) {
 
   const double pi = std::acos(-1);
 
-  expect_equal(pt{-5, 0}, rotate_ccw(pt{5, 0}, pi));
-  expect_equal(pt{0, -4}, rotate_ccw(pt{0, 4}, pi));
-  expect_equal(pt{5, -6}, rotate_ccw(pt{-5, 6}, pi));
+  expect_equal(vecf{-5, 0}, rotate_ccw(vecf{5, 0}, pi));
+  expect_equal(vecf{0, -4}, rotate_ccw(vecf{0, 4}, pi));
+  expect_equal(vecf{5, -6}, rotate_ccw(vecf{-5, 6}, pi));
 
-  expect_equal(pt{-5, 0}, rotate_ccw(pt{5, 0}, -pi));
-  expect_equal(pt{0, -4}, rotate_ccw(pt{0, 4}, -pi));
-  expect_equal(pt{5, -6}, rotate_ccw(pt{-5, 6}, -pi));
+  expect_equal(vecf{-5, 0}, rotate_ccw(vecf{5, 0}, -pi));
+  expect_equal(vecf{0, -4}, rotate_ccw(vecf{0, 4}, -pi));
+  expect_equal(vecf{5, -6}, rotate_ccw(vecf{-5, 6}, -pi));
 
-  expect_equal(pt{0, 5}, rotate_ccw(pt{5, 0}, pi / 2));
-  expect_equal(pt{-4, 0}, rotate_ccw(pt{0, 4}, pi / 2));
-  expect_equal(pt{-6, -5}, rotate_ccw(pt{-5, 6}, pi / 2));
+  expect_equal(vecf{0, 5}, rotate_ccw(vecf{5, 0}, pi / 2));
+  expect_equal(vecf{-4, 0}, rotate_ccw(vecf{0, 4}, pi / 2));
+  expect_equal(vecf{-6, -5}, rotate_ccw(vecf{-5, 6}, pi / 2));
 
-  expect_equal(pt{0, -5}, rotate_ccw(pt{5, 0}, -pi / 2));
-  expect_equal(pt{4, 0}, rotate_ccw(pt{0, 4}, -pi / 2));
-  expect_equal(pt{6, 5}, rotate_ccw(pt{-5, 6}, -pi / 2));
+  expect_equal(vecf{0, -5}, rotate_ccw(vecf{5, 0}, -pi / 2));
+  expect_equal(vecf{4, 0}, rotate_ccw(vecf{0, 4}, -pi / 2));
+  expect_equal(vecf{6, 5}, rotate_ccw(vecf{-5, 6}, -pi / 2));
 
-  const pt p0{5, 0};
-  const pt p30{5 * std::sqrt(0.75), 2.5};
-  const pt p45{5 * std::sqrt(0.5), 5 * std::sqrt(0.5)};
-  const pt p60{2.5, 5 * std::sqrt(0.75)};
+  const vecf p0{5, 0};
+  const vecf p30{5 * std::sqrt(0.75), 2.5};
+  const vecf p45{5 * std::sqrt(0.5), 5 * std::sqrt(0.5)};
+  const vecf p60{2.5, 5 * std::sqrt(0.75)};
 
   expect_equal(p30, rotate_ccw(p0, pi / 6));
   expect_equal(p45, rotate_ccw(p0, pi / 4));
