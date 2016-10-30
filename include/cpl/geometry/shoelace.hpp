@@ -17,16 +17,16 @@ namespace cpl {
 
 /// \brief Computes the area of a simple polygon.
 ///
-/// Uses the Gauss's area formula to compute the area of the polygon \p poly.
+/// Uses the Gauss's area formula to compute the area of the polygon `poly`.
 ///
 /// \param poly The polygon to determine area.
 ///
-/// \pre <tt>poly.size() >= 3</tt>
+/// \pre `poly.size() >= 3`
 ///
-/// \returns Twice the area of the polygon \p poly.
+/// \returns **Twice** the area of the polygon `poly`.
 ///
 /// \par Complexity
-/// Linear in <tt>poly.size()</tt>.
+/// Linear in `poly.size()`.
 ///
 template <typename T>
 T shoelace_area(const std::vector<point2d<T>>& poly) {
@@ -40,6 +40,25 @@ T shoelace_area(const std::vector<point2d<T>>& poly) {
   sum += poly[0].x * (poly[1].y - poly[n - 1].y);
   sum += poly[n - 1].x * (poly[0].y - poly[n - 2].y);
   return std::abs(sum);
+}
+
+/// \brief Computes the area of a simple polygon.
+///
+/// \param poly The input polygon.
+///
+/// \pre `poly.size() >= 3`
+///
+/// \returns The computed area.
+///
+/// \par Complexity
+/// Linear in `poly.size()`
+///
+/// \note If `T` is an integer type the result might not be representable on
+/// this type.
+///
+template <typename T>
+T compute_polygon_area(const std::vector<point2d<T>>& poly) {
+  return shoelace_area(poly) / T{2};
 }
 
 } // end namespace cpl
