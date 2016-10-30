@@ -68,9 +68,9 @@ TEST_F(RotationsTest, RotateCCWTest) {
   using cpl::rotate_ccw;
 
   auto expect_equal = [&](const vecf& expected, const vecf& actual) {
-    EXPECT_NEAR(expected.x, actual.x, 1e-6) << "Expected: " << expected
+    ASSERT_NEAR(expected.x, actual.x, 1e-6) << "Expected: " << expected
                                             << ", Actual: " << actual;
-    EXPECT_NEAR(expected.y, actual.y, 1e-6) << "Expected: " << expected
+    ASSERT_NEAR(expected.y, actual.y, 1e-6) << "Expected: " << expected
                                             << ", Actual: " << actual;
   };
 
