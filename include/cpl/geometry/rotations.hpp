@@ -23,25 +23,14 @@ vector2d<T> rotate_90_ccw(const vector2d<T>& v) {
   return {-v.y, v.x};
 }
 
-/// \brief Rotates a vector 180 degrees counterclockwise.
+/// \brief Rotates a vector 90 degrees clockwise.
 ///
 /// \param v The vector to be rotated.
 ///
 /// \returns The rotated vector.
 ///
 template <typename T>
-vector2d<T> rotate_180_ccw(const vector2d<T>& v) {
-  return -v;
-}
-
-/// \brief Rotates a vector 270 degrees counterclockwise.
-///
-/// \param v The vector to be rotated.
-///
-/// \returns The rotated vector.
-///
-template <typename T>
-vector2d<T> rotate_270_ccw(const vector2d<T>& v) {
+vector2d<T> rotate_90_cw(const vector2d<T>& v) {
   return {v.y, -v.x};
 }
 
