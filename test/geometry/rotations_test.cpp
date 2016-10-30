@@ -31,22 +31,6 @@ TEST_F(RotationsTest, Rotate90CCWTest) {
   EXPECT_EQ(vec(7, -4), rotate_90_ccw(vec(-4, -7)));
 }
 
-TEST_F(RotationsTest, Rotate180CCWTest) {
-  using cpl::rotate_180_ccw;
-
-  EXPECT_EQ(vec(0, 0), rotate_180_ccw(vec(0, 0)));
-
-  EXPECT_EQ(vec(-1, 0), rotate_180_ccw(vec(1, 0)));
-  EXPECT_EQ(vec(0, -1), rotate_180_ccw(vec(0, 1)));
-  EXPECT_EQ(vec(1, 0), rotate_180_ccw(vec(-1, 0)));
-  EXPECT_EQ(vec(0, 1), rotate_180_ccw(vec(0, -1)));
-
-  EXPECT_EQ(vec(-2, -3), rotate_180_ccw(vec(2, 3)));
-  EXPECT_EQ(vec(-3, 4), rotate_180_ccw(vec(3, -4)));
-  EXPECT_EQ(vec(1, -5), rotate_180_ccw(vec(-1, 5)));
-  EXPECT_EQ(vec(4, 7), rotate_180_ccw(vec(-4, -7)));
-}
-
 TEST_F(RotationsTest, Rotate90CWTest) {
   using cpl::rotate_90_cw;
 
