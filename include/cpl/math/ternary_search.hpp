@@ -35,19 +35,30 @@ namespace cpl {
 /// exceeded.
 ///
 /// \par Complexity
-/// The time complexity is logarithmic in `(b - a)`. The function `f` is
-/// evaluated twice per iteration.
+/// The function `f` will be evaluated twice per iteration. The expected number
+/// of iterations is \f$0\f$ if \f$(b - a) \leq (2 \cdot \mathit{tol})\f$,
+/// otherwise it is defined by
+/// \f[
+///    \left\lceil
+///      \frac
+///      {\log{\left(\frac{b - a}{2 \cdot \mathit{tol}}\right)}}
+///      {\log{\left(\frac{3}{2}\right)}}
+///   \right\rceil
+/// \f]
 ///
-/// \note There could be some precision problems if the scales of `a` and `b`
-/// are very different or either `a` or `b` is the global maximum.
+/// \warning The absolute error of the returned result might be greater than
+/// `tol` if the function `f` is not precise enough when evaluating numbers
+/// close to the maximum. It is more likely to occur when either `a` or
+/// `b` is the maximum.
 ///
 template <typename T, typename F>
 T ternary_search(const F f, T a, T b, const T tol, const int max_iter) {
   static_assert(std::is_floating_point<T>::value, "");
+  // num_iters = ceil(log((b - a) / (2 * tol)) / log(1.5));
 
   for (int iter = 0; iter < max_iter; ++iter) {
     assert(a <= b);
-    if ((b - a) / 2 <= tol)
+    if ((b - a) <= 2 * tol)
       return (a + b) / 2;
 
     const auto left_third = (2 * a + b) / 3;
