@@ -3,4 +3,5 @@ add_unittest("math"
   "matrix_ops_test.cpp"
   "rational_test.cpp"
   "simplex_test.cpp"
+  "ternary_search_test.cpp"
 )
