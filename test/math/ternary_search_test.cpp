@@ -11,7 +11,7 @@
 namespace {
 class TernarySearchTest : public ::testing::Test {
 protected:
-  static constexpr double tol = 1e-08;
+  static constexpr double tol = 1e-07;
 
   template <typename F, typename T>
   static T find_maximum(F f, T a, T b, int max_iter = 200) {
@@ -44,6 +44,7 @@ TEST_F(TernarySearchTest, QuadraticFunctionsTest) {
     EXPECT_NEAR(x_max, find_maximum(f, -1e15, 1e15), tol);
     EXPECT_NEAR(x_max, find_maximum(f, 1.74, 1e15), tol);
     EXPECT_NEAR(x_max, find_maximum(f, 1.75, 1e50, 500), tol);
+    EXPECT_NEAR(x_max, find_maximum(f, 1.75, 1.75, 1), 0.0);
   }
   {
     auto f = [](double x) { return 9 * x * x + 7 * x + 42; };
@@ -54,5 +55,7 @@ TEST_F(TernarySearchTest, QuadraticFunctionsTest) {
     EXPECT_NEAR(x_min, find_minimum(f, -1e42, x_min + 0.001, 500), tol);
     EXPECT_NEAR(x_min, find_minimum(f, x_min, 5000.0), tol);
     EXPECT_NEAR(x_min, find_minimum(f, x_min, 1e30, 500), tol);
+    EXPECT_NEAR(x_min, find_minimum(f, -1.0, x_min), tol);
+    EXPECT_NEAR(x_min, find_minimum(f, -1.0, 0.0), tol);
   }
 }
