@@ -46,7 +46,7 @@ protected:
     const auto ans = std::ceil(std::log((b - a) / (2 * tol)) / std::log(1.5));
 
     assert(ans >= 1);
-    assert(ans < 1000); // Otherwise, the test is too demanding
+    assert(ans < 1000); // Otherwise, the test is too demanding.
     return static_cast<int>(ans);
   }
 
