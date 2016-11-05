@@ -7,7 +7,7 @@
 #include <gtest/gtest.h>
 
 #include <cassert> // assert
-#include <cmath>   // log, ceil
+#include <cmath>   // log, ceil, acos, sin, cos
 
 using cpl::ternary_search;
 
@@ -39,7 +39,6 @@ protected:
 
 private:
   static int compute_number_of_iterations(double a, double b, double tol) {
-
     if ((b - a) <= 2 * tol) {
       return 0;
     }
@@ -103,4 +102,28 @@ TEST_F(TernarySearchTest, QuadraticFunctionWithLargeConstantTermTest) {
   EXPECT_NEAR(x_min, find_minimum(f, x_min, 1e30), tol);
   EXPECT_NEAR(x_min, find_minimum(f, -1.0, x_min), tol);
   EXPECT_NEAR(x_min, find_minimum(f, -1.0, 0.0), tol);
+}
+
+TEST_F(TernarySearchTest, TrigonometricFunctionsTest) {
+  auto sin = [](double x) { return std::sin(x); };
+  auto cos = [](double x) { return std::cos(x); };
+
+  const double pi = std::acos(-1);
+
+  // The sine and cosine functions are a little imprecise in some points.
+  const double tol = 1e-08;
+  set_tol(tol);
+
+  EXPECT_NEAR(pi / 2, find_maximum(sin, 0.0, pi), tol);
+  EXPECT_NEAR(pi / 2, find_maximum(sin, 1.4, 1.6), tol);
+  EXPECT_NEAR(3 * pi / 2, find_minimum(sin, pi, 2 * pi), tol);
+  EXPECT_NEAR(3 * pi / 2, find_minimum(sin, 4.5, 5.1), tol);
+
+  EXPECT_NEAR(0.0, find_maximum(cos, -pi / 2, pi / 2), tol);
+  EXPECT_NEAR(0.0, find_maximum(cos, -0.3, 0.05), tol);
+  EXPECT_NEAR(pi, find_minimum(cos, pi / 2, 3 * pi / 2), tol);
+  EXPECT_NEAR(pi, find_minimum(cos, 3.0, 3.5), tol);
+
+  EXPECT_NEAR(pi / 2, find_maximum(sin, 0.0, pi / 2), tol);
+  EXPECT_NEAR(0.0, find_maximum(cos, 0.0, pi / 2), tol);
 }
