@@ -6,8 +6,9 @@
 #include <cpl/math/ternary_search.hpp>
 #include <gtest/gtest.h>
 
-#include <cassert> // assert
-#include <cmath>   // log, ceil, acos, sin, cos
+#include <cassert>   // assert
+#include <cmath>     // log, ceil, acos, sin, cos
+#include <stdexcept> // runtime_error
 
 using cpl::ternary_search;
 
@@ -37,7 +38,6 @@ protected:
     return m_tol;
   }
 
-private:
   static int compute_number_of_iterations(double a, double b, double tol) {
     if ((b - a) <= 2 * tol) {
       return 0;
@@ -50,6 +50,7 @@ private:
     return static_cast<int>(ans);
   }
 
+private:
   double m_tol = 1e-08;
 };
 } // end anonymous namespace
@@ -126,4 +127,21 @@ TEST_F(TernarySearchTest, TrigonometricFunctionsTest) {
 
   EXPECT_NEAR(pi / 2, find_maximum(sin, 0.0, pi / 2), tol);
   EXPECT_NEAR(0.0, find_maximum(cos, 0.0, pi / 2), tol);
+}
+
+TEST_F(TernarySearchTest, ThrowsWhenMaximumNumberOfIterationsIsExceeded) {
+
+  auto f = [](double x) { return -x * x; };
+  const double a = -21;
+  const double b = 21;
+  const double tol = 1e-6;
+
+  const auto num_iters = compute_number_of_iterations(a, b, tol);
+  ASSERT_EQ(42, num_iters);
+
+  EXPECT_THROW(ternary_search(f, a, b, tol, num_iters - 9), std::runtime_error);
+  EXPECT_THROW(ternary_search(f, a, b, tol, num_iters - 3), std::runtime_error);
+
+  EXPECT_NO_THROW(ternary_search(f, a, b, tol, num_iters + 9));
+  EXPECT_NO_THROW(ternary_search(f, a, b, tol, num_iters + 3));
 }
