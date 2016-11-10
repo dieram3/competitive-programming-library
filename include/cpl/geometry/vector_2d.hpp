@@ -7,7 +7,7 @@
 #define CPL_GEOMETRY_VECTOR_2D_HPP
 
 #include <cassert>     // assert
-#include <cmath>       // sqrt, abs(float)
+#include <cmath>       // hypot, abs(float)
 #include <ostream>     // ostream
 #include <type_traits> // is_floating_point
 
@@ -106,7 +106,7 @@ T cross(const vector2d<T>& v, const vector2d<T>& w) {
 /// \relates vector2d
 ///
 template <typename T>
-T norm(const vector2d<T>& v) {
+T squared_norm(const vector2d<T>& v) {
   return dot(v, v);
 }
 
@@ -115,9 +115,9 @@ T norm(const vector2d<T>& v) {
 /// \relates vector2d
 ///
 template <typename T>
-T abs(const vector2d<T>& v) {
+T norm(const vector2d<T>& v) {
   static_assert(std::is_floating_point<T>::value, "");
-  return std::sqrt(norm(v));
+  return std::hypot(v.x, v.y);
 }
 
 /// \brief Compares two vectors for equality.
