@@ -147,40 +147,40 @@ TEST_F(Vector2DTest, CrossProductTest) {
   EXPECT_EQ(36, cross(vec{7, 11}, vec{5, 13}));
 }
 
-TEST_F(Vector2DTest, NormTest) {
-  EXPECT_EQ(0, norm(vec{0, 0}));
+TEST_F(Vector2DTest, SquaredNormTest) {
+  EXPECT_EQ(0, squared_norm(vec{0, 0}));
 
-  EXPECT_EQ(25, norm(vec{5, 0}));
-  EXPECT_EQ(16, norm(vec{0, 4}));
-  EXPECT_EQ(170, norm(vec{11, 7}));
+  EXPECT_EQ(25, squared_norm(vec{5, 0}));
+  EXPECT_EQ(16, squared_norm(vec{0, 4}));
+  EXPECT_EQ(170, squared_norm(vec{11, 7}));
 
-  EXPECT_EQ(9, norm(vec{-3, 0}));
-  EXPECT_EQ(49, norm(vec{0, -7}));
-  EXPECT_EQ(52, norm(vec{-6, -4}));
+  EXPECT_EQ(9, squared_norm(vec{-3, 0}));
+  EXPECT_EQ(49, squared_norm(vec{0, -7}));
+  EXPECT_EQ(52, squared_norm(vec{-6, -4}));
 
-  EXPECT_EQ(34, norm(vec{3, -5}));
-  EXPECT_EQ(17, norm(vec{-1, 4}));
+  EXPECT_EQ(34, squared_norm(vec{3, -5}));
+  EXPECT_EQ(17, squared_norm(vec{-1, 4}));
 }
 
-TEST_F(Vector2DTest, AbsTest) {
+TEST_F(Vector2DTest, NormTest) {
   using vecf = vector2d<float>;
 
-  EXPECT_FLOAT_EQ(0, abs(vecf{0, 0}));
+  EXPECT_FLOAT_EQ(0, norm(vecf{0, 0}));
 
-  EXPECT_FLOAT_EQ(2, abs(vecf{2, 0}));
-  EXPECT_FLOAT_EQ(3, abs(vecf{-3, 0}));
-  EXPECT_FLOAT_EQ(5, abs(vecf{0, 5}));
-  EXPECT_FLOAT_EQ(7, abs(vecf{0, -7}));
+  EXPECT_FLOAT_EQ(2, norm(vecf{2, 0}));
+  EXPECT_FLOAT_EQ(3, norm(vecf{-3, 0}));
+  EXPECT_FLOAT_EQ(5, norm(vecf{0, 5}));
+  EXPECT_FLOAT_EQ(7, norm(vecf{0, -7}));
 
-  EXPECT_FLOAT_EQ(5, abs(vecf{3, 4}));
-  EXPECT_FLOAT_EQ(5, abs(vecf{-3, 4}));
-  EXPECT_FLOAT_EQ(5, abs(vecf{3, -4}));
-  EXPECT_FLOAT_EQ(5, abs(vecf{-3, -4}));
+  EXPECT_FLOAT_EQ(5, norm(vecf{3, 4}));
+  EXPECT_FLOAT_EQ(5, norm(vecf{-3, 4}));
+  EXPECT_FLOAT_EQ(5, norm(vecf{3, -4}));
+  EXPECT_FLOAT_EQ(5, norm(vecf{-3, -4}));
 
-  EXPECT_FLOAT_EQ(std::sqrt(32.0f), abs(vecf{4, 4}));
-  EXPECT_FLOAT_EQ(std::sqrt(74.0f), abs(vecf{5, -7}));
-  EXPECT_FLOAT_EQ(std::sqrt(109.0f), abs(vecf{-3, 10}));
-  EXPECT_FLOAT_EQ(std::sqrt(370.0f), abs(vecf{-17, -9}));
+  EXPECT_FLOAT_EQ(std::sqrt(32.0f), norm(vecf{4, 4}));
+  EXPECT_FLOAT_EQ(std::sqrt(74.0f), norm(vecf{5, -7}));
+  EXPECT_FLOAT_EQ(std::sqrt(109.0f), norm(vecf{-3, 10}));
+  EXPECT_FLOAT_EQ(std::sqrt(370.0f), norm(vecf{-17, -9}));
 }
 
 TEST_F(Vector2DTest, EqualityOperatorTest) {

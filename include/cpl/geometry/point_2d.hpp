@@ -173,7 +173,7 @@ std::ostream& operator<<(std::ostream& os, const point2d<T>& p) {
 ///
 template <typename T>
 T squared_distance(const point2d<T>& p, const point2d<T>& q) {
-  return norm(p - q);
+  return squared_norm(p - q);
 }
 
 /// \brief Computes the distance between two points.
@@ -183,7 +183,7 @@ T squared_distance(const point2d<T>& p, const point2d<T>& q) {
 template <typename T>
 T distance(const point2d<T>& p, const point2d<T>& q) {
   static_assert(std::is_floating_point<T>::value, "");
-  return abs(p - q);
+  return norm(p - q);
 }
 
 } // end namespace cpl
