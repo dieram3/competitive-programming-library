@@ -214,16 +214,15 @@ TEST_F(Point2DV2Test, SquaredDistanceTest) {
 
 TEST_F(Point2DV2Test, DistanceTest) {
   using cpl::distance;
-  using std::sqrt;
-  using pt = cpl::point2d<float>;
+  using pt = cpl::point2d<double>;
 
-  EXPECT_FLOAT_EQ(0, distance(pt{0, 0}, pt{0, 0}));
-  EXPECT_FLOAT_EQ(0, distance(pt{0, 1}, pt{0, 1}));
-  EXPECT_FLOAT_EQ(0, distance(pt{1, 0}, pt{1, 0}));
-  EXPECT_FLOAT_EQ(0, distance(pt{2, -3}, pt{2, -3}));
+  EXPECT_DOUBLE_EQ(0, distance(pt{0, 0}, pt{0, 0}));
+  EXPECT_DOUBLE_EQ(0, distance(pt{0, 1}, pt{0, 1}));
+  EXPECT_DOUBLE_EQ(0, distance(pt{1, 0}, pt{1, 0}));
+  EXPECT_DOUBLE_EQ(0, distance(pt{2, -3}, pt{2, -3}));
 
-  EXPECT_FLOAT_EQ(1.0f, distance(pt{1, 0}, pt{2, 0}));
-  EXPECT_FLOAT_EQ(sqrt(2.0f), distance(pt{3, 3}, pt{4, 4}));
-  EXPECT_FLOAT_EQ(sqrt(73.0f), distance(pt{-3, 4}, pt{5, 7}));
-  EXPECT_FLOAT_EQ(5.0f, distance(pt{-3, 2}, pt{1, -1}));
+  EXPECT_DOUBLE_EQ(1, distance(pt{1, 0}, pt{2, 0}));
+  EXPECT_DOUBLE_EQ(std::sqrt(2), distance(pt{3, 3}, pt{4, 4}));
+  EXPECT_DOUBLE_EQ(std::sqrt(73), distance(pt{-3, 4}, pt{5, 7}));
+  EXPECT_DOUBLE_EQ(5, distance(pt{-3, 2}, pt{1, -1}));
 }
