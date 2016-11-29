@@ -31,8 +31,8 @@ namespace cpl {
 /// 64-bit integer.
 ///
 template <typename T>
-matrix2<T> gen_binomial_coefficient_matrix(const size_t n_max) {
-  matrix2<T> coeff(n_max + 1, n_max + 1);
+matrix<T> gen_binomial_coefficient_matrix(const size_t n_max) {
+  matrix<T> coeff(n_max + 1, n_max + 1);
   for (size_t n = 0; n <= n_max; ++n) {
     coeff[n][0] = 1;
     coeff[n][n] = 1;

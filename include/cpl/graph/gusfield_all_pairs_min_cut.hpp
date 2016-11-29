@@ -43,14 +43,14 @@ namespace cpl {
 /// <tt>O(V^2 * E^2)</tt>.
 ///
 template <typename Graph, typename Flow>
-matrix2<Flow> gusfield_all_pairs_min_cut(const Graph& g,
-                                         const std::vector<size_t>& rev_edge,
-                                         const std::vector<Flow>& capacity) {
+matrix<Flow> gusfield_all_pairs_min_cut(const Graph& g,
+                                        const std::vector<size_t>& rev_edge,
+                                        const std::vector<Flow>& capacity) {
 
   const size_t num_vertices = g.num_vertices();
   std::vector<size_t> parent(num_vertices);
-  matrix2<Flow> cut(num_vertices, num_vertices,
-                    std::numeric_limits<Flow>::max());
+  matrix<Flow> cut(num_vertices, num_vertices,
+                   std::numeric_limits<Flow>::max());
 
   std::vector<bool> source_side;
   for (size_t i = 1; i != num_vertices; ++i) {

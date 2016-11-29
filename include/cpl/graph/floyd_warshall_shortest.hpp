@@ -41,8 +41,8 @@ namespace cpl {
 ///
 template <typename Graph, typename Distance>
 void floyd_warshall_all_pairs_shortest_paths(
-    const Graph& g, const std::vector<Distance>& weight,
-    matrix2<Distance>& dist, matrix2<size_t>& next) {
+    const Graph& g, const std::vector<Distance>& weight, matrix<Distance>& dist,
+    matrix<size_t>& next) {
 
   const Distance inf = std::numeric_limits<Distance>::max();
   const size_t num_edges = g.num_edges();
@@ -98,7 +98,7 @@ void floyd_warshall_all_pairs_shortest_paths(
 ///
 template <typename OutputIt>
 OutputIt floyd_warshall_path(size_t u, const size_t v,
-                             const matrix2<size_t>& next, OutputIt out_it) {
+                             const matrix<size_t>& next, OutputIt out_it) {
   if (u != v && next[u][v] == SIZE_MAX)
     return out_it;
   *out_it++ = u;

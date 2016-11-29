@@ -13,12 +13,12 @@
 using cpl::mat_mul;
 using cpl::mat_identity;
 using cpl::mat_pow;
-using cpl::matrix2;
+using cpl::matrix;
 using std::size_t;
 
 template <typename T, size_t M, size_t N>
-static matrix2<T> as_matrix(const T (&mat)[M][N]) {
-  matrix2<T> res(M, N);
+static matrix<T> as_matrix(const T (&mat)[M][N]) {
+  matrix<T> res(M, N);
   for (size_t i = 0; i < M; ++i)
     for (size_t j = 0; j < N; ++j)
       res[i][j] = mat[i][j];
@@ -26,12 +26,12 @@ static matrix2<T> as_matrix(const T (&mat)[M][N]) {
 }
 
 template <typename T>
-static bool is_square(const matrix2<T>& mat) {
+static bool is_square(const matrix<T>& mat) {
   return mat.num_rows() == mat.num_cols();
 }
 
 template <typename T>
-static bool is_identity(const matrix2<T>& mat) {
+static bool is_identity(const matrix<T>& mat) {
   if (!is_square(mat))
     return false;
   for (size_t i = 0; i < mat.num_rows(); ++i) {
@@ -47,7 +47,7 @@ static bool is_identity(const matrix2<T>& mat) {
 namespace cpl {
 
 template <typename T>
-static bool operator==(const matrix2<T>& a, const matrix2<T>& b) {
+static bool operator==(const matrix<T>& a, const matrix<T>& b) {
   if (a.num_rows() != b.num_rows() || a.num_cols() != b.num_cols())
     return false;
   for (size_t i = 0; i < a.num_rows(); ++i) {
@@ -60,7 +60,7 @@ static bool operator==(const matrix2<T>& a, const matrix2<T>& b) {
 }
 
 template <typename T>
-static std::ostream& operator<<(std::ostream& os, const matrix2<T>& mat) {
+static std::ostream& operator<<(std::ostream& os, const matrix<T>& mat) {
   os << "A " << mat.num_rows() << 'x' << mat.num_cols() << " matrix\n";
   for (size_t i = 0; i < mat.num_rows(); ++i)
     for (size_t j = 0; j < mat.num_cols(); ++j)
@@ -74,7 +74,7 @@ TEST(MatrixOpsTest, MatMulTest) {
   {
     const int a[2][3] = {{1, 2, 3}, {3, 4, 5}};
     const int b[3][1] = {{4}, {1}, {5}};
-    const matrix2<int> r = mat_mul(as_matrix(a), as_matrix(b));
+    const matrix<int> r = mat_mul(as_matrix(a), as_matrix(b));
     EXPECT_EQ(2, r.num_rows());
     EXPECT_EQ(1, r.num_cols());
     EXPECT_EQ(21, r[0][0]);
@@ -99,15 +99,15 @@ TEST(MatrixOpsTest, MatMulTest) {
 }
 
 TEST(MatrixOpsTest, MatIdentityTest) {
-  const matrix2<int> a = mat_identity<int>(1);
+  const matrix<int> a = mat_identity<int>(1);
   EXPECT_TRUE(a.num_rows() == 1 && is_identity(a));
-  const matrix2<int> b = mat_identity<int>(4);
+  const matrix<int> b = mat_identity<int>(4);
   EXPECT_TRUE(b.num_rows() == 4 && is_identity(b));
 }
 
 TEST(MatrixOpsTest, MatPowTest) {
   using int_t = unsigned long long;
-  using matrix_t = matrix2<int_t>;
+  using matrix_t = matrix<int_t>;
 
   const int_t b[3][3] = {{1, 2, 1},  // row 0
                          {3, 5, 2},  // row 1

@@ -64,9 +64,6 @@ private:
   size_t ncols{};
 };
 
-template <typename T>
-using matrix2 = matrix<T>; // TODO(Diego): Remove it.
-
 } // end namespace cpl
 
 #endif // Header guard

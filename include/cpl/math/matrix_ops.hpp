@@ -23,9 +23,9 @@ namespace cpl {
 /// Exactly <tt>A.rows()*B.cols()*A.cols()</tt> scalar multiplications.
 ///
 template <typename T>
-matrix2<T> mat_mul(const matrix2<T>& a, const matrix2<T>& b) {
+matrix<T> mat_mul(const matrix<T>& a, const matrix<T>& b) {
   assert(a.num_cols() == b.num_rows() && "Matrices cannot be multiplied");
-  matrix2<T> r(a.num_rows(), b.num_cols());
+  matrix<T> r(a.num_rows(), b.num_cols());
   for (size_t i = 0; i < r.num_rows(); ++i) {
     for (size_t j = 0; j < r.num_cols(); ++j) {
       T sum = 0;
@@ -44,11 +44,11 @@ matrix2<T> mat_mul(const matrix2<T>& a, const matrix2<T>& b) {
 /// \returns The generated identity matrix.
 ///
 template <typename T>
-matrix2<T> mat_identity(const size_t dim) {
-  matrix2<T> r(dim, dim);
+matrix<T> mat_identity(const size_t dim) {
+  matrix<T> res(dim, dim);
   for (size_t k = 0; k < dim; ++k)
-    r[k][k] = 1;
-  return r;
+    res[k][k] = 1;
+  return res;
 }
 
 /// \brief Raises a matrix to the given power.
@@ -64,10 +64,10 @@ matrix2<T> mat_identity(const size_t dim) {
 /// <tt>O(log(exp))</tt> matrix multiplications.
 ///
 template <typename T, typename Integer>
-matrix2<T> mat_pow(matrix2<T> base, Integer exp) {
+matrix<T> mat_pow(matrix<T> base, Integer exp) {
   assert(base.num_rows() == base.num_cols() && "Base matrix must be square");
   assert(exp >= 0 && "Exponent cannot be negative");
-  matrix2<T> result = mat_identity<T>(base.num_rows());
+  matrix<T> result = mat_identity<T>(base.num_rows());
   while (exp > 0) {
     if (exp % 2 == 1)
       result = mat_mul(result, base);

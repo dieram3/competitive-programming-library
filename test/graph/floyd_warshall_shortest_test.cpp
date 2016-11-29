@@ -16,7 +16,7 @@
 using cpl::floyd_warshall_all_pairs_shortest_paths;
 using cpl::floyd_warshall_path;
 using cpl::directed_graph;
-using cpl::matrix2;
+using cpl::matrix;
 using std::vector;
 using std::size_t;
 
@@ -80,8 +80,8 @@ TEST_F(FloydWarshallAPSPTest, ShortestDistancesTest) {
   expected[8] = {3, 0, 3, 7, 0, 1, 3, -3, 0, inf};
   expected[9] = {6, 5, 8, 12, 3, 4, 8, 2, 5, 0};
 
-  matrix2<int> dist{};
-  matrix2<size_t> next{};
+  matrix<int> dist{};
+  matrix<size_t> next{};
   floyd_warshall_all_pairs_shortest_paths(g, weight, dist, next);
 
   for (size_t i = 0; i != 10; ++i) {
@@ -93,8 +93,8 @@ TEST_F(FloydWarshallAPSPTest, ShortestDistancesTest) {
 
 TEST_F(FloydWarshallAPSPTest, PathTest) {
   build_10_vertices_graph();
-  matrix2<int> dist{};
-  matrix2<size_t> next{};
+  matrix<int> dist{};
+  matrix<size_t> next{};
   floyd_warshall_all_pairs_shortest_paths(g, weight, dist, next);
 
   // Long paths
