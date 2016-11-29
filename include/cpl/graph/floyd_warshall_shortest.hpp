@@ -41,37 +41,37 @@ namespace cpl {
 ///
 template <typename Graph, typename Distance>
 void floyd_warshall_all_pairs_shortest_paths(
-    const Graph& g, const std::vector<Distance>& weight, matrix<Distance>& dist,
-    matrix<size_t>& next) {
+    const Graph& g, const std::vector<Distance>& weight,
+    matrix2<Distance>& dist, matrix2<size_t>& next) {
 
   const Distance inf = std::numeric_limits<Distance>::max();
   const size_t num_edges = g.num_edges();
   const size_t num_v = g.num_vertices();
-  dist.assign({num_v, num_v}, inf);
-  next.assign({num_v, num_v}, SIZE_MAX);
+  dist.assign(num_v, num_v, inf);
+  next.assign(num_v, num_v, SIZE_MAX);
 
   for (size_t v = 0; v != num_v; ++v)
-    dist[{v, v}] = 0;
+    dist[v][v] = 0;
 
   for (size_t e = 0; e != num_edges; ++e) {
     const size_t u = g.source(e);
     const size_t v = g.target(e);
-    dist[{u, v}] = std::min(dist[{u, v}], weight[e]);
-    next[{u, v}] = v;
+    dist[u][v] = std::min(dist[u][v], weight[e]);
+    next[u][v] = v;
   }
 
   auto try_update = [&](size_t k, size_t i, size_t j) {
-    if (dist[{i, k}] + dist[{k, j}] >= dist[{i, j}])
+    if (dist[i][k] + dist[k][j] >= dist[i][j])
       return;
-    dist[{i, j}] = dist[{i, k}] + dist[{k, j}];
-    next[{i, j}] = next[{i, k}];
+    dist[i][j] = dist[i][k] + dist[k][j];
+    next[i][j] = next[i][k];
   };
   for (size_t k = 0; k < num_v; ++k) {
     for (size_t i = 0; i < num_v; ++i) {
-      if (dist[{i, k}] == inf)
+      if (dist[i][k] == inf)
         continue;
       for (size_t j = 0; j != num_v; ++j) {
-        if (dist[{k, j}] == inf)
+        if (dist[k][j] == inf)
           continue;
         try_update(k, i, j);
       } // 3rd for
@@ -98,12 +98,12 @@ void floyd_warshall_all_pairs_shortest_paths(
 ///
 template <typename OutputIt>
 OutputIt floyd_warshall_path(size_t u, const size_t v,
-                             const matrix<size_t>& next, OutputIt out_it) {
-  if (u != v && next[{u, v}] == SIZE_MAX)
+                             const matrix2<size_t>& next, OutputIt out_it) {
+  if (u != v && next[u][v] == SIZE_MAX)
     return out_it;
   *out_it++ = u;
   while (u != v) {
-    u = next[{u, v}];
+    u = next[u][v];
     *out_it++ = u;
   }
   return out_it;
