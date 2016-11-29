@@ -7,6 +7,7 @@
 #define CPL_COMBINATORICS_BINOMIAL_COEFFICIENT_HPP
 
 #include <cpl/utility/matrix.hpp>
+#include <cstddef> // size_t
 
 namespace cpl {
 
@@ -30,13 +31,13 @@ namespace cpl {
 /// 64-bit integer.
 ///
 template <typename T>
-matrix<T> gen_binomial_coefficient_matrix(const T n_max) {
-  matrix<T> coeff({n_max + 1, n_max + 1});
-  for (T n = 0; n <= n_max; ++n) {
-    coeff[{n, 0}] = 1;
-    coeff[{n, n}] = 1;
-    for (T k = 1; k < n; ++k)
-      coeff[{n, k}] = coeff[{n - 1, k - 1}] + coeff[{n - 1, k}];
+matrix2<T> gen_binomial_coefficient_matrix(const size_t n_max) {
+  matrix2<T> coeff(n_max + 1, n_max + 1);
+  for (size_t n = 0; n <= n_max; ++n) {
+    coeff[n][0] = 1;
+    coeff[n][n] = 1;
+    for (size_t k = 1; k < n; ++k)
+      coeff[n][k] = coeff[n - 1][k - 1] + coeff[n - 1][k];
   }
   return coeff;
 }
