@@ -11,6 +11,8 @@
 
 using cpl::matrix;
 
+// TODO(Diego): Test matrix2
+
 TEST(MatrixTest, ConstrucstWell) {
 
   // elements are value-initialized

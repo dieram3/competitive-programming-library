@@ -67,6 +67,12 @@ public:
   matrix2(size_t r, size_t c, const T& value = T())
       : data(r * c, value), nrows{r}, ncols{c} {}
 
+  void assign(size_t r, size_t c, const T& value) {
+    data.assign(r * c, value);
+    nrows = r;
+    ncols = c;
+  }
+
   void resize(size_t r, size_t c) {
     data.resize(r * c);
     nrows = r;
