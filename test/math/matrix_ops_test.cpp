@@ -18,7 +18,7 @@ using std::size_t;
 
 template <typename T, size_t M, size_t N>
 static matrix<T> as_matrix(const T (&mat)[M][N]) {
-  matrix<T> res(M, N);
+  matrix<T> res({M, N});
   for (size_t i = 0; i < M; ++i)
     for (size_t j = 0; j < N; ++j)
       res[i][j] = mat[i][j];

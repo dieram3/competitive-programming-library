@@ -47,8 +47,8 @@ void floyd_warshall_all_pairs_shortest_paths(
   const Distance inf = std::numeric_limits<Distance>::max();
   const size_t num_edges = g.num_edges();
   const size_t num_v = g.num_vertices();
-  dist.assign(num_v, num_v, inf);
-  next.assign(num_v, num_v, SIZE_MAX);
+  dist.assign({num_v, num_v}, inf);
+  next.assign({num_v, num_v}, SIZE_MAX);
 
   for (size_t v = 0; v != num_v; ++v)
     dist[v][v] = 0;

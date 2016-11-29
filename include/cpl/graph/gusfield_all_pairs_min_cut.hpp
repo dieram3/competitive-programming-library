@@ -49,7 +49,7 @@ matrix<Flow> gusfield_all_pairs_min_cut(const Graph& g,
 
   const size_t num_vertices = g.num_vertices();
   std::vector<size_t> parent(num_vertices);
-  matrix<Flow> cut(num_vertices, num_vertices,
+  matrix<Flow> cut({num_vertices, num_vertices},
                    std::numeric_limits<Flow>::max());
 
   std::vector<bool> source_side;

@@ -66,7 +66,7 @@ public:
     const size_t n = a.num_cols();
 
     // Build tableau.
-    tableau.resize(m + 2, n + 2);
+    tableau.resize({m + 2, n + 2});
     for (size_t i = 0; i < m; ++i) {
       for (size_t j = 0; j < n; ++j)
         tableau[i][j] = a[i][j];

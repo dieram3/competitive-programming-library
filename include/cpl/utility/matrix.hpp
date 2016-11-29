@@ -22,25 +22,26 @@ namespace cpl {
 template <typename T>
 class matrix {
 public:
+  using bounds_type = std::pair<size_t, size_t>;
   using row_iterator = typename std::vector<T>::iterator;
   using const_row_iterator = typename std::vector<T>::const_iterator;
 
 public:
   matrix() = default;
 
-  matrix(size_t r, size_t c, const T& value = T())
-      : data(r * c, value), nrows{r}, ncols{c} {}
+  matrix(bounds_type bounds, const T& value = T())
+      : nrows{bounds.first}, ncols{bounds.second}, data(nrows * ncols, value) {}
 
-  void assign(size_t r, size_t c, const T& value) {
-    data.assign(r * c, value);
-    nrows = r;
-    ncols = c;
+  void assign(bounds_type bounds, const T& value) {
+    nrows = bounds.first;
+    ncols = bounds.second;
+    data.assign(nrows * ncols, value);
   }
 
-  void resize(size_t r, size_t c) {
-    data.resize(r * c);
-    nrows = r;
-    ncols = c;
+  void resize(bounds_type bounds) {
+    nrows = bounds.first;
+    ncols = bounds.second;
+    data.resize(nrows * ncols);
   }
 
   size_t num_rows() const {
@@ -59,9 +60,9 @@ public:
   }
 
 private:
-  std::vector<T> data;
   size_t nrows{};
   size_t ncols{};
+  std::vector<T> data;
 };
 
 } // end namespace cpl

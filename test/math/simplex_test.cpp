@@ -47,7 +47,7 @@ protected:
 protected:
   void set_a(const size_t m, const size_t n, const vec_t& vec) {
     assert(vec.size() == m * n);
-    a.resize(m, n);
+    a.resize({m, n});
     for (size_t i = 0; i != m; ++i)
       for (size_t j = 0; j != n; ++j)
         a[i][j] = vec[i * n + j];

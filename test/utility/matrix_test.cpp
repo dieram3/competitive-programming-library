@@ -23,7 +23,7 @@ TEST_F(MatrixTest, DefaultCtorTest) {
 }
 
 TEST_F(MatrixTest, DimCtorTest) {
-  matrix<int> mat(5, 7);
+  matrix<int> mat({5, 7});
   EXPECT_EQ(5, mat.num_rows());
   EXPECT_EQ(7, mat.num_cols());
 
@@ -34,7 +34,7 @@ TEST_F(MatrixTest, DimCtorTest) {
 }
 
 TEST_F(MatrixTest, DimAndFillCtorTest) {
-  matrix<bool> mat(3, 4, true);
+  matrix<bool> mat({3, 4}, true);
   EXPECT_EQ(3, mat.num_rows());
   EXPECT_EQ(4, mat.num_cols());
 
@@ -45,7 +45,7 @@ TEST_F(MatrixTest, DimAndFillCtorTest) {
 }
 
 TEST_F(MatrixTest, IsConstAware) {
-  matrix<int> mat(1, 1);
+  matrix<int> mat({1, 1});
   const auto& cmat = mat;
 
   using ref = decltype(mat[0][0]);
@@ -68,11 +68,11 @@ TEST_F(MatrixTest, IsConstAware) {
 }
 
 TEST_F(MatrixTest, ResizeTest) {
-  matrix<int> mat(2, 3);
+  matrix<int> mat({2, 3});
   ASSERT_EQ(2, mat.num_rows());
   ASSERT_EQ(3, mat.num_cols());
 
-  mat.resize(5, 2);
+  mat.resize({5, 2});
   EXPECT_EQ(5, mat.num_rows());
   EXPECT_EQ(2, mat.num_cols());
 
@@ -83,12 +83,12 @@ TEST_F(MatrixTest, ResizeTest) {
 }
 
 TEST_F(MatrixTest, AssignWithFillValueTest) {
-  matrix<int> mat(1, 4, /*value=*/2);
+  matrix<int> mat({1, 4}, /*value=*/2);
   ASSERT_EQ(1, mat.num_rows());
   ASSERT_EQ(4, mat.num_cols());
   ASSERT_EQ(2, mat[0][0]);
 
-  mat.assign(5, 3, /*value=*/7);
+  mat.assign({5, 3}, /*value=*/7);
   EXPECT_EQ(5, mat.num_rows());
   EXPECT_EQ(3, mat.num_cols());
   for (size_t i = 0; i != mat.num_rows(); ++i) {

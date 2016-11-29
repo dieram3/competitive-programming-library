@@ -32,7 +32,7 @@ namespace cpl {
 ///
 template <typename T>
 matrix<T> gen_binomial_coefficient_matrix(const size_t n_max) {
-  matrix<T> coeff(n_max + 1, n_max + 1);
+  matrix<T> coeff({n_max + 1, n_max + 1});
   for (size_t n = 0; n <= n_max; ++n) {
     coeff[n][0] = 1;
     coeff[n][n] = 1;
