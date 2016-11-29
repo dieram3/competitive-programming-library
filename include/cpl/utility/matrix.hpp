@@ -22,55 +22,26 @@ namespace cpl {
 template <typename T>
 class matrix {
 public:
-  using index_type = std::pair<size_t, size_t>;
-  using reference = typename std::vector<T>::reference;
-  using const_reference = typename std::vector<T>::const_reference;
-
-  explicit matrix(index_type bounds = {0, 0}, const T& value = T())
-      : bounds_(bounds), data_(rows() * cols(), value) {}
-
-  void assign(index_type bounds, const T& value = T()) {
-    bounds_ = bounds;
-    data_.assign(rows() * cols(), value);
-  }
-
-  size_t pos(index_type idx) const {
-    return idx.first * cols() + idx.second;
-  }
-  size_t rows() const {
-    return bounds_.first;
-  }
-  size_t cols() const {
-    return bounds_.second;
-  }
-  reference operator[](index_type idx) {
-    return data_[pos(idx)];
-  }
-  const_reference operator[](index_type idx) const {
-    return data_[pos(idx)];
-  }
-
-private:
-  index_type bounds_;
-  std::vector<T> data_;
-};
-
-template <typename T>
-class matrix2 {
-public:
+  using bounds_type = std::pair<size_t, size_t>;
   using row_iterator = typename std::vector<T>::iterator;
   using const_row_iterator = typename std::vector<T>::const_iterator;
 
 public:
-  matrix2() = default;
+  matrix() = default;
 
-  matrix2(size_t r, size_t c, const T& value = T())
-      : data(r * c, value), nrows{r}, ncols{c} {}
+  matrix(bounds_type bounds, const T& value = T())
+      : nrows{bounds.first}, ncols{bounds.second}, data(nrows * ncols, value) {}
 
-  void resize(size_t r, size_t c) {
-    data.resize(r * c);
-    nrows = r;
-    ncols = c;
+  void assign(bounds_type bounds, const T& value) {
+    nrows = bounds.first;
+    ncols = bounds.second;
+    data.assign(nrows * ncols, value);
+  }
+
+  void resize(bounds_type bounds) {
+    nrows = bounds.first;
+    ncols = bounds.second;
+    data.resize(nrows * ncols);
   }
 
   size_t num_rows() const {
@@ -80,18 +51,18 @@ public:
     return ncols;
   }
 
-  row_iterator operator[](const size_t row_idx) {
+  row_iterator operator[](size_t row_idx) {
     return data.begin() + row_idx * ncols;
   }
 
-  const_row_iterator operator[](const size_t row_idx) const {
+  const_row_iterator operator[](size_t row_idx) const {
     return data.begin() + row_idx * ncols;
   }
 
 private:
-  std::vector<T> data;
   size_t nrows{};
   size_t ncols{};
+  std::vector<T> data;
 };
 
 } // end namespace cpl

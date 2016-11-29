@@ -59,9 +59,9 @@ matrix<Flow> gusfield_all_pairs_min_cut(const Graph& g,
     for (size_t j = i + 1; j != num_vertices; ++j)
       if (source_side[j] && parent[j] == parent[i])
         parent[j] = i;
-    cut[{i, parent[i]}] = cut[{parent[i], i}] = min_cut;
+    cut[i][parent[i]] = cut[parent[i]][i] = min_cut;
     for (size_t j = 0; j != i; ++j)
-      cut[{i, j}] = cut[{j, i}] = std::min(min_cut, cut[{parent[i], j}]);
+      cut[i][j] = cut[j][i] = std::min(min_cut, cut[parent[i]][j]);
   }
   return cut;
 }

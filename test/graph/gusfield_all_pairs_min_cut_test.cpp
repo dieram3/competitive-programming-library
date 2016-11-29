@@ -40,33 +40,32 @@ TEST(GusfieldAllPairsMinCutTest, SmallGraphTest) {
   add_edge(4, 5, 2);
 
   const auto cut = gusfield_all_pairs_min_cut(graph, rev_edge, capacity);
-  ASSERT_EQ(6, cut.rows());
-  ASSERT_EQ(6, cut.cols());
+  ASSERT_EQ(6, cut.num_rows());
+  ASSERT_EQ(6, cut.num_cols());
 
-  for (size_t i = 0; i < cut.rows(); ++i) {
-    for (size_t j = i + 1; j < cut.cols(); ++j) {
-      EXPECT_TRUE((cut[{i, j}] == cut[{j, i}])) << " at (" << i << ", " << j
-                                                << ")";
+  for (size_t i = 0; i < cut.num_rows(); ++i) {
+    for (size_t j = i + 1; j < cut.num_cols(); ++j) {
+      EXPECT_TRUE(cut[i][j] == cut[j][i]) << " at (" << i << ", " << j << ")";
     }
   }
 
-  EXPECT_EQ(6, (cut[{0, 1}]));
-  EXPECT_EQ(8, (cut[{0, 2}]));
-  EXPECT_EQ(6, (cut[{0, 3}]));
-  EXPECT_EQ(6, (cut[{0, 4}]));
-  EXPECT_EQ(6, (cut[{0, 5}]));
+  EXPECT_EQ(6, cut[0][1]);
+  EXPECT_EQ(8, cut[0][2]);
+  EXPECT_EQ(6, cut[0][3]);
+  EXPECT_EQ(6, cut[0][4]);
+  EXPECT_EQ(6, cut[0][5]);
 
-  EXPECT_EQ(6, (cut[{1, 2}]));
-  EXPECT_EQ(6, (cut[{1, 3}]));
-  EXPECT_EQ(7, (cut[{1, 4}]));
-  EXPECT_EQ(6, (cut[{1, 5}]));
+  EXPECT_EQ(6, cut[1][2]);
+  EXPECT_EQ(6, cut[1][3]);
+  EXPECT_EQ(7, cut[1][4]);
+  EXPECT_EQ(6, cut[1][5]);
 
-  EXPECT_EQ(6, (cut[{2, 3}]));
-  EXPECT_EQ(6, (cut[{2, 4}]));
-  EXPECT_EQ(6, (cut[{2, 5}]));
+  EXPECT_EQ(6, cut[2][3]);
+  EXPECT_EQ(6, cut[2][4]);
+  EXPECT_EQ(6, cut[2][5]);
 
-  EXPECT_EQ(6, (cut[{3, 4}]));
-  EXPECT_EQ(8, (cut[{3, 5}]));
+  EXPECT_EQ(6, cut[3][4]);
+  EXPECT_EQ(8, cut[3][5]);
 
-  EXPECT_EQ(6, (cut[{4, 5}]));
+  EXPECT_EQ(6, cut[4][5]);
 }

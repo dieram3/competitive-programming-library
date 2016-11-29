@@ -15,7 +15,7 @@
 #include <vector>                 // vector, initializer_list
 
 using cpl::simplex_solver;
-using cpl::matrix2;
+using cpl::matrix;
 using real_t = double;
 using vec_t = std::vector<real_t>;
 
@@ -35,7 +35,7 @@ namespace {
 
 class SimplexTest : public ::testing::Test {
   simplex_solver<real_t> solver;
-  matrix2<real_t> a;
+  matrix<real_t> a;
   vec_t b;
   vec_t c;
   vec_t x;
@@ -47,7 +47,7 @@ protected:
 protected:
   void set_a(const size_t m, const size_t n, const vec_t& vec) {
     assert(vec.size() == m * n);
-    a.resize(m, n);
+    a.resize({m, n});
     for (size_t i = 0; i != m; ++i)
       for (size_t j = 0; j != n; ++j)
         a[i][j] = vec[i * n + j];

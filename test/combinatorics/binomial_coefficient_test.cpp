@@ -16,8 +16,8 @@ using std::uint32_t;
 using std::uint64_t;
 
 TEST(BinomialCoefficientTest, SimpleTest) {
-  const auto dp = gen_binomial_coefficient_matrix(10);
-  auto C = [&](size_t n, size_t k) { return dp[{n, k}]; };
+  const auto dp = gen_binomial_coefficient_matrix<int>(10);
+  auto C = [&](size_t n, size_t k) { return dp[n][k]; };
   EXPECT_EQ(1, C(0, 0));
   EXPECT_EQ(1, C(1, 0));
   EXPECT_EQ(1, C(1, 1));
@@ -41,7 +41,7 @@ TEST(BinomialCoefficientTest, SimpleTest) {
 
 TEST(BinomialCoefficientTest, Uint32Test) {
   const auto dp = gen_binomial_coefficient_matrix<uint32_t>(34);
-  auto C = [&](size_t n, size_t k) { return dp[{n, k}]; };
+  auto C = [&](size_t n, size_t k) { return dp[n][k]; };
   EXPECT_EQ(278256u, C(34, 5));
   EXPECT_EQ(131128140u, C(34, 10));
   EXPECT_EQ(2203961430u, C(34, 16));
@@ -53,7 +53,7 @@ TEST(BinomialCoefficientTest, Uint32Test) {
 
 TEST(BinomialCoefficientTest, Uint64Test) {
   const auto dp = gen_binomial_coefficient_matrix<uint64_t>(67);
-  auto C = [&](size_t n, size_t k) { return dp[{n, k}]; };
+  auto C = [&](size_t n, size_t k) { return dp[n][k]; };
   EXPECT_EQ(9364899127970100u, C(67, 18));
   EXPECT_EQ(9989690752182277136u, C(67, 30));
   EXPECT_EQ(14226520737620288370u, C(67, 33));

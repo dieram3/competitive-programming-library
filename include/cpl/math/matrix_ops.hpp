@@ -24,14 +24,14 @@ namespace cpl {
 ///
 template <typename T>
 matrix<T> mat_mul(const matrix<T>& a, const matrix<T>& b) {
-  assert(a.cols() == b.rows() && "Matrices cannot be multiplied");
-  matrix<T> r({a.rows(), b.cols()});
-  for (size_t i = 0; i < r.rows(); ++i) {
-    for (size_t j = 0; j < r.cols(); ++j) {
+  assert(a.num_cols() == b.num_rows() && "Matrices cannot be multiplied");
+  matrix<T> r({a.num_rows(), b.num_cols()});
+  for (size_t i = 0; i < r.num_rows(); ++i) {
+    for (size_t j = 0; j < r.num_cols(); ++j) {
       T sum = 0;
-      for (size_t k = 0; k < a.cols(); ++k)
-        sum += a[{i, k}] * b[{k, j}];
-      r[{i, j}] = sum;
+      for (size_t k = 0; k < a.num_cols(); ++k)
+        sum += a[i][k] * b[k][j];
+      r[i][j] = sum;
     }
   }
   return r;
@@ -45,10 +45,10 @@ matrix<T> mat_mul(const matrix<T>& a, const matrix<T>& b) {
 ///
 template <typename T>
 matrix<T> mat_identity(const size_t dim) {
-  matrix<T> r({dim, dim});
+  matrix<T> res({dim, dim});
   for (size_t k = 0; k < dim; ++k)
-    r[{k, k}] = 1;
-  return r;
+    res[k][k] = 1;
+  return res;
 }
 
 /// \brief Raises a matrix to the given power.
@@ -65,9 +65,9 @@ matrix<T> mat_identity(const size_t dim) {
 ///
 template <typename T, typename Integer>
 matrix<T> mat_pow(matrix<T> base, Integer exp) {
-  assert(base.rows() == base.cols() && "Base matrix must be square");
+  assert(base.num_rows() == base.num_cols() && "Base matrix must be square");
   assert(exp >= 0 && "Exponent cannot be negative");
-  matrix<T> result = mat_identity<T>(base.rows());
+  matrix<T> result = mat_identity<T>(base.num_rows());
   while (exp > 0) {
     if (exp % 2 == 1)
       result = mat_mul(result, base);

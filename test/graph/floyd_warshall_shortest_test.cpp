@@ -80,22 +80,21 @@ TEST_F(FloydWarshallAPSPTest, ShortestDistancesTest) {
   expected[8] = {3, 0, 3, 7, 0, 1, 3, -3, 0, inf};
   expected[9] = {6, 5, 8, 12, 3, 4, 8, 2, 5, 0};
 
-  matrix<int> dist({0, 0});
-  matrix<size_t> next({0, 0});
+  matrix<int> dist{};
+  matrix<size_t> next{};
   floyd_warshall_all_pairs_shortest_paths(g, weight, dist, next);
 
   for (size_t i = 0; i != 10; ++i) {
     for (size_t j = 0; j != 10; ++j) {
-      EXPECT_EQ(expected[i][j], (dist[{i, j}])) << " at (" << i << ", " << j
-                                                << ")";
+      EXPECT_EQ(expected[i][j], dist[i][j]) << " at (" << i << ", " << j << ")";
     }
   }
 }
 
 TEST_F(FloydWarshallAPSPTest, PathTest) {
   build_10_vertices_graph();
-  matrix<int> dist({0, 0});
-  matrix<size_t> next({0, 0});
+  matrix<int> dist{};
+  matrix<size_t> next{};
   floyd_warshall_all_pairs_shortest_paths(g, weight, dist, next);
 
   // Long paths
