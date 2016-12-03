@@ -6,9 +6,9 @@
 #ifndef CPL_GEOMETRY_ROTATIONS_HPP
 #define CPL_GEOMETRY_ROTATIONS_HPP
 
-#include <cpl/geometry/vector_2d.hpp> // vector2d
-#include <cmath>                      // sin, cos
-#include <type_traits>                // is_floating_point
+#include <cpl/geometry/vector_2d.hpp>
+#include <cmath>       // sin, cos
+#include <type_traits> // is_floating_point
 
 namespace cpl {
 

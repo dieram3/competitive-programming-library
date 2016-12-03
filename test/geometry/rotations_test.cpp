@@ -6,7 +6,8 @@
 #include <cpl/geometry/rotations.hpp>
 #include <gtest/gtest.h>
 
-#include <cpl/geometry/point_2d.hpp> // point
+#include <cpl/geometry/vector_2d.hpp>
+#include <cmath>
 
 namespace {
 class RotationsTest : public ::testing::Test {
