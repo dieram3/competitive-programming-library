@@ -6,9 +6,10 @@
 #include <cpl/number_theory/basics.hpp>
 #include <gtest/gtest.h>
 
+#include <algorithm>        // for_each
 #include <cstdint>          // uint_fast64_t, INT_MAX, UINT64_MAX
 #include <initializer_list> // initializer_list
-#include <tuple>            // tuple
+#include <tuple>            // tuple, get
 
 using cpl::multiply_less;
 using cpl::multiply_greater;
