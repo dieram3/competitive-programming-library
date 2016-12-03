@@ -21,11 +21,11 @@ T ceil_div(const T x, const T y) {
   assert(y != 0);
   const auto quot = x / y;
   const auto rem = x % y;
-  if (rem == 0) {
-    return quot;
-  }
-  const bool same_sign = (x >= 0) ^ (y < 0);
-  return same_sign ? quot + 1 : quot;
+  const bool opposite_sign = (x >= 0) ^ (y >= 0);
+  const bool is_correct = (rem == 0) | opposite_sign;
+
+  // The branch below should be optimized away by the compiler.
+  return quot + (is_correct ? 0 : 1);
 }
 
 /// Computes the floor of `x / y`.
@@ -37,11 +37,11 @@ T floor_div(const T x, const T y) {
   assert(y != 0);
   const auto quot = x / y;
   const auto rem = x % y;
-  if (rem == 0) {
-    return quot;
-  }
   const bool same_sign = (x >= 0) ^ (y < 0);
-  return same_sign ? quot : quot - 1;
+  const bool is_correct = (rem == 0) | same_sign;
+
+  // The branch below should be optimized away by the compiler.
+  return quot - (is_correct ? 0 : 1);
 }
 
 /// \brief Safely checks if <tt>a * b < c</tt>
