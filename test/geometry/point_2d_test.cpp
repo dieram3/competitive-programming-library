@@ -6,6 +6,7 @@
 #include <cpl/geometry/point_2d.hpp>
 #include <gtest/gtest.h>
 
+#include <cpl/geometry/vector_2d.hpp>
 #include <cmath>   // sqrt
 #include <cstdint> // int32_t
 #include <ostream> // ostream
