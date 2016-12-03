@@ -7,7 +7,8 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>        // for_each
-#include <cstdint>          // uint_fast64_t, INT_MAX, UINT64_MAX
+#include <climits>          // INT_MAX
+#include <cstdint>          // uint_fast64_t, UINT64_MAX
 #include <initializer_list> // initializer_list
 #include <tuple>            // tuple, get
 
