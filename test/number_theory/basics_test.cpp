@@ -6,20 +6,103 @@
 #include <cpl/number_theory/basics.hpp>
 #include <gtest/gtest.h>
 
-#include <cstdint> // uint_fast64_t, UINT64_MAX, UINT64_C
+#include <cstdint>          // uint_fast64_t, INT_MAX, UINT64_MAX
+#include <initializer_list> // initializer_list
+#include <tuple>            // tuple
 
-using cpl::ceil_div;
 using cpl::multiply_less;
 using cpl::multiply_greater;
 using cpl::ipow;
+using std::uint_fast64_t;
 
-TEST(CeilDivTest, WorksWell) {
-  EXPECT_EQ(0, ceil_div(0, 1));
-  EXPECT_EQ(0, ceil_div(0, 2));
-  EXPECT_EQ(3, ceil_div(9, 3));
-  EXPECT_EQ(4, ceil_div(10, 3));
-  EXPECT_EQ(UINT64_MAX, ceil_div(UINT64_MAX, UINT64_C(1)));
-  EXPECT_EQ(16, ceil_div(31, 2));
+namespace {
+class BasicsTest : public ::testing::Test {};
+} // end namespace
+
+TEST_F(BasicsTest, CeilDivTest) {
+  using cpl::ceil_div;
+  using test_t = std::tuple<int, int, int>;
+
+  auto expect = [](const int x, const int y, const int result) {
+    EXPECT_EQ(result, ceil_div(x, y)) << "x=" << x << ", y=" << y;
+  };
+  auto check = [expect](const test_t& test) {
+    const auto x = std::get<0>(test);
+    const auto y = std::get<1>(test);
+    const auto result = std::get<2>(test);
+    expect(x, y, result);
+    expect(-x, -y, result);
+  };
+  auto check_all = [check](std::initializer_list<test_t> tests) {
+    std::for_each(tests.begin(), tests.end(), check);
+  };
+
+  // Zero as dividend:
+  check_all({{0, 1, 0}, {0, 5, 0}, {0, 42, 0}});
+
+  // Integers with the same sign:
+  check_all({
+      {1, 1, 1},   {1, 2, 1},      {1, 1000, 1},    {1, INT_MAX, 1},
+      {2, 1, 2},   {2, 2, 1},      {2, 3, 1},       {9, 3, 3},
+      {10, 3, 4},  {11, 3, 4},     {12, 3, 4},      {13, 3, 5},
+      {10, 5, 2},  {10, 2, 5},     {11, 1, 11},     {11, 11, 1},
+      {11, 12, 1}, {999, 1000, 1}, {1000, 1000, 1}, {1001, 1000, 2},
+  });
+
+  // Integers with opposite signs:
+  check_all({
+      {1, -1, -1},  {1, -2, 0},      {1, -1000, 0},     {1, -INT_MAX, 0},
+      {2, -1, -2},  {2, -2, -1},     {2, -3, 0},        {9, -3, -3},
+      {10, -3, -3}, {11, -3, -3},    {12, -3, -4},      {13, -3, -4},
+      {10, -5, -2}, {10, -2, -5},    {11, -1, -11},     {11, -11, -1},
+      {11, -12, 0}, {999, -1000, 0}, {1000, -1000, -1}, {1001, -1000, -1},
+  });
+
+  // Check that no floating-point trick is being used.
+  EXPECT_EQ(UINT64_MAX, ceil_div<uint_fast64_t>(UINT64_MAX, 1));
+}
+
+TEST_F(BasicsTest, FloorDivTest) {
+  using cpl::floor_div;
+  using test_t = std::tuple<int, int, int>;
+
+  auto expect = [](const int x, const int y, const int result) {
+    EXPECT_EQ(result, floor_div(x, y)) << "x=" << x << ", y=" << y;
+  };
+  auto check = [expect](const test_t& test) {
+    const auto x = std::get<0>(test);
+    const auto y = std::get<1>(test);
+    const auto result = std::get<2>(test);
+    expect(x, y, result);
+    expect(-x, -y, result);
+  };
+  auto check_all = [check](std::initializer_list<test_t> tests) {
+    std::for_each(tests.begin(), tests.end(), check);
+  };
+
+  // Zero as dividend:
+  check_all({{0, 1, 0}, {0, 5, 0}, {0, 42, 0}});
+
+  // Integers with the same sign:
+  check_all({
+      {1, 1, 1},   {1, 2, 0},      {1, 1000, 0},    {1, INT_MAX, 0},
+      {2, 1, 2},   {2, 2, 1},      {2, 3, 0},       {9, 3, 3},
+      {10, 3, 3},  {11, 3, 3},     {12, 3, 4},      {13, 3, 4},
+      {10, 5, 2},  {10, 2, 5},     {11, 1, 11},     {11, 11, 1},
+      {11, 12, 0}, {999, 1000, 0}, {1000, 1000, 1}, {1001, 1000, 1},
+  });
+
+  // Integers with opposite signs:
+  check_all({
+      {1, -1, -1},   {1, -2, -1},      {1, -1000, -1},    {1, -INT_MAX, -1},
+      {2, -1, -2},   {2, -2, -1},      {2, -3, -1},       {9, -3, -3},
+      {10, -3, -4},  {11, -3, -4},     {12, -3, -4},      {13, -3, -5},
+      {10, -5, -2},  {10, -2, -5},     {11, -1, -11},     {11, -11, -1},
+      {11, -12, -1}, {999, -1000, -1}, {1000, -1000, -1}, {1001, -1000, -2},
+  });
+
+  // Check that no floating-point trick is being used.
+  EXPECT_EQ(UINT64_MAX, floor_div<uint_fast64_t>(UINT64_MAX, 1));
 }
 
 TEST(MultiplyLessTest, WorksWell) {

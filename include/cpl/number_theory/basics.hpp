@@ -12,10 +12,36 @@
 
 namespace cpl {
 
-/// Computes the ceil of <tt>a / b</tt>
+/// Computes the ceil of `x / y`.
+///
+/// \pre `y != 0`
+///
 template <typename T>
-constexpr T ceil_div(T a, T b) {
-  return a / b + T(a % b == 0 ? 0 : 1);
+T ceil_div(const T x, const T y) {
+  assert(y != 0);
+  const auto quot = x / y;
+  const auto rem = x % y;
+  if (rem == 0) {
+    return quot;
+  }
+  const bool same_sign = (x >= 0) ^ (y < 0);
+  return same_sign ? quot + 1 : quot;
+}
+
+/// Computes the floor of `x / y`.
+///
+/// \pre `y != 0`
+///
+template <typename T>
+T floor_div(const T x, const T y) {
+  assert(y != 0);
+  const auto quot = x / y;
+  const auto rem = x % y;
+  if (rem == 0) {
+    return quot;
+  }
+  const bool same_sign = (x >= 0) ^ (y < 0);
+  return same_sign ? quot : quot - 1;
 }
 
 /// \brief Safely checks if <tt>a * b < c</tt>
