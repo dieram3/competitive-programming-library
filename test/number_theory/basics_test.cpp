@@ -13,8 +13,6 @@
 #include <initializer_list> // initializer_list
 #include <tuple>            // tuple, get
 
-using cpl::multiply_less;
-using cpl::multiply_greater;
 using std::uint_fast64_t;
 
 namespace {
@@ -107,7 +105,9 @@ TEST_F(BasicsTest, FloorDivTest) {
   EXPECT_EQ(UINT64_MAX, floor_div<uint_fast64_t>(UINT64_MAX, 1));
 }
 
-TEST(MultiplyLessTest, WorksWell) {
+TEST_F(BasicsTest, MultiplyLessTest) {
+  using cpl::multiply_less;
+
   EXPECT_TRUE(multiply_less(0, 0, 1));
   EXPECT_TRUE(multiply_less(0, 1, 1));
   EXPECT_TRUE(multiply_less(1, 0, 1));
@@ -126,7 +126,9 @@ TEST(MultiplyLessTest, WorksWell) {
   EXPECT_FALSE(multiply_less(5, 7, 35));
 }
 
-TEST(MultiplyGreaterTest, WorksWell) {
+TEST_F(BasicsTest, MultiplyGreaterTest) {
+  using cpl::multiply_greater;
+
   EXPECT_TRUE(multiply_greater(65536u, 65536u, 4294967295u));
   EXPECT_TRUE(multiply_greater(4, 3, 10));
   EXPECT_TRUE(multiply_greater(4, 2, 7));
