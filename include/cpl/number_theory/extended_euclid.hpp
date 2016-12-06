@@ -6,7 +6,6 @@
 #ifndef CPL_NUMBER_THEORY_EXTENDED_EUCLID_HPP
 #define CPL_NUMBER_THEORY_EXTENDED_EUCLID_HPP
 
-#include <cassert>     // assert
 #include <tuple>       // tuple, make_tuple
 #include <type_traits> // is_signed
 
