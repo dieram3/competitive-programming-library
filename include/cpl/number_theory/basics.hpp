@@ -8,7 +8,8 @@
 #ifndef CPL_NUMBER_THEORY_BASICS_HPP
 #define CPL_NUMBER_THEORY_BASICS_HPP
 
-#include <cassert> // assert
+#include <cassert>     // assert
+#include <type_traits> // is_integral
 
 namespace cpl {
 
@@ -63,17 +64,18 @@ constexpr bool multiply_greater(T a, T b, T c) {
 /// \param base The base.
 /// \param exp The exponent.
 ///
-/// \pre <tt>base >= 0</tt>
 /// \pre <tt>exp >= 0</tt>
 ///
 /// \returns <tt>base</tt> raised to <tt>exp</tt>.
 ///
 /// \par Complexity
-/// Logarithmic in <tt>exp</tt>.
+/// Logarithmic in `exp`.
 ///
-template <typename T>
-T ipow(T base, T exp) {
-  assert(base >= 0 && exp >= 0);
+template <typename T, typename U>
+T ipow(T base, U exp) {
+  static_assert(std::is_integral<U>::value, "");
+  assert(exp >= 0);
+
   T result = 1;
   while (exp > 0) {
     if (exp % 2 == 1)
