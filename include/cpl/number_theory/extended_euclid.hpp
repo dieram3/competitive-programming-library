@@ -6,7 +6,8 @@
 #ifndef CPL_NUMBER_THEORY_EXTENDED_EUCLID_HPP
 #define CPL_NUMBER_THEORY_EXTENDED_EUCLID_HPP
 
-#include <tuple> // tuple, make_tuple
+#include <tuple>       // tuple, make_tuple
+#include <type_traits> // is_signed
 
 namespace cpl {
 
@@ -32,6 +33,8 @@ namespace cpl {
 ///
 template <typename T>
 std::tuple<T, T, T> extended_euclid(const T a, const T b) {
+  static_assert(std::is_signed<T>::value, "");
+
   T r = b, old_r = a;
   T s = 0, old_s = 1;
   T t = 1, old_t = 0;
