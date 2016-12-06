@@ -12,6 +12,9 @@ using cpl::extended_euclid;
 using triple = std::tuple<long, long, long>;
 
 TEST(ExtendedEuclidTest, InputWithZeroTest) {
+  // Both arguments are zero.
+  EXPECT_EQ(triple(0, 1, 0), extended_euclid(0, 0));
+
   // Non-zero argument is positive
   EXPECT_EQ(triple(1, 0, 1), extended_euclid(0, 1));
   EXPECT_EQ(triple(5, 0, 1), extended_euclid(0, 5));
