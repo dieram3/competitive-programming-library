@@ -15,10 +15,7 @@ install:
 
 before_script:
   - cmake --version
-  - ctest --version
   - gcc --version
-  - g++ --version
-  - gcov --version
 
 script:
   - mkdir build
