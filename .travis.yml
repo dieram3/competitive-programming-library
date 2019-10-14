@@ -1,5 +1,7 @@
 language: cpp
 
+dist: bionic
+
 env:
   global:
     - MAKEFLAGS="-j 4"
