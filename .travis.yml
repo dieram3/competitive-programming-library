@@ -10,8 +10,6 @@ env:
     - BUILD_TYPE=Release
 
 install:
-
-# Install cpp-coveralls if build-type is Debug
   - if [ "$BUILD_TYPE" = "Debug" ]; then
       sudo pip install cpp-coveralls;
       export CXX_FLAGS='--coverage -O0';
