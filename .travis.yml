@@ -1,8 +1,11 @@
 language: cpp
 
 env:
-  - BUILD_TYPE=Debug
-  - BUILD_TYPE=Release
+  global:
+    - MAKEFLAGS="-j 4"
+  matrix:
+    - BUILD_TYPE=Debug
+    - BUILD_TYPE=Release
 
 install:
 
