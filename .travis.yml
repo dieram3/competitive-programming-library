@@ -1,26 +1,10 @@
-sudo: required
-dist: precise
 language: cpp
 
 env:
   - BUILD_TYPE=Debug
   - BUILD_TYPE=Release
 
-before_install:
-  - sudo apt-add-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo apt-get -qq update
-
 install:
-# Install cmake 3.6.0
-  - wget --no-check-certificate https://www.cmake.org/files/v3.6/cmake-3.6.0-Linux-x86_64.tar.gz
-  - tar -xzf cmake-3.6.0-Linux-x86_64.tar.gz
-  - sudo cp -fR cmake-3.6.0-Linux-x86_64/* /usr
-
-# Install gcc, g++ and gcov (implicitly) version 6
-  - sudo apt-get -qq install gcc-6 g++-6
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 90
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
-  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-6 90
 
 # Install cpp-coveralls if build-type is Debug
   - if [ "$BUILD_TYPE" = "Debug" ]; then
