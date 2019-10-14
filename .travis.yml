@@ -16,10 +16,6 @@ install:
       export EXE_LINKER_FLAGS='--coverage';
     fi
 
-before_script:
-  - cmake --version
-  - gcc --version
-
 script:
   - mkdir build
   - cd build
