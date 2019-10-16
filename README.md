@@ -60,7 +60,7 @@ int main() {
   auto sa = cpl::make_suffix_array(text);
 
   // And use it to show the suffixes sorted lexicographically.
-  for (size_t suffix : sa) 
+  for (size_t suffix : sa)
     std::cout << text.substr(suffix) << '\n';
 }
 
