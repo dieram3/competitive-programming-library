@@ -6,91 +6,58 @@
 #ifndef CPL_DATA_STRUCTURE_FENWICK_TREE_HPP
 #define CPL_DATA_STRUCTURE_FENWICK_TREE_HPP
 
-#include <cstddef> // size_t
-#include <vector>  // vector
+#include <cstddef>
+#include <vector>
 
 namespace cpl {
 
+// Implementation of a Fenwick tree, a.k.a. Binary Indexed Tree (BIT).
+// This can be used to modify an array and compute prefix sums efficiently.
+//
+// Note: This implementation uses arithmetic addition to combine elements, but
+// any commutative operation will work.
 template <class T>
 class fenwick_tree {
 public:
   using size_type = std::size_t;
 
-  // Constructs the fenwick tree with sz elements initialized as 0.
-  // Complexity: O(N) where N == sz
-  explicit fenwick_tree(size_type sz) : tree_(sz) {}
+  // Constructs a fenwick tree for `count` elements.
+  explicit fenwick_tree(size_type count) : m_tree(count + 1) {}
 
-  // Increases the element at position 'i' by 'delta'.
-  // Complexity: O(log(N)) where N == size()
-  void increase(size_type i, const T& delta) {
-    if (!delta)
-      return;
-    for (; i < size(); i |= i + 1)
-      tree_[i] += delta;
-  }
-
-  // Returns the sum of elements positioned in the range [left,right]
-  // Complexity: O(log(N)) where N == size()
-  T sum(size_type left, size_type right) const {
-    return sum(right) - sum(left - 1);
-  }
-
-  // Returns the sum of the elements positioned at [0, ind]
-  T sum(size_type ind) const {
-    T sum = 0;
-    while ((~ind) != 0) {
-      sum += tree_[ind];
-      ind &= ind + 1;
-      --ind;
+  // Returns the sum of the first `count` elements.
+  // Complexity: O(log(N)), where N is the size of the tree.
+  T get_prefix_sum(size_type count) const {
+    T result = 0;
+    while (count != 0) {
+      result += m_tree[count];
+      count = reset_lowest_set_bit(count);
     }
-    return sum;
+    return result;
   }
 
-  // Returns the number of elements stored in the tree.
-  // Complexity: Constant
-  size_type size() const {
-    return tree_.size();
-  }
+  // Adds `value` to the element at position 'index'.
+  // Complexity: O(log(N)), where N is the size of the tree.
+  void add(size_type index, T value) {
+    size_type count = index + 1;
 
-private:
-  std::vector<T> tree_;
-};
-
-template <class T>
-class prefix_adder {
-public:
-  using size_type = std::size_t;
-
-  explicit prefix_adder(size_type sz) : ftree_(sz), elems_(sz) {}
-
-  void increase(size_type i, const T& delta) {
-    elems_[i] += delta;
-    ftree_.increase(i, delta);
-  }
-
-  void replace(size_type i, const T& value) {
-    increase(i, value - elems_[i]);
-  }
-
-  T sum(size_type l, size_type r) const {
-    return ftree_.sum(l, r);
-  }
-  T sum(size_type ind) const {
-    return ftree_.sum(ind);
-  }
-
-  size_type size() const {
-    return elems_.size();
-  }
-  const T& at(size_type i) const {
-    return elems_[i];
+    while (count < m_tree.size()) {
+      m_tree[count] += value;
+      count += extract_lowest_set_bit(count);
+    }
   }
 
 private:
-  fenwick_tree<T> ftree_;
-  std::vector<T> elems_;
+  static constexpr size_type reset_lowest_set_bit(size_type x) {
+    return x & (x - 1);
+  }
+
+  static constexpr size_type extract_lowest_set_bit(size_type x) {
+    return x & (-x);
+  }
+
+  std::vector<T> m_tree;
 };
 
-} // end namespace cpl
+} // namespace cpl
 
 #endif // Header guard
